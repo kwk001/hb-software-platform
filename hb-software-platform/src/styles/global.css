@@ -1,0 +1,323 @@
+/* 全局样式 - 专业级设计系统 */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 14px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: "PingFang SC", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  color: var(--text-secondary);
+  background-color: var(--bg-layout);
+  line-height: 1.5;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* 滚动条样式 */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-thumb-hover);
+}
+
+/* 通用工具类 */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* 文字颜色工具类 */
+.text-primary {
+  color: var(--text-primary);
+}
+
+.text-secondary {
+  color: var(--text-secondary);
+}
+
+.text-tertiary {
+  color: var(--text-tertiary);
+}
+
+.text-brand {
+  color: var(--brand-primary);
+}
+
+.text-success {
+  color: var(--success);
+}
+
+.text-warning {
+  color: var(--warning);
+}
+
+.text-error {
+  color: var(--error);
+}
+
+.text-info {
+  color: var(--info);
+}
+
+/* 背景色工具类 */
+.bg-primary {
+  background-color: var(--bg-primary);
+}
+
+.bg-secondary {
+  background-color: var(--bg-secondary);
+}
+
+.bg-tertiary {
+  background-color: var(--bg-tertiary);
+}
+
+.bg-card {
+  background-color: var(--bg-card);
+}
+
+.bg-layout {
+  background-color: var(--bg-layout);
+}
+
+/* 页面过渡动画 */
+.page-enter {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.page-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 300ms ease, transform 300ms ease;
+}
+
+/* 卡片悬停效果 */
+.card-hover {
+  transition: box-shadow 200ms ease, transform 200ms ease, background-color 200ms ease;
+}
+
+.card-hover:hover {
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
+}
+
+/* 按钮悬停效果 */
+.btn-hover {
+  transition: all 200ms ease;
+}
+
+.btn-hover:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+/* 骨架屏动画 */
+@keyframes skeleton-loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--bg-tertiary) 25%,
+    var(--bg-secondary) 50%,
+    var(--bg-tertiary) 75%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
+}
+
+/* 加载动画 */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.spinner {
+  width: 24px;
+  height: 24px;
+  border: 2px solid var(--border-medium);
+  border-top-color: var(--brand-primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+/* 响应式断点 */
+@media (max-width: 576px) {
+  .container {
+    padding: 0 16px;
+  }
+}
+
+/* Ant Design 覆盖样式 - 使用 CSS 变量 */
+.ant-layout {
+  background: var(--bg-layout);
+}
+
+.ant-layout-header {
+  background: var(--bg-header);
+  box-shadow: var(--shadow-sm);
+  padding: 0;
+  height: 64px;
+  line-height: 64px;
+}
+
+.ant-layout-sider {
+  background: var(--bg-sidebar);
+  box-shadow: var(--shadow-sm);
+}
+
+.ant-menu {
+  border-right: none;
+  background: transparent;
+}
+
+.ant-menu-item {
+  color: var(--menu-text);
+}
+
+.ant-menu-item:hover {
+  background: var(--menu-hover);
+  color: var(--text-primary);
+}
+
+.ant-menu-item-selected {
+  background: var(--menu-active);
+  color: var(--menu-text-active);
+}
+
+.ant-card {
+  border-radius: 12px;
+  box-shadow: var(--shadow-sm);
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+}
+
+.ant-card:hover {
+  box-shadow: var(--shadow-md);
+}
+
+.ant-table {
+  border-radius: 12px;
+  background: var(--bg-card);
+}
+
+.ant-table-thead > tr > th {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border-bottom: 1px solid var(--border-medium);
+}
+
+.ant-table-tbody > tr > td {
+  border-bottom: 1px solid var(--border-light);
+  color: var(--text-secondary);
+}
+
+.ant-table-tbody > tr:hover > td {
+  background: var(--bg-tertiary);
+}
+
+.ant-btn {
+  border-radius: 8px;
+}
+
+.ant-btn-primary {
+  background: var(--gradient-primary);
+  border: none;
+}
+
+.ant-input {
+  background: var(--bg-primary);
+  border-color: var(--border-medium);
+  color: var(--text-primary);
+}
+
+.ant-input:hover,
+.ant-input:focus {
+  border-color: var(--brand-primary);
+}
+
+.ant-select-selector {
+  background: var(--bg-primary);
+  border-color: var(--border-medium);
+  color: var(--text-primary);
+}
+
+.ant-modal-content {
+  background: var(--bg-secondary);
+}
+
+.ant-modal-header {
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-light);
+}
+
+.ant-modal-title {
+  color: var(--text-primary);
+}
+
+.ant-form-item-label > label {
+  color: var(--text-secondary);
+}
+
+.ant-pagination-item {
+  background: var(--bg-primary);
+  border-color: var(--border-medium);
+}
+
+.ant-pagination-item a {
+  color: var(--text-secondary);
+}
+
+.ant-pagination-item-active {
+  background: var(--brand-primary);
+  border-color: var(--brand-primary);
+}
+
+.ant-pagination-item-active a {
+  color: #fff;
+}
+
+.ant-tag {
+  border-radius: 6px;
+}
+
+.ant-badge-count {
+  border-radius: 10px;
+}
+
+.ant-divider {
+  border-color: var(--border-divider);
+}
+
+.ant-empty-description {
+  color: var(--text-tertiary);
+}

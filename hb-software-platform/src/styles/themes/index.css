@@ -1,0 +1,74 @@
+/**
+ * 主题系统入口文件
+ * Theme System Entry
+ */
+
+/* 导入深色系主题 - 默认主题 */
+@import './dark.css';
+
+/* 导入浅色系主题 */
+@import './light.css';
+
+/* ========== 主题过渡动画 ========== */
+[data-theme],
+[data-theme] * {
+  transition: background-color 0.3s ease,
+              border-color 0.3s ease,
+              color 0.3s ease,
+              box-shadow 0.3s ease;
+}
+
+/* 禁用某些元素的过渡动画（性能优化） */
+[data-theme] .no-theme-transition,
+[data-theme] .no-theme-transition * {
+  transition: none !important;
+}
+
+/* ========== 滚动条主题适配 ========== */
+[data-theme="dark"] ::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-thumb-hover);
+}
+
+/* ========== 选中文本样式 ========== */
+::selection {
+  background: var(--brand-primary-bg);
+  color: var(--brand-primary);
+}
+
+/* ========== 焦点样式 ========== */
+:focus-visible {
+  outline: 2px solid var(--brand-primary);
+  outline-offset: 2px;
+}
+
+/* ========== 工具类 ========== */
+
+/* 背景色工具类 */
+.bg-primary { background-color: var(--bg-primary) !important; }
+.bg-secondary { background-color: var(--bg-secondary) !important; }
+.bg-tertiary { background-color: var(--bg-tertiary) !important; }
+.bg-dark { background-color: var(--bg-dark) !important; }
+
+/* 文字色工具类 */
+.text-primary { color: var(--text-primary) !important; }
+.text-secondary { color: var(--text-secondary) !important; }
+.text-tertiary { color: var(--text-tertiary) !important; }
+.text-inverse { color: var(--text-inverse) !important; }
+
+/* 边框工具类 */
+.border-light { border-color: var(--border-light) !important; }
+.border-medium { border-color: var(--border-medium) !important; }
+
+/* 阴影工具类 */
+.shadow-xs { box-shadow: var(--shadow-xs) !important; }
+.shadow-sm { box-shadow: var(--shadow-sm) !important; }
+.shadow-md { box-shadow: var(--shadow-md) !important; }
+.shadow-lg { box-shadow: var(--shadow-lg) !important; }
