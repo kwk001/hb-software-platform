@@ -1,6 +1,48 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { Link } from 'react-router-dom'
-import { Button, Statistic } from 'antd'
+import { Button } from 'antd'
+
+// 数字递增动画 Hook
+function useCountUp(end: number, duration: number = 2000, decimals: number = 0, start: boolean = false) {
+  const [count, setCount] = useState(0)
+  const frameRef = useRef<number | null>(null)
+  const startTimeRef = useRef<number | null>(null)
+
+  useEffect(() => {
+    if (!start) {
+      setCount(0)
+      return
+    }
+
+    const animate = (timestamp: number) => {
+      if (!startTimeRef.current) {
+        startTimeRef.current = timestamp
+      }
+      
+      const progress = Math.min((timestamp - startTimeRef.current) / duration, 1)
+      // 使用 easeOutExpo 缓动函数
+      const easeOutExpo = 1 - Math.pow(2, -10 * progress)
+      const currentValue = easeOutExpo * end
+      
+      setCount(Number(currentValue.toFixed(decimals)))
+      
+      if (progress < 1) {
+        frameRef.current = requestAnimationFrame(animate)
+      }
+    }
+
+    frameRef.current = requestAnimationFrame(animate)
+
+    return () => {
+      if (frameRef.current) {
+        cancelAnimationFrame(frameRef.current)
+      }
+      startTimeRef.current = null
+    }
+  }, [end, duration, decimals, start])
+
+  return count
+}
 import {
   ArrowRightOutlined,
   EyeOutlined,
@@ -171,14 +213,7 @@ export default function Home() {
               </Link>
             </div>
             
-            <div className="hero-stats">
-              {stats.map((stat, index) => (
-                <div key={index} className="hero-stat-item">
-                  <div className="hero-stat-value">{stat.value}{stat.suffix}</div>
-                  <div className="hero-stat-label">{stat.label}</div>
-                </div>
-              ))}
-            </div>
+
           </div>
         </div>
         
@@ -193,35 +228,23 @@ export default function Home() {
       <section className="stats-section" ref={statsRef}>
         <div className="container">
           <div className="stats-grid">
-            {stats.map((stat, index) => (
-              <div 
-                key={index} 
-                className={`stat-card ${statsVisible ? 'visible' : ''}`}
-                style={{ transitionDelay: `${index * 100}ms` }}
-              >
-                <div className="stat-icon" style={{ background: `linear-gradient(135deg, ${stat.color || '#6366f1'}20, ${stat.color || '#6366f1'}10)` }}>
-                  <stat.icon style={{ color: stat.color || '#6366f1' }} />
-                </div>
-                <div className="stat-content">
+            {stats.map((stat, index) => {
+              const animatedValue = useCountUp(stat.value, 2000, stat.decimals || 0, statsVisible)
+
+              return (
+                <div
+                  key={index}
+                  className={`stat-item ${statsVisible ? 'visible' : ''}`}
+                  style={{ transitionDelay: `${index * 120}ms` }}
+                >
                   <div className="stat-value">
-                    {statsVisible ? (
-                      <Statistic 
-                        value={stat.value} 
-                        suffix={stat.suffix}
-                        precision={stat.decimals || 0}
-                        valueStyle={{ color: '#f8fafc', fontSize: 36, fontWeight: 700 }}
-                      />
-                    ) : (
-                      <span>0</span>
-                    )}
+                    <span className="stat-number">{animatedValue}</span>
+                    <span className="stat-suffix">{stat.suffix}</span>
                   </div>
                   <div className="stat-label">{stat.label}</div>
                 </div>
-                <div className="stat-trend">
-                  <ArrowUpOutlined /> +{12 + index * 5}%
-                </div>
-              </div>
-            ))}
+              )
+            })}
           </div>
         </div>
       </section>
