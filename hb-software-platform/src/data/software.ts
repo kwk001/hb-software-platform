@@ -61,7 +61,7 @@ export const softwareList: SoftwareItem[] = [
     views: 2341,
     rating: 4.8,
     price: '5-20万',
-    logo: '/images/software/cad.png',
+    logo: '/images/software/cad.svg',
     color: '#6366f1',
   },
   {
@@ -75,7 +75,7 @@ export const softwareList: SoftwareItem[] = [
     views: 1856,
     rating: 4.6,
     price: '10-50万',
-    logo: '/images/software/mes.png',
+    logo: '/images/software/mes.svg',
     color: '#10b981',
   },
   {
@@ -103,7 +103,7 @@ export const softwareList: SoftwareItem[] = [
     views: 3421,
     rating: 4.5,
     price: '8-30万',
-    logo: '/images/software/erp.png',
+    logo: '/images/software/erp.svg',
     color: '#f59e0b',
   },
   {
@@ -159,7 +159,7 @@ export const softwareList: SoftwareItem[] = [
     views: 2754,
     rating: 4.7,
     price: '12-60万',
-    logo: '/images/software/iot.png',
+    logo: '/images/software/iot.svg',
     color: '#14b8a6',
   },
 ]

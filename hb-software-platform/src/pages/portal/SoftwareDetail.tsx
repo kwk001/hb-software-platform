@@ -1,4 +1,4 @@
-import { useParams } from 'react-router-dom'
+import { useParams, Navigate } from 'react-router-dom'
 import {
   Row,
   Col,
@@ -25,17 +25,26 @@ import {
   MailOutlined,
   EnvironmentOutlined,
 } from '@ant-design/icons'
+import { softwareList } from '../../data/software'
 
 const SoftwareDetail = () => {
   const { id } = useParams()
 
-  // 软件详情数据
+  // 从软件列表中查找对应的产品
+  const softwareData = softwareList.find(s => s.id === id)
+
+  // 如果没找到，跳转到软件列表页
+  if (!softwareData) {
+    return <Navigate to="/software" replace />
+  }
+
+  // 构建软件详情数据
   const software = {
-    id: 1,
-    name: '智能制造MES系统',
-    company: '武汉XX科技有限公司',
-    category: '生产制造',
-    tags: ['MES', '智能制造', 'SaaS', '云端部署'],
+    id: softwareData.id,
+    name: softwareData.name,
+    company: softwareData.company,
+    category: softwareData.categoryLabel,
+    tags: softwareData.tags,
     version: 'V3.2.1',
     updateDate: '2026-03-01',
     publishDate: '2025-06-15',
@@ -44,21 +53,23 @@ const SoftwareDetail = () => {
     contactEmail: 'contact@example.com',
     address: '武汉市东湖高新区光谷大道123号',
     website: 'www.example.com',
-    description:
-      '智能制造MES系统是一款面向制造业的生产执行管理系统，通过实时数据采集、生产过程监控、质量追溯等功能，帮助企业实现生产过程的全面数字化管理。系统支持多种部署方式，可灵活适配不同规模企业的需求。',
+    description: softwareData.description,
     features: [
-      '生产计划管理：智能排产、工单管理、进度跟踪',
-      '生产过程监控：实时数据采集、设备状态监控、异常预警',
-      '质量管理系统：来料检验、过程检验、成品检验、质量追溯',
-      '设备管理系统：设备台账、维护保养、故障管理',
-      '物料管理系统：库存管理、物料追溯、仓库管理',
-      '数据分析报表：生产报表、质量报表、设备报表',
+      `${softwareData.name}核心功能一：专业${softwareData.categoryLabel}解决方案`,
+      `${softwareData.name}核心功能二：智能化数据管理与分析`,
+      `${softwareData.name}核心功能三：全流程数字化协同`,
+      `${softwareData.name}核心功能四：安全可靠的企业级服务`,
+      `${softwareData.name}核心功能五：灵活的部署与集成方案`,
     ],
     screenshots: [
       'https://via.placeholder.com/800x450/0052D9/FFFFFF?text=截图1',
       'https://via.placeholder.com/800x450/409EFF/FFFFFF?text=截图2',
       'https://via.placeholder.com/800x450/00A870/FFFFFF?text=截图3',
     ],
+    logo: softwareData.logo,
+    color: softwareData.color,
+    rating: softwareData.rating,
+    price: softwareData.price,
   }
 
   return (
@@ -157,20 +168,27 @@ const SoftwareDetail = () => {
                   style={{
                     width: '90px',
                     height: '90px',
-                    background: 'linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%)',
+                    background: `linear-gradient(135deg, ${software.color} 0%, ${software.color}dd 100%)`,
                     borderRadius: '18px',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    color: '#fff',
-                    fontSize: '28px',
-                    fontWeight: 700,
                     margin: '0 auto',
-                    boxShadow: '0 12px 30px rgba(59, 130, 246, 0.35), inset 0 1px 0 rgba(255,255,255,0.2)',
+                    boxShadow: `0 12px 30px ${software.color}40, inset 0 1px 0 rgba(255,255,255,0.2)`,
                     position: 'relative',
+                    overflow: 'hidden',
                   }}
                 >
-                  MES
+                  <img 
+                    src={software.logo} 
+                    alt={software.name}
+                    style={{
+                      width: '60px',
+                      height: '60px',
+                      objectFit: 'cover',
+                      borderRadius: '12px',
+                    }}
+                  />
                   <div
                     style={{
                       position: 'absolute',

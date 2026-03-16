@@ -138,13 +138,25 @@ const solutions = [
   { title: 'AI 质检', desc: '智能视觉检测与质量分析', icon: LineChartOutlined, color: '#ec4899' },
 ]
 
-// Hero 背景配置
+// Hero 背景配置 - 3张轮播海报
 const HERO_BACKGROUNDS = [
   {
-    image: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=1920&q=80',
+    image: '/images/hero-bg-1.png',
     title: '湖北省工业软件公共服务平台',
     subtitle: '汇聚优质工业软件资源，助力企业数字化转型',
     desc: '为制造企业提供工业软件产品发现和补贴申请服务，为软件企业提供产品展示和需求对接服务',
+  },
+  {
+    image: '/images/hero-bg-2.png',
+    title: '智能制造解决方案',
+    subtitle: '全方位数字化升级，引领工业4.0新时代',
+    desc: '提供CAD/CAE/CAM/PLM/MES/ERP等全系列工业软件，助力企业实现智能制造转型',
+  },
+  {
+    image: '/images/hero-bg-3.jpg',
+    title: '政策补贴一键申请',
+    subtitle: '政府扶持资金，助力企业发展',
+    desc: '实时更新最新产业政策，提供补贴券在线申请，让企业享受政策红利更简单',
   },
 ]
 
@@ -154,6 +166,28 @@ export default function Home() {
   const [scrollY, setScrollY] = useState(0)
   const statsRef = useRef<HTMLDivElement>(null)
   const [statsVisible, setStatsVisible] = useState(false)
+  const [isPaused, setIsPaused] = useState(false)
+  // 软件产品轮播状态
+  const [featuredIndex, setFeaturedIndex] = useState(0)
+  const [isSoftwarePaused, setIsSoftwarePaused] = useState(false)
+
+  // Hero自动轮播
+  useEffect(() => {
+    if (isPaused) return
+    const interval = setInterval(() => {
+      setCurrentBg((prev) => (prev + 1) % HERO_BACKGROUNDS.length)
+    }, 5000)
+    return () => clearInterval(interval)
+  }, [isPaused])
+
+  // 软件产品自动轮播 - 2.5秒切换
+  useEffect(() => {
+    if (isSoftwarePaused) return
+    const interval = setInterval(() => {
+      setFeaturedIndex((prev) => (prev + 1) % homeSoftwareList.length)
+    }, 2000)
+    return () => clearInterval(interval)
+  }, [isSoftwarePaused])
 
   useEffect(() => {
     const handleScroll = () => setScrollY(window.scrollY)
@@ -217,6 +251,22 @@ export default function Home() {
           </div>
         </div>
         
+        {/* 轮播指示器 */}
+        <div 
+          className="hero-carousel-dots"
+          onMouseEnter={() => setIsPaused(true)}
+          onMouseLeave={() => setIsPaused(false)}
+        >
+          {HERO_BACKGROUNDS.map((_, index) => (
+            <button
+              key={index}
+              className={`hero-carousel-dot ${currentBg === index ? 'active' : ''}`}
+              onClick={() => setCurrentBg(index)}
+              aria-label={`切换到第${index + 1}张海报`}
+            />
+          ))}
+        </div>
+
         <div className="hero-scroll" style={{ opacity: Math.max(0, 1 - scrollY / 300) }}>
           <div className="hero-scroll-mouse">
             <div className="hero-scroll-wheel" />
@@ -249,11 +299,10 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Software Section - 3D悬浮卡片 */}
+      {/* Software Section - Bento Grid 风格 */}
       <section className="software-section">
-        <div className="section-glow" />
         <div className="container">
-          <div className="section-header">
+          <div className="section-header center">
             <div>
               <h2 className="section-title">
                 <ThunderboltOutlined className="section-icon" />
@@ -266,57 +315,96 @@ export default function Home() {
             </Link>
           </div>
           
-          <div className="software-grid">
-            {homeSoftwareList.map((software, index) => (
-              <Link 
-                to={`/software/${software.id}`} 
-                key={software.id}
-                className="software-card-wrapper"
-                style={{ animationDelay: `${index * 50}ms` }}
-              >
-                <div
-                  className={`software-card ${hoveredSoftware === software.id ? 'hovered' : ''}`}
-                  onMouseEnter={() => setHoveredSoftware(software.id)}
-                  onMouseLeave={() => setHoveredSoftware(null)}
-                >
-                  <div className="software-card-glow" />
-                  <div className="software-card-border" />
-                  
-                  <div className="software-card-image">
-                    <img src={software.logo} alt={software.name} />
-                    <div className="software-card-overlay">
-                      <PlayCircleOutlined className="play-icon" />
-                    </div>
-                  </div>
-                  
-                  <div className="software-card-content">
-                    <div className="software-card-tags">
-                      <span className="software-tag">{software.categoryLabel}</span>
-                      {software.isFree && <span className="software-tag free">免费</span>}
+          <div 
+            className="software-grid-bento"
+            onMouseEnter={() => setIsSoftwarePaused(true)}
+            onMouseLeave={() => setIsSoftwarePaused(false)}
+          >
+            {/* 轮转式切换：每次切换，产品数组轮转一位，主推位置固定在0 */}
+            {(() => {
+              // 根据featuredIndex计算轮转后的数组
+              const rotationOffset = featuredIndex % 7
+              const rotatedList = [
+                ...homeSoftwareList.slice(rotationOffset, 7),
+                ...homeSoftwareList.slice(0, rotationOffset)
+              ]
+              return rotatedList.map((software, index) => {
+                const isFeatured = index === 0  // 主推位置固定在0
+                const isActive = isFeatured
+                return (
+                <Link
+                    to={`/software/${software.id}`}
+                    key={software.id}
+                    className={`software-card-bento ${isFeatured ? 'featured' : ''} ${isActive ? 'active' : ''}`}
+                    style={{ animationDelay: `${index * 100}ms` }}
+                  >
+                  <div className="software-card-bento-inner">
+                    <div
+                      className="software-card-bento-bg"
+                      style={{ background: `linear-gradient(135deg, ${software.color}20 0%, ${software.color}08 50%, transparent 100%)` }}
+                    />
+
+                    <div className="software-card-bento-content">
+                      {isFeatured ? (
+                        // 主推产品布局
+                        <>
+                          <div className="software-bento-featured-main">
+                            <div
+                              className="software-bento-icon-large"
+                              style={{ backgroundColor: software.color }}
+                            >
+                              <span className="software-icon-text">{software.categoryLabel.slice(0, 3)}</span>
+                            </div>
+                            <div className="software-bento-info">
+                              <div className="software-bento-tags">
+                                <span className="software-bento-tag featured">{software.categoryLabel}</span>
+                              </div>
+                              <h3 className="software-bento-title-large">{software.name}</h3>
+                              <p className="software-bento-desc-large">{software.description}</p>
+                              <div className="software-bento-meta">
+                                <span className="software-bento-price">{software.isFree ? '免费' : software.price}</span>
+                                <span className="software-bento-arrow">
+                                  <ArrowRightOutlined />
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </>
+                      ) : (
+                        // 普通产品布局
+                        <>
+                          <div 
+                            className="software-bento-icon"
+                            style={{ backgroundColor: software.color }}
+                          >
+                            <span className="software-icon-text">{software.categoryLabel.slice(0, 2)}</span>
+                          </div>
+                          <div className="software-bento-details">
+                            <span className="software-bento-category">{software.categoryLabel}</span>
+                            <h3 className="software-bento-title">{software.name}</h3>
+                            <div className="software-bento-footer">
+                              <div className="software-bento-price-tag">
+                                <span className="price-label">{software.isFree ? '免费试用' : '起售价'}</span>
+                                <span className="price-value">{software.isFree ? '¥0' : software.price}</span>
+                              </div>
+                              <div className="software-bento-action">
+                                <span className="action-text">了解详情</span>
+                                <div className="action-arrow">
+                                  <ArrowRightOutlined />
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </>
+                      )}
                     </div>
                     
-                    <h3 className="software-card-title">{software.name}</h3>
-                    <p className="software-card-desc">{software.description}</p>
-                    
-                    <div className="software-card-footer">
-                      <div className="software-rating">
-                        {[...Array(5)].map((_, i) => (
-                          <StarOutlined 
-                            key={i} 
-                            className={i < Math.floor(software.rating) ? 'filled' : ''}
-                          />
-                        ))}
-                        <span>{software.rating}</span>
-                      </div>
-                      <div className="software-stats">
-                        <span><EyeOutlined /> {software.views}</span>
-                        <span><HeartOutlined /> {software.likes || 128}</span>
-                      </div>
-                    </div>
+                    <div className="software-card-bento-shine" />
                   </div>
-                </div>
-              </Link>
-            ))}
+                </Link>
+              )
+              })
+            })()}
           </div>
         </div>
       </section>
@@ -394,7 +482,7 @@ export default function Home() {
       {/* Policies Section - 左右非对称布局 */}
       <section className="policies-section">
         <div className="container">
-          <div className="section-header">
+          <div className="section-header center">
             <div>
               <h2 className="section-title">
                 <CrownOutlined className="section-icon" />
