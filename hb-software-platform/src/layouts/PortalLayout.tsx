@@ -31,10 +31,10 @@ const navStyles = `
     max-width: 1440px;
     height: 100%;
     margin: 0 auto;
-    padding: 0 32px;
-    display: flex;
+    padding: 0 48px;
+    display: grid;
+    grid-template-columns: 280px 1fr 280px;
     align-items: center;
-    justify-content: space-between;
   }
   
   /* Logo */
