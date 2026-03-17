@@ -91,7 +91,7 @@ const PolicyDetail = () => {
       case '补贴政策':
         return { bg: 'rgba(249, 115, 22, 0.08)', text: '#ea580c' }
       case '产业政策':
-        return { bg: 'rgba(139, 92, 246, 0.08)', text: '#7c3aed' }
+        return { bg: 'rgba(99, 102, 241, 0.08)', text: '#6366f1' }
       case '申报通知':
         return { bg: 'rgba(6, 182, 212, 0.08)', text: '#0891b2' }
       default:

@@ -555,7 +555,7 @@ const Policy = () => {
                                 item.category === '补贴政策'
                                   ? '#ea580c'
                                   : item.category === '产业政策'
-                                  ? '#7c3aed'
+                                  ? '#6366f1'
                                   : '#0891b2',
                             }}
                           >

@@ -6,14 +6,14 @@
  */
 
 :root[data-theme="light"] {
-  /* ========== 品牌色系统 - 科技蓝紫渐变 ========== */
-  --brand-primary: #0066FF;
-  --brand-primary-light: #3385FF;
-  --brand-primary-dark: #0052CC;
-  --brand-secondary: #7C3AED;
-  --brand-gradient: linear-gradient(135deg, #0066FF 0%, #7C3AED 50%, #EC4899 100%);
-  --brand-gradient-subtle: linear-gradient(135deg, rgba(0, 102, 255, 0.08) 0%, rgba(124, 58, 237, 0.04) 100%);
-  --brand-glow: rgba(0, 102, 255, 0.3);
+  /* ========== 品牌色系统 - 蓝紫渐变 ========== */
+  --brand-primary: #6366f1;
+  --brand-primary-light: #818cf8;
+  --brand-primary-dark: #4f46e5;
+  --brand-secondary: #6366f1;
+  --brand-gradient: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+  --brand-gradient-subtle: linear-gradient(135deg, rgba(99, 102, 241, 0.08) 0%, rgba(79, 70, 229, 0.04) 100%);
+  --brand-glow: rgba(99, 102, 241, 0.3);
 
   /* ========== 背景色系统 - 冷调纯净 ========== */
   --bg-primary: #FFFFFF;
@@ -41,9 +41,9 @@
   --text-placeholder: #94A3B8;
   --text-inverse: #FFFFFF;
   
-  /* 强调文字 - 科技蓝 */
-  --text-accent: #0066FF;
-  --text-accent-hover: #0052CC;
+  /* 强调文字 - 蓝紫渐变 */
+  --text-accent: #6366f1;
+  --text-accent-hover: #4f46e5;
   --text-success: #059669;
   --text-warning: #D97706;
   --text-error: #DC2626;
@@ -88,16 +88,17 @@
   --error-light: #FEE2E2;
   --error-bg: #FEF2F2;
   
-  --info: #0066FF;
-  --info-light: #DBEAFE;
-  --info-bg: #EFF6FF;
+  --info: #6366f1;
+  --info-light: #E0E7FF;
+  --info-bg: #EEF2FF;
 
-  /* ========== 渐变系统 - 科技感 ========== */
+  /* ========== 渐变系统 - 蓝紫渐变 ========== */
   --gradient-hero: linear-gradient(180deg, #F8FAFC 0%, #FFFFFF 50%, #F8FAFC 100%);
   --gradient-card: linear-gradient(145deg, #FFFFFF 0%, #F8FAFC 100%);
-  --gradient-border: linear-gradient(135deg, rgba(0, 102, 255, 0.3) 0%, rgba(124, 58, 237, 0.15) 100%);
-  --gradient-text: linear-gradient(135deg, #0F172A 0%, #0066FF 100%);
-  --gradient-tech: linear-gradient(135deg, #0066FF 0%, #7C3AED 50%, #EC4899 100%);
+  --gradient-border: linear-gradient(135deg, rgba(99, 102, 241, 0.3) 0%, rgba(79, 70, 229, 0.15) 100%);
+  --gradient-text: linear-gradient(135deg, #0F172A 0%, #6366f1 100%);
+  --gradient-tech: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+  --gradient-primary: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
 
   /* ========== 圆角系统 ========== */
   --radius-sm: 6px;
