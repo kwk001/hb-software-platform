@@ -20,7 +20,7 @@ const navStyles = `
     top: 0;
     left: 0;
     right: 0;
-    height: 64px;
+    height: 72px;
     background: var(--bg-header);
     backdrop-filter: blur(20px) saturate(180%);
     border-bottom: 1px solid var(--border-light);
@@ -28,16 +28,17 @@ const navStyles = `
   }
   
   .navbar-container {
-    max-width: 1440px;
+    width: 100%;
     height: 100%;
     margin: 0 auto;
-    padding: 0 48px;
+    padding: 0 20px;
     display: grid;
-    grid-template-columns: 280px 1fr 280px;
+    grid-template-columns: auto 1fr auto;
     align-items: center;
+    gap: 40px;
   }
   
-  /* Logo */
+  /* Logo - 靠左对齐 */
   .navbar-logo {
     display: flex;
     align-items: center;
@@ -53,6 +54,36 @@ const navStyles = `
     display: flex;
     align-items: center;
     justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  /* Logo图标光晕动效 */
+  .navbar-logo-icon::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0.5) 50%,
+      rgba(255, 255, 255, 0) 100%
+    );
+    animation: logoShimmer 2.5s infinite;
+    pointer-events: none;
+  }
+  
+  @keyframes logoShimmer {
+    0% {
+      left: -100%;
+    }
+    100% {
+      left: 200%;
+    }
   }
   
   .navbar-logo-text {
@@ -76,10 +107,11 @@ const navStyles = `
     letter-spacing: 0.02em;
   }
   
-  /* 导航菜单 */
+  /* 导航菜单 - 居中 */
   .navbar-nav {
     display: flex;
     align-items: center;
+    justify-content: center;
   }
   
   .navbar-nav .ant-menu {
@@ -90,22 +122,43 @@ const navStyles = `
   }
   
   .navbar-nav .ant-menu-item {
-    height: 36px;
-    line-height: 36px;
-    padding: 0 16px !important;
+    height: 40px;
+    line-height: 40px;
+    padding: 0 20px !important;
     margin: 0 !important;
-    border-radius: 6px;
+    border-radius: 8px;
     font-size: 14px;
     font-weight: 450;
     color: var(--text-secondary) !important;
     background: transparent !important;
     border: none !important;
-    transition: all 0.15s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+  }
+  
+  /* 导航项悬停微动效 - 下划线从中心展开 */
+  .navbar-nav .ant-menu-item::after {
+    content: '';
+    position: absolute;
+    bottom: 4px;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background: var(--gradient-primary);
+    border-radius: 2px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transform: translateX(-50%);
   }
   
   .navbar-nav .ant-menu-item:hover {
     color: var(--text-primary) !important;
     background: var(--menu-hover) !important;
+    transform: translateY(-1px);
+  }
+  
+  .navbar-nav .ant-menu-item:hover::after {
+    width: 60%;
   }
   
   .navbar-nav .ant-menu-item-selected {
@@ -114,11 +167,18 @@ const navStyles = `
     background: var(--menu-active) !important;
   }
   
-  /* 右侧操作区 */
+  .navbar-nav .ant-menu-item-selected::after {
+    width: 60%;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  
+  /* 右侧操作区 - 靠右对齐 */
   .navbar-actions {
     display: flex;
     align-items: center;
-    gap: 8px;
+    justify-content: flex-end;
+    gap: 12px;
   }
   
   .navbar-btn-icon {
@@ -200,15 +260,15 @@ const navStyles = `
   
   /* 内容区域 */
   .main-content {
-    padding-top: 64px !important;
+    padding-top: 72px !important;
     min-height: 100vh;
   }
 `
 
 const menuItems: MenuProps['items'] = [
   { key: '/', label: <Link to="/">首页</Link> },
-  { key: '/software', label: <Link to="/software">软件产品</Link> },
-  { key: '/policy', label: <Link to="/policy">政策中心</Link> },
+  { key: '/software', label: <Link to="/software">软件中心</Link> },
+  { key: '/policy', label: <Link to="/policy">政策活动中心</Link> },
   { key: '/demand', label: <Link to="/demand">需求广场</Link> },
 ]
 

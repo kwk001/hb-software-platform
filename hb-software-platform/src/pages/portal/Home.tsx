@@ -30,18 +30,17 @@ import {
 import { softwareList } from '../../data/software'
 import './home-styles.css'
 
-// 数字递增动画 Hook
-function useCountUp(end: number, duration: number = 2000, decimals: number = 0, start: boolean = false) {
+// 数字递增动画 Hook - 使用 key 触发重新渲染
+function useCountUp(end: number, duration: number = 2000, decimals: number = 0, startKey: number = 0) {
   const [count, setCount] = useState(0)
   const frameRef = useRef<number | null>(null)
   const startTimeRef = useRef<number | null>(null)
 
   useEffect(() => {
-    if (!start) {
-      setCount(0)
-      return
-    }
-
+    // 重置并开始动画
+    setCount(0)
+    startTimeRef.current = null
+    
     const animate = (timestamp: number) => {
       if (!startTimeRef.current) {
         startTimeRef.current = timestamp
@@ -64,9 +63,8 @@ function useCountUp(end: number, duration: number = 2000, decimals: number = 0, 
       if (frameRef.current) {
         cancelAnimationFrame(frameRef.current)
       }
-      startTimeRef.current = null
     }
-  }, [end, duration, decimals, start])
+  }, [end, duration, decimals, startKey])
 
   return count
 }
@@ -237,7 +235,7 @@ const stats: StatItem[] = [
   { label: '入驻企业', value: 128, suffix: '+', icon: TeamOutlined },
   { label: '软件产品', value: 568, suffix: '+', icon: AppstoreOutlined },
   { label: '覆盖行业', value: 15, suffix: '+', icon: DatabaseOutlined },
-  { label: '交易金额', value: 2.8, suffix: '亿', icon: LineChartOutlined, decimals: 1 },
+  { label: '申报券金额', value: 2.8, suffix: '亿', icon: LineChartOutlined, decimals: 1 },
 ]
 
 const solutions = [
@@ -277,7 +275,7 @@ export default function Home() {
   const [featuredIndex, setFeaturedIndex] = useState(0)
   const [isSoftwarePaused, setIsSoftwarePaused] = useState(false)
   const statsRef = useRef<HTMLDivElement>(null)
-  const [statsVisible, setStatsVisible] = useState(false)
+  const [statsKey, setStatsKey] = useState(1)
 
   // 软件产品自动轮播
   useEffect(() => {
@@ -288,13 +286,12 @@ export default function Home() {
     return () => clearInterval(interval)
   }, [isSoftwarePaused])
 
-  // 统计数据动画
+  // 统计数据动画 - 每次进入视口都触发
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          setStatsVisible(true)
-          observer.unobserve(entry.target)
+          setStatsKey(prev => prev + 1)
         }
       },
       { threshold: 0.3 }
@@ -326,46 +323,48 @@ export default function Home() {
         </div>
         
         <div className={`hero-v2-content ${heroAnim.isVisible ? 'visible' : ''}`} ref={heroAnim.ref}>
+          {/* 顶部徽章 */}
           <div className="hero-v2-badge">
             <span className="badge-dot" />
             <span>平台已正式上线运营</span>
           </div>
           
-          <h1 className="hero-v2-title">
-            <span className="title-line">湖北省</span>
-            <span className="title-line title-highlight">工业软件</span>
-            <span className="title-line">公共服务平台</span>
-          </h1>
-          
-          <p className="hero-v2-subtitle">
-            汇聚优质工业软件资源，助力企业数字化转型
-          </p>
-          
-          <div className="hero-v2-actions">
-            <Link to="/software" className="btn-primary-v2">
-              <span>浏览软件产品</span>
-              <ArrowRightOutlined />
-            </Link>
-            <Link to="/register" className="btn-secondary-v2">
-              <PlayCircleOutlined />
-              <span>企业入驻</span>
-            </Link>
+          {/* 主标题区域 */}
+          <div className="hero-v2-main">
+            <h1 className="hero-v2-title">
+              <span className="title-text">湖北省工业软件公共服务平台</span>
+            </h1>
+            
+            <p className="hero-v2-subtitle">
+              汇聚优质工业软件资源，助力企业数字化转型
+            </p>
+            
+            <div className="hero-v2-actions">
+              <Link to="/software" className="btn-primary-v2">
+                <span>浏览软件产品</span>
+                <ArrowRightOutlined />
+              </Link>
+              <Link to="/register" className="btn-secondary-v2">
+                <PlayCircleOutlined />
+                <span>企业入驻</span>
+              </Link>
+            </div>
           </div>
           
-          <div className="hero-v2-stats" ref={statsRef}>
+          {/* 底部数据统计 - 横向排列 */}
+          <div className="hero-v2-stats-bar" ref={statsRef}>
             {stats.map((stat, index) => {
-              const animatedValue = useCountUp(stat.value, 2000, stat.decimals || 0, statsVisible)
-              const Icon = stat.icon
+              const animatedValue = useCountUp(stat.value, 2000, stat.decimals || 0, statsKey)
               return (
-                <div key={index} className="stat-card-v2" style={{ animationDelay: `${index * 100}ms` }}>
-                  <div className="stat-icon-v2">
-                    <Icon />
+                <div key={`${statsKey}-${index}`} className="stat-item-v2" style={{ animationDelay: `${index * 150}ms` }}>
+                  <div className="stat-content-v2">
+                    <div className="stat-value-wrapper">
+                      <span className="stat-value-v2">{animatedValue}</span>
+                      <span className="stat-suffix">{stat.suffix}</span>
+                      <span className="stat-arrow">↑</span>
+                    </div>
+                    <div className="stat-label-v2">{stat.label}</div>
                   </div>
-                  <div className="stat-value-v2">
-                    {animatedValue}
-                    <span className="stat-suffix">{stat.suffix}</span>
-                  </div>
-                  <div className="stat-label-v2">{stat.label}</div>
                 </div>
               )
             })}
