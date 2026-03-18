@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { Link } from 'react-router-dom'
 import { policyList } from '../../data/policies.tsx'
 import {
@@ -27,8 +27,173 @@ import {
   ArrowUpOutlined,
   EyeOutlined,
 } from '@ant-design/icons'
-import { softwareList } from '../../data/software'
+import { softwareList, softwareCategories, industryCategories, type SoftwareItem } from '../../data/software'
 import './home-styles.css'
+
+// 智能滚动卡片组件 - 卡片到达中心时放大并暂停
+interface SmartScrollCardsProps {
+  softwareList: SoftwareItem[]
+}
+
+function SmartScrollCards({ softwareList }: SmartScrollCardsProps) {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const trackRef = useRef<HTMLDivElement>(null)
+  const [centerIndex, setCenterIndex] = useState<number | null>(null)
+  const [isPaused, setIsPaused] = useState(false)
+  const animationRef = useRef<number | null>(null)
+  const positionRef = useRef(0)
+  const speedRef = useRef(0.5)
+  const pauseTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  // 检测哪个卡片在中心
+  const detectCenterCard = useCallback(() => {
+    if (!containerRef.current || !trackRef.current) return
+
+    const container = containerRef.current
+    const track = trackRef.current
+    const cards = track.querySelectorAll('.jsdesign-card')
+    const containerRect = container.getBoundingClientRect()
+    const centerX = containerRect.left + containerRect.width / 2
+
+    let closestIndex = -1
+    let closestDistance = Infinity
+
+    cards.forEach((card, index) => {
+      const cardRect = card.getBoundingClientRect()
+      const cardCenterX = cardRect.left + cardRect.width / 2
+      const distance = Math.abs(cardCenterX - centerX)
+
+      if (distance < closestDistance) {
+        closestDistance = distance
+        closestIndex = index
+      }
+    })
+
+    const normalizedIndex = closestIndex % softwareList.length
+
+    // 如果中心卡片变化了，触发暂停
+    if (closestIndex !== -1 && normalizedIndex !== centerIndex && closestDistance < 60) {
+      setCenterIndex(normalizedIndex)
+      setIsPaused(true)
+
+      // 清除之前的暂停定时器
+      if (pauseTimeoutRef.current) {
+        clearTimeout(pauseTimeoutRef.current)
+      }
+
+      // 1秒后恢复滚动
+      pauseTimeoutRef.current = setTimeout(() => {
+        setIsPaused(false)
+      }, 1000)
+    }
+  }, [centerIndex, softwareList.length])
+
+  // 动画循环
+  useEffect(() => {
+    const track = trackRef.current
+    if (!track) return
+
+    const animate = () => {
+      if (!isPaused) {
+        positionRef.current -= speedRef.current
+
+        // 无缝循环：当滚动到一半时重置
+        const trackWidth = track.scrollWidth / 2
+        if (Math.abs(positionRef.current) >= trackWidth) {
+          positionRef.current = 0
+        }
+
+        track.style.transform = `translateX(${positionRef.current}px)`
+      }
+
+      // 检测中心卡片
+      detectCenterCard()
+
+      animationRef.current = requestAnimationFrame(animate)
+    }
+
+    animationRef.current = requestAnimationFrame(animate)
+
+    return () => {
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current)
+      }
+      if (pauseTimeoutRef.current) {
+        clearTimeout(pauseTimeoutRef.current)
+      }
+    }
+  }, [isPaused, detectCenterCard])
+
+  // 鼠标悬停时暂停
+  const handleMouseEnter = () => {
+    setIsPaused(true)
+    if (pauseTimeoutRef.current) {
+      clearTimeout(pauseTimeoutRef.current)
+    }
+  }
+
+  const handleMouseLeave = () => {
+    setIsPaused(false)
+  }
+
+  // 复制一份数据用于无缝循环
+  const duplicatedList = [...softwareList, ...softwareList]
+
+  return (
+    <div className="jsdesign-right">
+      <div
+        className="jsdesign-scroll-container"
+        ref={containerRef}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+      >
+        <div className="jsdesign-scroll-track-smart" ref={trackRef}>
+          {duplicatedList.map((software, index) => (
+            <Link
+              to={`/software/${software.id}`}
+              key={`${software.id}-${index}`}
+              className={`jsdesign-card ${centerIndex === index % softwareList.length && isPaused ? 'center-active' : ''}`}
+            >
+              <div className="jsdesign-card-inner">
+                <div className="jsdesign-card-preview" style={{ background: `${software.color}15` }}>
+                  <div className="jsdesign-card-icon" style={{ background: software.color }}>
+                    {software.name.charAt(0)}
+                  </div>
+                </div>
+                <div className="jsdesign-card-info">
+                  <span className="jsdesign-card-category">{software.categoryLabel}</span>
+                  <h4 className="jsdesign-card-name">{software.name}</h4>
+                  <p className="jsdesign-card-company">{software.company}</p>
+                </div>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </div>
+      {/* 分类导航 - 位于右侧卡片底部 */}
+      <div className="jsdesign-tab-bar-right">
+        {[
+          { value: 'all', label: '全部', icon: '⊞' },
+          { value: 'machinery', label: '机械制造', icon: '⚙' },
+          { value: 'electronics', label: '电子信息', icon: '◈' },
+          { value: 'software', label: '软件服务', icon: '◉' },
+          { value: 'enterprise', label: '企业服务', icon: '◐' },
+          { value: 'automotive', label: '汽车制造', icon: '▣' },
+          { value: 'iot', label: '工业互联网', icon: '◫' },
+        ].map((tab, index) => (
+          <Link
+            key={tab.value}
+            to={`/software?industry=${tab.value === 'all' ? '' : tab.value}`}
+            className={`jsdesign-tab-item-right ${index === 0 ? 'active' : ''}`}
+          >
+            <span className="jsdesign-tab-icon-right">{tab.icon}</span>
+            <span className="jsdesign-tab-label-right">{tab.label}</span>
+          </Link>
+        ))}
+      </div>
+    </div>
+  )
+}
 
 // 数字递增动画 Hook - 使用 key 触发重新渲染
 function useCountUp(end: number, duration: number = 2000, decimals: number = 0, startKey: number = 0) {
@@ -245,17 +410,20 @@ const solutions = [
   { title: 'AI 质检', desc: '智能视觉检测与质量分析', icon: LineChartOutlined },
 ]
 
-// 滚动动画 Hook
+// 滚动动画 Hook - 支持每次进入视口都触发
 function useScrollAnimation(threshold = 0.1) {
   const ref = useRef<HTMLDivElement>(null)
   const [isVisible, setIsVisible] = useState(false)
+  const [triggerKey, setTriggerKey] = useState(0)
 
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
           setIsVisible(true)
-          observer.unobserve(entry.target)
+          setTriggerKey(prev => prev + 1)
+        } else {
+          setIsVisible(false)
         }
       },
       { threshold }
@@ -268,7 +436,7 @@ function useScrollAnimation(threshold = 0.1) {
     return () => observer.disconnect()
   }, [threshold])
 
-  return { ref, isVisible }
+  return { ref, isVisible, triggerKey }
 }
 
 export default function Home() {
@@ -442,58 +610,52 @@ export default function Home() {
       </section>
 
       {/* ========================================
-          Products Section - 推荐产品
+          Products Section - 推荐产品 (参考 js.design 设计)
           ======================================== */}
       <section className={`section-v2 products-v2 ${productAnim.isVisible ? 'visible' : ''}`} ref={productAnim.ref}>
         <div className="container-v2">
+          {/* 模块标题 */}
           <div className="section-header-v2">
             <div className="section-tag">PRODUCTS</div>
             <h2 className="section-title-v2">
               <ThunderboltOutlined />
-              推荐产品
+              软件产品
             </h2>
             <p className="section-desc-v2">精选优质工业软件，助力企业数字化转型</p>
           </div>
-          
-          <div 
-            className="products-grid-v2"
-            onMouseEnter={() => setIsSoftwarePaused(true)}
-            onMouseLeave={() => setIsSoftwarePaused(false)}
-          >
-            {homeSoftwareList.slice(0, 6).map((software, index) => (
-              <Link 
-                to={`/software/${software.id}`} 
-                key={software.id}
-                className="product-card-v2"
-                style={{ animationDelay: `${index * 100}ms` }}
-              >
-                <div className="product-card-glow" style={{ background: software.color }} />
-                <div className="product-card-content">
-                  <div className="product-icon-v2" style={{ background: software.color }}>
-                    {software.name.charAt(0)}
+
+          {/* js.design 风格展示区域 - 左侧 + 右侧卡片 */}
+          <div className="jsdesign-showcase-wrapper">
+            <div className="jsdesign-showcase-main">
+              {/* 左侧：卡片区域 */}
+              <div className="jsdesign-left-card">
+                <div className="jsdesign-tag">软件中心</div>
+                <h3 className="jsdesign-title">
+                  精选工业软件，<br />
+                  <span className="jsdesign-title-sub">助力数字化转型</span>
+                </h3>
+                <div className="jsdesign-stats">
+                  <div className="jsdesign-stat-item">
+                    <span className="jsdesign-stat-value">{softwareList.length}+</span>
+                    <span className="jsdesign-stat-label">软件产品</span>
                   </div>
-                  <div className="product-info-v2">
-                    <span className="product-category-v2">{software.categoryLabel}</span>
-                    <h3 className="product-name-v2">{software.name}</h3>
-                    <p className="product-desc-v2">{software.description.slice(0, 50)}...</p>
+                  <div className="jsdesign-stat-item">
+                    <span className="jsdesign-stat-value">50+</span>
+                    <span className="jsdesign-stat-label">入驻企业</span>
                   </div>
-                  <div className="product-footer-v2">
-                    <span className="product-price-v2">
-                      {software.isFree ? '免费' : software.price}
-                    </span>
-                    <span className="product-arrow-v2">
-                      <ArrowRightOutlined />
-                    </span>
+                  <div className="jsdesign-stat-item">
+                    <span className="jsdesign-stat-value">8</span>
+                    <span className="jsdesign-stat-label">分类领域</span>
                   </div>
                 </div>
-              </Link>
-            ))}
-          </div>
-          
-          <div className="section-footer-v2">
-            <Link to="/software" className="link-arrow-v2">
-              查看全部产品 <ArrowRightOutlined />
-            </Link>
+                <Link to="/software" className="jsdesign-btn">
+                  进入软件中心 <ArrowRightOutlined />
+                </Link>
+              </div>
+
+              {/* 右侧：智能滚动卡片 + 分类导航 */}
+              <SmartScrollCards softwareList={softwareList} />
+            </div>
           </div>
         </div>
       </section>

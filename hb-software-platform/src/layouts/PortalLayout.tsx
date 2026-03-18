@@ -134,43 +134,65 @@ const navStyles = `
     border: none !important;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
-    overflow: hidden;
+    overflow: visible;
   }
   
-  /* 导航项悬停微动效 - 下划线从中心展开 */
-  .navbar-nav .ant-menu-item::after {
+  /* 导航项悬停效果 - 参考 xtaotech */
+  .navbar-nav .ant-menu-item::before {
     content: '';
     position: absolute;
-    bottom: 4px;
+    bottom: 0;
     left: 50%;
     width: 0;
     height: 2px;
     background: var(--gradient-primary);
     border-radius: 2px;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     transform: translateX(-50%);
+  }
+  
+  .navbar-nav .ant-menu-item::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 50%;
+    width: 4px;
+    height: 4px;
+    background: var(--accent);
+    border-radius: 50%;
+    opacity: 0;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transform: translateX(-50%);
+    box-shadow: 0 0 8px var(--accent);
   }
   
   .navbar-nav .ant-menu-item:hover {
     color: var(--text-primary) !important;
-    background: var(--menu-hover) !important;
-    transform: translateY(-1px);
+    background: transparent !important;
+  }
+  
+  .navbar-nav .ant-menu-item:hover::before {
+    width: 100%;
   }
   
   .navbar-nav .ant-menu-item:hover::after {
-    width: 60%;
+    opacity: 1;
+    bottom: -6px;
   }
   
   .navbar-nav .ant-menu-item-selected {
     color: var(--text-primary) !important;
     font-weight: 500;
-    background: var(--menu-active) !important;
+    background: transparent !important;
+  }
+  
+  .navbar-nav .ant-menu-item-selected::before {
+    width: 100%;
   }
   
   .navbar-nav .ant-menu-item-selected::after {
-    width: 60%;
-    left: 50%;
-    transform: translateX(-50%);
+    opacity: 1;
+    bottom: -6px;
   }
   
   /* 右侧操作区 - 靠右对齐 */
