@@ -93,8 +93,8 @@ const navStyles = `
   }
   
   .navbar-logo-title {
-    font-size: 15px;
-    font-weight: 600;
+    font-size: 17px;
+    font-weight: 700;
     color: var(--text-primary);
     letter-spacing: -0.01em;
     line-height: 1.4;
@@ -149,6 +149,12 @@ const navStyles = `
     border-radius: 2px;
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     transform: translateX(-50%);
+    max-width: 24px;
+  }
+  
+  .navbar-nav .ant-menu-item:hover::before,
+  .navbar-nav .ant-menu-item-selected::before {
+    width: 24px;
   }
   
   .navbar-nav .ant-menu-item::after {
@@ -294,10 +300,10 @@ const menuItems: MenuProps['items'] = [
   { key: '/demand', label: <Link to="/demand">需求广场</Link> },
 ]
 
-const userMenuItems: MenuProps['items'] = [
+const userMenuItems = (onLogout: () => void): MenuProps['items'] => [
   { key: 'profile', label: '个人中心' },
   { key: 'settings', label: '账号设置' },
-  { key: 'logout', label: '退出登录' },
+  { key: 'logout', label: '退出登录', onClick: onLogout },
 ]
 
 export default function PortalLayout() {
@@ -357,7 +363,7 @@ export default function PortalLayout() {
                     <BellOutlined style={{ fontSize: 16 }} />
                   </button>
                 </Badge>
-                <Dropdown menu={{ items: userMenuItems }} placement="bottomRight">
+                <Dropdown menu={{ items: userMenuItems(handleLogout) }} placement="bottomRight">
                   <div className="navbar-user">
                     <Avatar icon={<UserOutlined />} size="small" />
                     <span style={{ fontSize: 13, color: 'var(--text-primary)' }}>企业用户</span>

@@ -1,0 +1,441 @@
+/* ========================================
+   Solution Detail Page - 解决方案详情页
+   ======================================== */
+
+.solution-detail-page {
+  min-height: 100vh;
+  background: var(--v2-bg-primary);
+}
+
+/* Hero Section */
+.solution-hero {
+  position: relative;
+  padding: 120px 0 80px;
+  overflow: hidden;
+  color: white;
+}
+
+.solution-hero-bg {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.solution-hero-pattern {
+  position: absolute;
+  inset: -50%;
+  background-image: 
+    radial-gradient(circle at 20% 80%, rgba(255,255,255,0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(255,255,255,0.1) 0%, transparent 50%);
+  animation: pattern-rotate 30s linear infinite;
+}
+
+@keyframes pattern-rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.solution-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  border-radius: 30px;
+  color: white;
+  font-size: 14px;
+  text-decoration: none;
+  transition: all 0.3s;
+  margin-bottom: 40px;
+}
+
+.solution-back-btn:hover {
+  background: rgba(255, 255, 255, 0.25);
+  color: white;
+  transform: translateX(-4px);
+}
+
+.solution-hero-content {
+  position: relative;
+  z-index: 1;
+  max-width: 800px;
+}
+
+.solution-hero-icon {
+  width: 100px;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  border-radius: 24px;
+  font-size: 48px;
+  margin-bottom: 30px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+}
+
+.solution-hero-title {
+  font-size: 48px;
+  font-weight: 800;
+  margin: 0 0 10px 0;
+  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.solution-hero-subtitle {
+  font-size: 18px;
+  opacity: 0.9;
+  margin: 0 0 20px 0;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.solution-hero-desc {
+  font-size: 18px;
+  line-height: 1.8;
+  opacity: 0.95;
+  margin: 0 0 40px 0;
+  max-width: 600px;
+}
+
+.solution-hero-stats {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+}
+
+.hero-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.hero-stat-value {
+  font-size: 36px;
+  font-weight: 700;
+}
+
+.hero-stat-label {
+  font-size: 14px;
+  opacity: 0.8;
+}
+
+.hero-stat-divider {
+  width: 1px;
+  height: 50px;
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Features Section */
+.solution-features-section {
+  padding: 80px 0;
+  background: var(--v2-bg-primary);
+}
+
+.solution-features-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 30px;
+}
+
+.solution-feature-card {
+  background: var(--v2-bg-card);
+  border: 1px solid var(--v2-border);
+  border-radius: var(--v2-radius-xl);
+  padding: 40px;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fade-in-up 0.6s var(--v2-transition-slow) forwards;
+}
+
+.solution-feature-card:hover {
+  border-color: var(--v2-purple);
+  transform: translateY(-8px);
+  box-shadow: 0 20px 60px rgba(99, 102, 241, 0.15);
+}
+
+.feature-card-number {
+  font-size: 48px;
+  font-weight: 800;
+  color: var(--v2-purple);
+  opacity: 0.3;
+  margin-bottom: 20px;
+  line-height: 1;
+}
+
+.feature-card-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--v2-text-primary);
+  margin: 0 0 15px 0;
+}
+
+.feature-card-desc {
+  font-size: 15px;
+  color: var(--v2-text-secondary);
+  line-height: 1.7;
+  margin: 0;
+}
+
+/* Benefits Section */
+.solution-benefits-section {
+  padding: 80px 0;
+  background: var(--v2-bg-secondary);
+}
+
+.solution-benefits-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.solution-benefit-item {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 25px 30px;
+  background: var(--v2-bg-card);
+  border-radius: var(--v2-radius-lg);
+  transition: all 0.3s;
+  opacity: 0;
+  transform: translateX(-20px);
+  animation: fade-in-left 0.5s var(--v2-transition-slow) forwards;
+}
+
+.solution-benefit-item:hover {
+  transform: translateX(8px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.benefit-icon {
+  font-size: 24px;
+  flex-shrink: 0;
+}
+
+.benefit-text {
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--v2-text-primary);
+}
+
+/* Cases Section */
+.solution-cases-section {
+  padding: 80px 0;
+  background: var(--v2-bg-primary);
+}
+
+.solution-cases-list {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+}
+
+.solution-case-card {
+  background: var(--v2-bg-card);
+  border: 1px solid var(--v2-border);
+  border-radius: var(--v2-radius-xl);
+  padding: 35px;
+  transition: all 0.4s;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fade-in-up 0.6s var(--v2-transition-slow) forwards;
+}
+
+.solution-case-card:hover {
+  border-color: var(--v2-purple);
+  transform: translateY(-8px);
+  box-shadow: 0 20px 60px rgba(99, 102, 241, 0.15);
+}
+
+.case-card-header {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 25px;
+}
+
+.case-card-icon {
+  font-size: 28px;
+}
+
+.case-card-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--v2-text-primary);
+  margin: 0;
+}
+
+.case-card-result {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 20px;
+  background: var(--v2-bg-secondary);
+  border-radius: var(--v2-radius-lg);
+  font-size: 14px;
+  color: var(--v2-text-secondary);
+  line-height: 1.6;
+}
+
+.result-icon {
+  color: var(--v2-success);
+  font-size: 16px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+/* CTA Section */
+.solution-cta-section {
+  padding: 100px 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.solution-cta-section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: 
+    radial-gradient(circle at 20% 50%, rgba(255,255,255,0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 50%, rgba(255,255,255,0.1) 0%, transparent 50%);
+}
+
+.solution-cta-content {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  color: white;
+}
+
+.solution-cta-content h2 {
+  font-size: 36px;
+  font-weight: 700;
+  margin: 0 0 15px 0;
+}
+
+.solution-cta-content p {
+  font-size: 18px;
+  opacity: 0.9;
+  margin: 0 0 40px 0;
+}
+
+.solution-cta-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.cta-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 32px;
+  border-radius: 30px;
+  font-size: 16px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.3s;
+}
+
+.cta-btn-primary {
+  background: white;
+  color: var(--v2-text-primary);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.cta-btn-primary:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+  color: var(--v2-purple);
+}
+
+.cta-btn-secondary {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.cta-btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.25);
+  color: white;
+  transform: translateY(-3px);
+}
+
+/* Not Found */
+.solution-not-found {
+  padding: 120px 0;
+  text-align: center;
+}
+
+.solution-not-found h2 {
+  font-size: 32px;
+  color: var(--v2-text-primary);
+  margin: 0 0 30px 0;
+}
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  background: var(--v2-purple);
+  color: white;
+  border-radius: 30px;
+  text-decoration: none;
+  transition: all 0.3s;
+}
+
+.back-link:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(99, 102, 241, 0.3);
+  color: white;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .solution-features-grid,
+  .solution-benefits-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .solution-cases-list {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .solution-hero {
+    padding: 80px 0 60px;
+  }
+  
+  .solution-hero-title {
+    font-size: 32px;
+  }
+  
+  .solution-hero-stats {
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+  
+  .hero-stat-divider {
+    display: none;
+  }
+  
+  .solution-cases-list {
+    grid-template-columns: 1fr;
+  }
+  
+  .solution-cta-buttons {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .cta-btn {
+    width: 100%;
+    max-width: 280px;
+    justify-content: center;
+  }
+}

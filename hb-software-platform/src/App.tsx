@@ -8,6 +8,7 @@ import { ThemeProvider } from './contexts/ThemeContext'
 import Home from './pages/portal/Home'
 import SoftwareList from './pages/portal/SoftwareList'
 import SoftwareDetail from './pages/portal/SoftwareDetail'
+import SolutionDetail from './pages/portal/SolutionDetail'
 import Policy from './pages/portal/Policy'
 import PolicyDetail from './pages/portal/PolicyDetail'
 import Demand from './pages/portal/Demand'
@@ -60,6 +61,7 @@ function App() {
           <Route index element={<Home />} />
           <Route path="software" element={<SoftwareList />} />
           <Route path="software/:id" element={<SoftwareDetail />} />
+          <Route path="solutions/:id" element={<SolutionDetail />} />
           <Route path="policy" element={<Policy />} />
           <Route path="policy/:id" element={<PolicyDetail />} />
           <Route path="demand" element={<Demand />} />

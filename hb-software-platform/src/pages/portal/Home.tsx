@@ -195,6 +195,374 @@ function SmartScrollCards({ softwareList }: SmartScrollCardsProps) {
   )
 }
 
+// 入驻流程组件 - 带自动选中切换动效
+interface ProcessStep {
+  title: string
+  desc: string
+  icon: React.FC<any>
+}
+
+interface ProcessSectionProps {
+  processSteps: ProcessStep[]
+  processAnim: { ref: React.RefObject<HTMLDivElement | null>, isVisible: boolean }
+}
+
+function ProcessSection({ processSteps, processAnim }: ProcessSectionProps) {
+  const [activeIndex, setActiveIndex] = useState(0)
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
+
+  useEffect(() => {
+    if (!processAnim.isVisible) return
+
+    // 自动切换选中状态
+    intervalRef.current = setInterval(() => {
+      setActiveIndex((prev) => (prev + 1) % processSteps.length)
+    }, 2500)
+
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current)
+      }
+    }
+  }, [processAnim.isVisible, processSteps.length])
+
+  return (
+    <section className={`section-v2 process-v2 ${processAnim.isVisible ? 'visible' : ''}`} ref={processAnim.ref}>
+      <div className="container-v2">
+        <div className="section-header-v2">
+          <div className="section-tag">PROCESS</div>
+          <h2 className="section-title-v2">
+            <SafetyOutlined />
+            入驻流程
+          </h2>
+          <p className="section-desc-v2">简单四步，快速入驻平台</p>
+        </div>
+
+        <div className="process-timeline-v2">
+          {processSteps.map((step, index) => {
+            const Icon = step.icon
+            const isActive = index === activeIndex
+            return (
+              <div
+                key={index}
+                className={`process-step-v2 ${isActive ? 'active' : ''}`}
+                style={{ animationDelay: `${index * 200}ms` }}
+                onMouseEnter={() => setActiveIndex(index)}
+              >
+                <div className="process-number-v2">0{index + 1}</div>
+                <div className="process-icon-v2">
+                  <Icon />
+                </div>
+                <h3 className="process-title-v2">{step.title}</h3>
+                <p className="process-desc-v2">{step.desc}</p>
+                {index < processSteps.length - 1 && (
+                  <div className={`process-connector-v2 ${isActive ? 'active' : ''}`}>
+                    <RightOutlined />
+                  </div>
+                )}
+              </div>
+            )
+          })}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+// 合作伙伴组件 - 高端UI/UX设计
+interface Partner {
+  name: string
+  abbr: string
+  tag: string
+}
+
+interface PartnersSectionProps {
+  partners: Partner[]
+  partnerAnim: { ref: React.RefObject<HTMLDivElement | null>, isVisible: boolean }
+}
+
+function PartnersSection({ partners, partnerAnim }: PartnersSectionProps) {
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
+
+  return (
+    <section className={`section-v2 partners-v2 ${partnerAnim.isVisible ? 'visible' : ''}`} ref={partnerAnim.ref}>
+      <div className="container-v2">
+        <div className="section-header-v2">
+          <div className="section-tag">PARTNERS</div>
+          <h2 className="section-title-v2">
+            <TrophyOutlined />
+            合作伙伴
+          </h2>
+          <p className="section-desc-v2">携手行业领军企业，共建工业软件生态</p>
+        </div>
+
+        {/* 合作伙伴展示 - 瀑布流布局 */}
+        <div className="partners-showcase">
+          {/* 左侧大卡片 - 特色合作伙伴 */}
+          <div className="partner-featured">
+            <div className="partner-featured-card">
+              <div className="partner-featured-bg" />
+              <div className="partner-featured-content">
+                <div className="partner-featured-badge">战略合作伙伴</div>
+                <h3 className="partner-featured-name">湖北省工信厅</h3>
+                <p className="partner-featured-desc">指导单位 · 政策支撑</p>
+                <div className="partner-featured-stats">
+                  <div className="partner-stat">
+                    <span className="partner-stat-value">100+</span>
+                    <span className="partner-stat-label">政策支持</span>
+                  </div>
+                  <div className="partner-stat">
+                    <span className="partner-stat-value">50+</span>
+                    <span className="partner-stat-label">企业扶持</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* 右侧网格 - 其他合作伙伴 */}
+          <div className="partners-masonry">
+            {partners.slice(1).map((partner, index) => (
+              <div
+                key={index}
+                className={`partner-masonry-card ${hoveredIndex === index ? 'hovered' : ''}`}
+                style={{ animationDelay: `${index * 80}ms` }}
+                onMouseEnter={() => setHoveredIndex(index)}
+                onMouseLeave={() => setHoveredIndex(null)}
+              >
+                <div className="partner-card-glow" />
+                <div className="partner-card-content">
+                  <div className="partner-card-logo">
+                    {partner.abbr.charAt(0)}
+                  </div>
+                  <div className="partner-card-info">
+                    <span className="partner-card-name">{partner.name}</span>
+                    <span className="partner-card-tag">{partner.tag}</span>
+                  </div>
+                </div>
+                <div className="partner-card-shine" />
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+// 行业解决方案组件 - 精致高端UI/UX设计
+interface Solution {
+  id: string
+  title: string
+  subtitle: string
+  desc: string
+  icon: React.FC<any>
+  color: string
+  gradient: string
+  features: string[]
+  stats: { users: string; efficiency: string; cases: string }
+}
+
+interface SolutionsSectionProps {
+  solutions: Solution[]
+  solutionAnim: { ref: React.RefObject<HTMLDivElement | null>; isVisible: boolean }
+}
+
+function SolutionsSection({ solutions, solutionAnim }: SolutionsSectionProps) {
+  const [activeIndex, setActiveIndex] = useState(0)
+  const [isAutoPlaying, setIsAutoPlaying] = useState(true)
+  const [isTransitioning, setIsTransitioning] = useState(false)
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
+
+  useEffect(() => {
+    if (!solutionAnim.isVisible || !isAutoPlaying) return
+
+    intervalRef.current = setInterval(() => {
+      handleSwitch((prev) => (prev + 1) % solutions.length)
+    }, 5000)
+
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current)
+      }
+    }
+  }, [solutionAnim.isVisible, isAutoPlaying, solutions.length])
+
+  const handleSwitch = (indexFn: (prev: number) => number) => {
+    if (isTransitioning) return
+    setIsTransitioning(true)
+    setActiveIndex(indexFn)
+    setTimeout(() => setIsTransitioning(false), 500)
+  }
+
+  const handleClick = (index: number) => {
+    if (index === activeIndex || isTransitioning) return
+    handleSwitch(() => index)
+  }
+
+  const handleMouseEnter = () => setIsAutoPlaying(false)
+  const handleMouseLeave = () => setIsAutoPlaying(true)
+
+  const activeSolution = solutions[activeIndex]
+  const Icon = activeSolution.icon
+
+  return (
+    <section
+      className={`section-v2 solutions-v2 ${solutionAnim.isVisible ? 'visible' : ''}`}
+      ref={solutionAnim.ref}
+    >
+      <div className="container-v2">
+        <div className="section-header-v2">
+          <div className="section-tag">SOLUTIONS</div>
+          <h2 className="section-title-v2">
+            <RocketOutlined />
+            行业解决方案
+          </h2>
+          <p className="section-desc-v2">覆盖制造业全流程的数字化解决方案</p>
+        </div>
+
+        <div 
+          className="solutions-showcase-v3" 
+          onMouseEnter={handleMouseEnter} 
+          onMouseLeave={handleMouseLeave}
+        >
+          {/* 左侧：精致导航列表 */}
+          <div className="solutions-nav">
+            <div className="solutions-nav-header">
+              <span className="nav-label">解决方案</span>
+              <span className="nav-count">{String(activeIndex + 1).padStart(2, '0')} / {String(solutions.length).padStart(2, '0')}</span>
+            </div>
+            <div className="solutions-nav-list">
+              {solutions.map((solution, index) => (
+                <button
+                  key={solution.id}
+                  className={`solution-nav-item ${index === activeIndex ? 'active' : ''}`}
+                  onClick={() => handleClick(index)}
+                  style={{ 
+                    '--item-color': solution.color,
+                    animationDelay: `${index * 80}ms`
+                  } as React.CSSProperties}
+                >
+                  <div className="nav-item-progress" />
+                  <div className="nav-item-content">
+                    <span className="nav-item-number">{String(index + 1).padStart(2, '0')}</span>
+                    <div className="nav-item-text">
+                      <span className="nav-item-title">{solution.title}</span>
+                      <span className="nav-item-subtitle">{solution.subtitle}</span>
+                    </div>
+                  </div>
+                  <div className="nav-item-icon">
+                    <ArrowRightOutlined />
+                  </div>
+                </button>
+              ))}
+            </div>
+            {/* 进度指示器 */}
+            <div className="solutions-progress">
+              {solutions.map((_, index) => (
+                <div 
+                  key={index} 
+                  className={`progress-dot ${index === activeIndex ? 'active' : ''}`}
+                  style={{ '--dot-color': solutions[index].color } as React.CSSProperties}
+                />
+              ))}
+            </div>
+          </div>
+
+          {/* 右侧：高端详情卡片 */}
+          <div 
+            className={`solution-card-v3 ${isTransitioning ? 'transitioning' : ''}`}
+            style={{ '--card-color': activeSolution.color, '--card-gradient': activeSolution.gradient } as React.CSSProperties}
+          >
+            {/* 动态背景 */}
+            <div className="solution-card-bg">
+              <div className="card-bg-glow" />
+              <div className="card-bg-grid" />
+            </div>
+
+            {/* 卡片头部 */}
+            <div className="solution-card-header">
+              <div className="card-header-icon">
+                <Icon />
+                <div className="icon-ring" />
+                <div className="icon-ring icon-ring-2" />
+              </div>
+              <div className="card-header-text">
+                <h3>{activeSolution.title}</h3>
+                <span>{activeSolution.subtitle}</span>
+              </div>
+            </div>
+
+            {/* 卡片内容 */}
+            <div className="solution-card-content">
+              <p className="card-desc">{activeSolution.desc}</p>
+
+              {/* 功能标签 - 玻璃态设计 */}
+              <div className="card-features">
+                <div className="features-label">
+                  <span className="label-line" />
+                  <span>核心功能</span>
+                  <span className="label-line" />
+                </div>
+                <div className="features-list">
+                  {activeSolution.features.map((feature, idx) => (
+                    <div 
+                      key={idx} 
+                      className="feature-item"
+                      style={{ animationDelay: `${idx * 80 + 200}ms` }}
+                    >
+                      <div className="feature-icon">
+                        <CheckCircleOutlined />
+                      </div>
+                      <span>{feature}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* 统计数据 - 数字动效 */}
+              <div className="card-stats">
+                {Object.entries(activeSolution.stats).map(([key, value], idx) => (
+                  <div 
+                    key={key} 
+                    className="stat-box"
+                    style={{ animationDelay: `${idx * 100 + 400}ms` }}
+                  >
+                    <div className="stat-value-wrapper">
+                      <span className="stat-number">{value}</span>
+                    </div>
+                    <span className="stat-name">
+                      {key === 'users' && '服务企业'}
+                      {key === 'efficiency' && '效率提升'}
+                      {key === 'cases' && '成功案例'}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* 卡片底部 */}
+            <div className="solution-card-footer">
+              <Link to={`/solutions/${activeSolution.id}`} className="card-action-btn">
+                <span>查看详情</span>
+                <div className="btn-icon">
+                  <ArrowRightOutlined />
+                </div>
+              </Link>
+            </div>
+
+            {/* 装饰元素 */}
+            <div className="card-decoration">
+              <div className="deco-circle" />
+              <div className="deco-line" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
 // 数字递增动画 Hook - 使用 key 触发重新渲染
 function useCountUp(end: number, duration: number = 2000, decimals: number = 0, startKey: number = 0) {
   const [count, setCount] = useState(0)
@@ -400,14 +768,54 @@ const stats: StatItem[] = [
   { label: '入驻企业', value: 128, suffix: '+', icon: TeamOutlined },
   { label: '软件产品', value: 568, suffix: '+', icon: AppstoreOutlined },
   { label: '覆盖行业', value: 15, suffix: '+', icon: DatabaseOutlined },
-  { label: '申报券金额', value: 2.8, suffix: '亿', icon: LineChartOutlined, decimals: 1 },
+  { label: '申报券金额', value: 2.8, suffix: '', icon: LineChartOutlined, decimals: 1 },
 ]
 
 const solutions = [
-  { title: '智能制造', desc: 'MES/ERP/PLM 一体化解决方案', icon: SettingOutlined },
-  { title: '工业互联', desc: 'IoT 平台与边缘计算服务', icon: CloudOutlined },
-  { title: '数字孪生', desc: '3D 可视化与仿真模拟', icon: ApiOutlined },
-  { title: 'AI 质检', desc: '智能视觉检测与质量分析', icon: LineChartOutlined },
+  {
+    id: 'smart-manufacturing',
+    title: '智能制造',
+    subtitle: 'Smart Manufacturing',
+    desc: 'MES/ERP/PLM 一体化解决方案，实现生产全流程数字化管理，助力企业打造智能工厂',
+    icon: SettingOutlined,
+    color: '#6366f1',
+    gradient: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
+    features: ['生产计划排程', '质量追溯管理', '设备预测维护', '智能仓储物流'],
+    stats: { users: '500+', efficiency: '30%', cases: '120+' }
+  },
+  {
+    id: 'industrial-iot',
+    title: '工业互联',
+    subtitle: 'Industrial IoT',
+    desc: 'IoT 平台与边缘计算服务，构建万物互联的工业生态，实现设备互联互通',
+    icon: CloudOutlined,
+    color: '#06b6d4',
+    gradient: 'linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%)',
+    features: ['设备远程监控', '数据采集分析', '边缘智能计算', '云端协同管理'],
+    stats: { users: '800+', efficiency: '45%', cases: '200+' }
+  },
+  {
+    id: 'digital-twin',
+    title: '数字孪生',
+    subtitle: 'Digital Twin',
+    desc: '3D 可视化与仿真模拟，打造虚实融合的智能制造，实现产品全生命周期管理',
+    icon: ApiOutlined,
+    color: '#8b5cf6',
+    gradient: 'linear-gradient(135deg, #8b5cf6 0%, #a855f7 100%)',
+    features: ['3D 可视化建模', '实时数据映射', '虚拟调试验证', '预测性分析'],
+    stats: { users: '300+', efficiency: '25%', cases: '80+' }
+  },
+  {
+    id: 'ai-inspection',
+    title: 'AI 质检',
+    subtitle: 'AI Quality Inspection',
+    desc: '智能视觉检测与质量分析，提升产品质量与检测效率，实现零缺陷目标',
+    icon: LineChartOutlined,
+    color: '#10b981',
+    gradient: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+    features: ['视觉缺陷检测', '尺寸精度测量', '表面质量分析', '智能分类分拣'],
+    stats: { users: '600+', efficiency: '60%', cases: '150+' }
+  },
 ]
 
 // 滚动动画 Hook - 支持每次进入视口都触发
@@ -574,40 +982,7 @@ export default function Home() {
       {/* ========================================
           Solutions Section - 解决方案
           ======================================== */}
-      <section className={`section-v2 solutions-v2 ${solutionAnim.isVisible ? 'visible' : ''}`} ref={solutionAnim.ref}>
-        <div className="container-v2">
-          <div className="section-header-v2">
-            <div className="section-tag">SOLUTIONS</div>
-            <h2 className="section-title-v2">
-              <RocketOutlined />
-              行业解决方案
-            </h2>
-            <p className="section-desc-v2">覆盖制造业全流程的数字化解决方案</p>
-          </div>
-          
-          <div className="solutions-grid-v2">
-            {solutions.map((solution, index) => {
-              const Icon = solution.icon
-              return (
-                <div 
-                  key={index} 
-                  className="solution-card-v2"
-                  style={{ animationDelay: `${index * 150}ms` }}
-                >
-                  <div className="solution-icon-v2">
-                    <Icon />
-                  </div>
-                  <h3 className="solution-title-v2">{solution.title}</h3>
-                  <p className="solution-desc-v2">{solution.desc}</p>
-                  <div className="solution-arrow-v2">
-                    <ArrowRightOutlined />
-                  </div>
-                </div>
-              )
-            })}
-          </div>
-        </div>
-      </section>
+      <SolutionsSection solutions={solutions} solutionAnim={solutionAnim} />
 
       {/* ========================================
           Products Section - 推荐产品 (参考 js.design 设计)
@@ -663,77 +1038,12 @@ export default function Home() {
       {/* ========================================
           Process Section - 入驻流程
           ======================================== */}
-      <section className={`section-v2 process-v2 ${processAnim.isVisible ? 'visible' : ''}`} ref={processAnim.ref}>
-        <div className="container-v2">
-          <div className="section-header-v2">
-            <div className="section-tag">PROCESS</div>
-            <h2 className="section-title-v2">
-              <SafetyOutlined />
-              入驻流程
-            </h2>
-            <p className="section-desc-v2">简单四步，快速入驻平台</p>
-          </div>
-          
-          <div className="process-timeline-v2">
-            {processSteps.map((step, index) => {
-              const Icon = step.icon
-              return (
-                <div 
-                  key={index} 
-                  className="process-step-v2"
-                  style={{ animationDelay: `${index * 200}ms` }}
-                >
-                  <div className="process-number-v2">0{index + 1}</div>
-                  <div className="process-icon-v2">
-                    <Icon />
-                  </div>
-                  <h3 className="process-title-v2">{step.title}</h3>
-                  <p className="process-desc-v2">{step.desc}</p>
-                  {index < processSteps.length - 1 && (
-                    <div className="process-connector-v2">
-                      <RightOutlined />
-                    </div>
-                  )}
-                </div>
-              )
-            })}
-          </div>
-        </div>
-      </section>
+      <ProcessSection processSteps={processSteps} processAnim={processAnim} />
 
       {/* ========================================
           Partners Section - 合作伙伴
           ======================================== */}
-      <section className={`section-v2 partners-v2 ${partnerAnim.isVisible ? 'visible' : ''}`} ref={partnerAnim.ref}>
-        <div className="container-v2">
-          <div className="section-header-v2">
-            <div className="section-tag">PARTNERS</div>
-            <h2 className="section-title-v2">
-              <TrophyOutlined />
-              合作伙伴
-            </h2>
-            <p className="section-desc-v2">携手行业领军企业，共建工业软件生态</p>
-          </div>
-          
-          <div className="partners-grid-v2">
-            {partners.map((partner, index) => (
-              <div 
-                key={index} 
-                className="partner-card-v2"
-                style={{ animationDelay: `${index * 50}ms` }}
-              >
-                <div className="partner-logo-v2">
-                  {partner.abbr.charAt(0)}
-                </div>
-                <div className="partner-info-v2">
-                  <span className="partner-name-v2">{partner.name}</span>
-                  <span className="partner-tag-v2">{partner.tag}</span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      <PartnersSection partners={partners} partnerAnim={partnerAnim} />
 
       {/* ========================================
           CTA Section - 行动号召
