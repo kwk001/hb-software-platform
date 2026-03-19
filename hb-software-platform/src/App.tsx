@@ -57,6 +57,10 @@ function App() {
     <ThemeProvider defaultTheme="dark">
       <Routes>
         {/* 平台门户路由 */}
+        {/* 登录注册页 - 独立路由，不使用 PortalLayout */}
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+
         <Route path="/" element={<PortalLayout />}>
           <Route index element={<Home />} />
           <Route path="software" element={<SoftwareList />} />
@@ -66,8 +70,6 @@ function App() {
           <Route path="policy/:id" element={<PolicyDetail />} />
           <Route path="demand" element={<Demand />} />
           <Route path="demand/:id" element={<DemandDetail />} />
-          <Route path="login" element={<Login />} />
-          <Route path="register" element={<Register />} />
         </Route>
 
         {/* 企业端路由 */}

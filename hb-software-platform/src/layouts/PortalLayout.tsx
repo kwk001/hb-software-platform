@@ -322,7 +322,18 @@ export default function PortalLayout() {
   const [isAdmin, setIsAdmin] = useState(false)
   const [userRole, setUserRole] = useState('')
 
+  // 判断当前是否在登录或注册页面
+  const isAuthPage = location.pathname === '/login' || location.pathname === '/register'
+
   useEffect(() => {
+    // 在登录/注册页面时，强制显示未登录状态
+    if (isAuthPage) {
+      setIsLoggedIn(false)
+      setIsAdmin(false)
+      setUserRole('')
+      return
+    }
+
     const currentUser = localStorage.getItem('currentUser')
     setIsLoggedIn(!!currentUser)
     if (currentUser) {
@@ -337,7 +348,7 @@ export default function PortalLayout() {
         setUserRole('需求企业')
       }
     }
-  }, [])
+  }, [location.pathname, isAuthPage])
 
   const handleLogout = () => {
     localStorage.removeItem('currentUser')
@@ -381,42 +392,47 @@ export default function PortalLayout() {
               <ThemeToggle size="small" />
             </button>
 
-            {isLoggedIn ? (
+            {/* 在登录/注册页面时，隐藏登录/注册按钮 */}
+            {!isAuthPage && (
               <>
-                {isAdmin ? (
-                  <Link to="/platform">
-                    <button className="navbar-btn-icon" title="前往管理后台">
-                      <DesktopOutlined style={{ fontSize: 16 }} />
-                    </button>
-                  </Link>
+                {isLoggedIn ? (
+                  <>
+                    {isAdmin ? (
+                      <Link to="/platform">
+                        <button className="navbar-btn-icon" title="前往管理后台">
+                          <DesktopOutlined style={{ fontSize: 16 }} />
+                        </button>
+                      </Link>
+                    ) : (
+                      <Link to="/enterprise">
+                        <button className="navbar-btn-icon" title="前往企业后台">
+                          <DesktopOutlined style={{ fontSize: 16 }} />
+                        </button>
+                      </Link>
+                    )}
+                    <Badge count={5} size="small">
+                      <button className="navbar-btn-icon">
+                        <BellOutlined style={{ fontSize: 16 }} />
+                      </button>
+                    </Badge>
+                    <Dropdown menu={{ items: userMenuItems(handleLogout) }} placement="bottomRight">
+                      <div className="navbar-user">
+                        <Avatar icon={<UserOutlined />} size="small" />
+                        <span style={{ fontSize: 13, color: 'var(--text-primary)' }}>{userRole || '企业用户'}</span>
+                        <DownOutlined style={{ fontSize: 10, color: 'var(--text-tertiary)' }} />
+                      </div>
+                    </Dropdown>
+                  </>
                 ) : (
-                  <Link to="/enterprise">
-                    <button className="navbar-btn-icon" title="前往企业后台">
-                      <DesktopOutlined style={{ fontSize: 16 }} />
-                    </button>
-                  </Link>
+                  <>
+                    <Link to="/login">
+                      <button className="navbar-btn-text">登录</button>
+                    </Link>
+                    <Link to="/register" style={{ textDecoration: 'none' }}>
+                      <button className="navbar-btn-primary">注册入驻</button>
+                    </Link>
+                  </>
                 )}
-                <Badge count={5} size="small">
-                  <button className="navbar-btn-icon">
-                    <BellOutlined style={{ fontSize: 16 }} />
-                  </button>
-                </Badge>
-                <Dropdown menu={{ items: userMenuItems(handleLogout) }} placement="bottomRight">
-                  <div className="navbar-user">
-                    <Avatar icon={<UserOutlined />} size="small" />
-                    <span style={{ fontSize: 13, color: 'var(--text-primary)' }}>{userRole || '企业用户'}</span>
-                    <DownOutlined style={{ fontSize: 10, color: 'var(--text-tertiary)' }} />
-                  </div>
-                </Dropdown>
-              </>
-            ) : (
-              <>
-                <Link to="/login">
-                  <button className="navbar-btn-text">登录</button>
-                </Link>
-                <Link to="/register" style={{ textDecoration: 'none' }}>
-                  <button className="navbar-btn-primary">注册入驻</button>
-                </Link>
               </>
             )}
           </div>

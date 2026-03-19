@@ -641,50 +641,78 @@ interface PolicyAutoScrollListProps {
 function PolicyAutoScrollList({ policies, selectedIndex, onSelect }: PolicyAutoScrollListProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const [isHovering, setIsHovering] = useState(false)
-  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  const rafRef = useRef<number | null>(null)
   const currentIndexRef = useRef(0)
+  const isScrollingRef = useRef(false)
 
-  // 每3.5秒滑动1条政策数据
+  // 使用 requestAnimationFrame 实现流畅滚动
   useEffect(() => {
     const container = containerRef.current
     if (!container || isHovering) {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current)
-        intervalRef.current = null
+      if (rafRef.current) {
+        cancelAnimationFrame(rafRef.current)
+        rafRef.current = null
       }
       return
     }
 
-    // 确保容器可以滚动
-    const scrollHeight = container.scrollHeight
-    const clientHeight = container.clientHeight
-    
-    if (scrollHeight <= clientHeight) {
-      return
-    }
+    const itemHeight = 96 // 每条政策的高度（包含间距）
+    const maxIndex = policies.length
+    const scrollDuration = 800 // 滚动动画持续时间
+    const pauseDuration = 3500 // 暂停时间
 
-    const itemHeight = 80 // 每条政策的高度
-    const maxIndex = policies.length // 第一组数据的条目数
-    
-    // 每3.5秒滚动到下一条
-    intervalRef.current = setInterval(() => {
+    let startTime: number | null = null
+    let startScrollTop = 0
+    let targetScrollTop = 0
+    let phase: 'idle' | 'scrolling' | 'pausing' = 'idle'
+    let pauseStartTime = 0
+
+    const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3)
+
+    const animate = (timestamp: number) => {
       if (!container) return
-      
-      currentIndexRef.current += 1
-      
-      // 无缝循环：滚动完第一组数据后重置
-      if (currentIndexRef.current >= maxIndex) {
-        currentIndexRef.current = 0
-        container.scrollTo({ top: 0, behavior: 'auto' })
-      } else {
-        const scrollTop = currentIndexRef.current * itemHeight
-        container.scrollTo({ top: scrollTop, behavior: 'smooth' })
+
+      if (phase === 'idle') {
+        // 开始新的滚动周期
+        currentIndexRef.current += 1
+        if (currentIndexRef.current >= maxIndex) {
+          currentIndexRef.current = 0
+          container.scrollTop = 0
+        }
+        startScrollTop = container.scrollTop
+        targetScrollTop = currentIndexRef.current * itemHeight
+        startTime = timestamp
+        phase = 'scrolling'
       }
-    }, 3500) // 3.5秒间隔
+
+      if (phase === 'scrolling') {
+        const elapsed = timestamp - (startTime || 0)
+        const progress = Math.min(elapsed / scrollDuration, 1)
+        const easedProgress = easeOutCubic(progress)
+
+        container.scrollTop = startScrollTop + (targetScrollTop - startScrollTop) * easedProgress
+
+        if (progress >= 1) {
+          phase = 'pausing'
+          pauseStartTime = timestamp
+        }
+      }
+
+      if (phase === 'pausing') {
+        const pauseElapsed = timestamp - pauseStartTime
+        if (pauseElapsed >= pauseDuration) {
+          phase = 'idle'
+        }
+      }
+
+      rafRef.current = requestAnimationFrame(animate)
+    }
+
+    rafRef.current = requestAnimationFrame(animate)
 
     return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current)
+      if (rafRef.current) {
+        cancelAnimationFrame(rafRef.current)
       }
     }
   }, [isHovering, policies.length])
@@ -694,9 +722,6 @@ function PolicyAutoScrollList({ policies, selectedIndex, onSelect }: PolicyAutoS
     onSelect(index)
   }
 
-  // 复制数据实现无缝循环（3倍数据确保平滑）
-  const duplicatedPolicies = [...policies, ...policies, ...policies]
-
   return (
     <div
       className="policy-list-container-v2"
@@ -704,26 +729,40 @@ function PolicyAutoScrollList({ policies, selectedIndex, onSelect }: PolicyAutoS
       onMouseLeave={() => setIsHovering(false)}
     >
       <div className="policy-list-v2 auto-scroll" ref={containerRef}>
-        {duplicatedPolicies.map((policy, index) => {
-          const actualIndex = index % policies.length
-          const isActive = actualIndex === selectedIndex
+        {policies.map((policy, index) => {
+          const isActive = index === selectedIndex
+          const categoryColors: Record<string, { bg: string; color: string }> = {
+            '申报通知': { bg: '#eff6ff', color: '#0369a1' },
+            '补贴政策': { bg: '#f0fdf4', color: '#15803d' },
+            '产业政策': { bg: '#fffbeb', color: '#b45309' },
+          }
+          const style = categoryColors[policy.category] || { bg: '#f1f5f9', color: '#475569' }
           return (
             <div
-              key={`${policy.id}-${index}`}
+              key={policy.id}
               className={`policy-list-item-v2 ${isActive ? 'active' : ''}`}
-              onClick={() => handleItemClick(actualIndex)}
+              onClick={() => handleItemClick(index)}
             >
+              <div className="policy-item-icon" style={{ background: style.bg, color: style.color }}>
+                {policy.icon || <FileTextOutlined />}
+              </div>
               <div className="policy-item-content">
-                <div className="policy-item-top">
-                  <span className="policy-item-category">{policy.category}</span>
+                <div className="policy-item-header">
+                  <span className="policy-item-category" style={{ color: style.color, background: style.bg }}>
+                    {policy.category}
+                  </span>
                   <span className="policy-item-date">{policy.date}</span>
                 </div>
                 <h4 className="policy-item-title" title={policy.title}>
                   {policy.title}
                 </h4>
-                <div className="policy-item-summary">
-                  {policy.summary.slice(0, 40)}...
-                </div>
+                {policy.highlights && (
+                  <div className="policy-item-highlights">
+                    {policy.highlights.slice(0, 2).map((highlight, idx) => (
+                      <span key={idx} className="highlight-tag">{highlight}</span>
+                    ))}
+                  </div>
+                )}
               </div>
               <div className="policy-item-arrow">
                 <ArrowRightOutlined />
@@ -859,11 +898,6 @@ function PolicyShowcase({ policies }: { policies: typeof policyList }) {
             </Link>
           </div>
 
-          {/* 装饰角标 */}
-          <div className="policy-corner policy-corner-tl" />
-          <div className="policy-corner policy-corner-tr" />
-          <div className="policy-corner policy-corner-bl" />
-          <div className="policy-corner policy-corner-br" />
         </div>
       </div>
 
