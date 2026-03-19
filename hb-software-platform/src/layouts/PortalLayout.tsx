@@ -200,7 +200,18 @@ const navStyles = `
     opacity: 1;
     bottom: -6px;
   }
-  
+
+  /* 隐藏菜单项下方的下拉箭头 */
+  .navbar-nav .ant-menu-item .ant-menu-item-icon,
+  .navbar-nav .ant-menu-submenu-title .anticon {
+    display: none !important;
+  }
+
+  /* 隐藏水平菜单的省略号下拉 */
+  .navbar-nav .ant-menu-overflowed-submenu {
+    display: none !important;
+  }
+
   /* 右侧操作区 - 靠右对齐 */
   .navbar-actions {
     display: flex;
@@ -301,8 +312,6 @@ const menuItems: MenuProps['items'] = [
 ]
 
 const userMenuItems = (onLogout: () => void): MenuProps['items'] => [
-  { key: 'profile', label: '个人中心' },
-  { key: 'settings', label: '账号设置' },
   { key: 'logout', label: '退出登录', onClick: onLogout },
 ]
 
@@ -310,15 +319,31 @@ export default function PortalLayout() {
   const location = useLocation()
   const navigate = useNavigate()
   const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [isAdmin, setIsAdmin] = useState(false)
+  const [userRole, setUserRole] = useState('')
 
   useEffect(() => {
     const currentUser = localStorage.getItem('currentUser')
     setIsLoggedIn(!!currentUser)
+    if (currentUser) {
+      const user = JSON.parse(currentUser)
+      setIsAdmin(user.role === 'platform_admin')
+      // 设置用户角色显示文本
+      if (user.role === 'platform_admin') {
+        setUserRole('平台管理员')
+      } else if (user.enterpriseType === 'supply') {
+        setUserRole('软件企业')
+      } else {
+        setUserRole('需求企业')
+      }
+    }
   }, [])
 
   const handleLogout = () => {
     localStorage.removeItem('currentUser')
     setIsLoggedIn(false)
+    setIsAdmin(false)
+    setUserRole('')
     navigate('/')
   }
 
@@ -355,9 +380,22 @@ export default function PortalLayout() {
             <button className="navbar-btn-icon">
               <ThemeToggle size="small" />
             </button>
-            
+
             {isLoggedIn ? (
               <>
+                {isAdmin ? (
+                  <Link to="/platform">
+                    <button className="navbar-btn-icon" title="前往管理后台">
+                      <DesktopOutlined style={{ fontSize: 16 }} />
+                    </button>
+                  </Link>
+                ) : (
+                  <Link to="/enterprise">
+                    <button className="navbar-btn-icon" title="前往企业后台">
+                      <DesktopOutlined style={{ fontSize: 16 }} />
+                    </button>
+                  </Link>
+                )}
                 <Badge count={5} size="small">
                   <button className="navbar-btn-icon">
                     <BellOutlined style={{ fontSize: 16 }} />
@@ -366,7 +404,7 @@ export default function PortalLayout() {
                 <Dropdown menu={{ items: userMenuItems(handleLogout) }} placement="bottomRight">
                   <div className="navbar-user">
                     <Avatar icon={<UserOutlined />} size="small" />
-                    <span style={{ fontSize: 13, color: 'var(--text-primary)' }}>企业用户</span>
+                    <span style={{ fontSize: 13, color: 'var(--text-primary)' }}>{userRole || '企业用户'}</span>
                     <DownOutlined style={{ fontSize: 10, color: 'var(--text-tertiary)' }} />
                   </div>
                 </Dropdown>

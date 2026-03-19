@@ -23,9 +23,12 @@ import {
   PlayCircleOutlined,
   RightOutlined,
   StarOutlined,
+  StarFilled,
   HeartOutlined,
   ArrowUpOutlined,
   EyeOutlined,
+  CheckCircleFilled,
+  CalendarOutlined,
 } from '@ant-design/icons'
 import { softwareList, softwareCategories, industryCategories, type SoftwareItem } from '../../data/software'
 import './home-styles.css'
@@ -269,7 +272,7 @@ function ProcessSection({ processSteps, processAnim }: ProcessSectionProps) {
   )
 }
 
-// 合作伙伴组件 - 高端UI/UX设计
+// 合作伙伴组件 - 全新高端UI/UX设计
 interface Partner {
   name: string
   abbr: string
@@ -283,10 +286,15 @@ interface PartnersSectionProps {
 
 function PartnersSection({ partners, partnerAnim }: PartnersSectionProps) {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
+  const scrollRef = useRef<HTMLDivElement>(null)
+
+  // 复制数据实现无缝滚动
+  const duplicatedPartners = [...partners, ...partners, ...partners]
 
   return (
-    <section className={`section-v2 partners-v2 ${partnerAnim.isVisible ? 'visible' : ''}`} ref={partnerAnim.ref}>
+    <section className={`section-v2 partners-v2-new ${partnerAnim.isVisible ? 'visible' : ''}`} ref={partnerAnim.ref}>
       <div className="container-v2">
+        {/* 标题区域 - 与其他模块保持一致 */}
         <div className="section-header-v2">
           <div className="section-tag">PARTNERS</div>
           <h2 className="section-title-v2">
@@ -296,51 +304,72 @@ function PartnersSection({ partners, partnerAnim }: PartnersSectionProps) {
           <p className="section-desc-v2">携手行业领军企业，共建工业软件生态</p>
         </div>
 
-        {/* 合作伙伴展示 - 瀑布流布局 */}
-        <div className="partners-showcase">
-          {/* 左侧大卡片 - 特色合作伙伴 */}
-          <div className="partner-featured">
-            <div className="partner-featured-card">
-              <div className="partner-featured-bg" />
-              <div className="partner-featured-content">
-                <div className="partner-featured-badge">战略合作伙伴</div>
-                <h3 className="partner-featured-name">湖北省工信厅</h3>
-                <p className="partner-featured-desc">指导单位 · 政策支撑</p>
-                <div className="partner-featured-stats">
-                  <div className="partner-stat">
-                    <span className="partner-stat-value">100+</span>
-                    <span className="partner-stat-label">政策支持</span>
-                  </div>
-                  <div className="partner-stat">
-                    <span className="partner-stat-value">50+</span>
-                    <span className="partner-stat-label">企业扶持</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* 右侧网格 - 其他合作伙伴 */}
-          <div className="partners-masonry">
-            {partners.slice(1).map((partner, index) => (
+        {/* Logo墙 - 无限滚动 */}
+        <div className="partners-logo-wall">
+          <div className="logo-wall-track" ref={scrollRef}>
+            {duplicatedPartners.map((partner, index) => (
               <div
                 key={index}
-                className={`partner-masonry-card ${hoveredIndex === index ? 'hovered' : ''}`}
-                style={{ animationDelay: `${index * 80}ms` }}
+                className={`logo-wall-item ${hoveredIndex === index ? 'hovered' : ''}`}
                 onMouseEnter={() => setHoveredIndex(index)}
                 onMouseLeave={() => setHoveredIndex(null)}
               >
-                <div className="partner-card-glow" />
-                <div className="partner-card-content">
-                  <div className="partner-card-logo">
+                <div className="logo-item-inner">
+                  <span className="logo-text">{partner.abbr}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* 精选合作伙伴展示 */}
+        <div className="partners-featured-new">
+          <div className="featured-main-card">
+            <div className="featured-glass-effect" />
+            <div className="featured-content">
+              <div className="featured-badge">
+                <TrophyOutlined />
+                战略合作伙伴
+              </div>
+              <h3 className="featured-name">湖北省工信厅</h3>
+              <p className="featured-desc">指导单位 · 政策支撑 · 产业引领</p>
+              <div className="featured-divider" />
+              <div className="featured-metrics">
+                <div className="featured-metric">
+                  <span className="metric-value">100+</span>
+                  <span className="metric-label">政策支持</span>
+                </div>
+                <div className="featured-metric">
+                  <span className="metric-value">50+</span>
+                  <span className="metric-label">企业扶持</span>
+                </div>
+                <div className="featured-metric">
+                  <span className="metric-value">10亿</span>
+                  <span className="metric-label">资金支持</span>
+                </div>
+              </div>
+            </div>
+            <div className="featured-glow" />
+          </div>
+
+          {/* 其他合作伙伴网格 */}
+          <div className="partners-grid-new">
+            {partners.slice(0, 6).map((partner, index) => (
+              <div
+                key={index}
+                className="partner-grid-card"
+                style={{ animationDelay: `${index * 100}ms` }}
+              >
+                <div className="partner-grid-inner">
+                  <div className="partner-grid-logo">
                     {partner.abbr.charAt(0)}
                   </div>
-                  <div className="partner-card-info">
-                    <span className="partner-card-name">{partner.name}</span>
-                    <span className="partner-card-tag">{partner.tag}</span>
+                  <div className="partner-grid-info">
+                    <span className="partner-grid-name">{partner.name}</span>
+                    <span className="partner-grid-tag">{partner.tag}</span>
                   </div>
                 </div>
-                <div className="partner-card-shine" />
+                <div className="partner-grid-shine" />
               </div>
             ))}
           </div>
@@ -602,27 +631,132 @@ function useCountUp(end: number, duration: number = 2000, decimals: number = 0, 
   return count
 }
 
-// 政策展示组件 - 左右布局+滚动动效
+// 政策列表自动滑动组件 - 每3.5秒滑动1条
+interface PolicyAutoScrollListProps {
+  policies: typeof policyList
+  selectedIndex: number
+  onSelect: (index: number) => void
+}
+
+function PolicyAutoScrollList({ policies, selectedIndex, onSelect }: PolicyAutoScrollListProps) {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const [isHovering, setIsHovering] = useState(false)
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  const currentIndexRef = useRef(0)
+
+  // 每3.5秒滑动1条政策数据
+  useEffect(() => {
+    const container = containerRef.current
+    if (!container || isHovering) {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current)
+        intervalRef.current = null
+      }
+      return
+    }
+
+    // 确保容器可以滚动
+    const scrollHeight = container.scrollHeight
+    const clientHeight = container.clientHeight
+    
+    if (scrollHeight <= clientHeight) {
+      return
+    }
+
+    const itemHeight = 80 // 每条政策的高度
+    const maxIndex = policies.length // 第一组数据的条目数
+    
+    // 每3.5秒滚动到下一条
+    intervalRef.current = setInterval(() => {
+      if (!container) return
+      
+      currentIndexRef.current += 1
+      
+      // 无缝循环：滚动完第一组数据后重置
+      if (currentIndexRef.current >= maxIndex) {
+        currentIndexRef.current = 0
+        container.scrollTo({ top: 0, behavior: 'auto' })
+      } else {
+        const scrollTop = currentIndexRef.current * itemHeight
+        container.scrollTo({ top: scrollTop, behavior: 'smooth' })
+      }
+    }, 3500) // 3.5秒间隔
+
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current)
+      }
+    }
+  }, [isHovering, policies.length])
+
+  // 点击时选中
+  const handleItemClick = (index: number) => {
+    onSelect(index)
+  }
+
+  // 复制数据实现无缝循环（3倍数据确保平滑）
+  const duplicatedPolicies = [...policies, ...policies, ...policies]
+
+  return (
+    <div
+      className="policy-list-container-v2"
+      onMouseEnter={() => setIsHovering(true)}
+      onMouseLeave={() => setIsHovering(false)}
+    >
+      <div className="policy-list-v2 auto-scroll" ref={containerRef}>
+        {duplicatedPolicies.map((policy, index) => {
+          const actualIndex = index % policies.length
+          const isActive = actualIndex === selectedIndex
+          return (
+            <div
+              key={`${policy.id}-${index}`}
+              className={`policy-list-item-v2 ${isActive ? 'active' : ''}`}
+              onClick={() => handleItemClick(actualIndex)}
+            >
+              <div className="policy-item-content">
+                <div className="policy-item-top">
+                  <span className="policy-item-category">{policy.category}</span>
+                  <span className="policy-item-date">{policy.date}</span>
+                </div>
+                <h4 className="policy-item-title" title={policy.title}>
+                  {policy.title}
+                </h4>
+                <div className="policy-item-summary">
+                  {policy.summary.slice(0, 40)}...
+                </div>
+              </div>
+              <div className="policy-item-arrow">
+                <ArrowRightOutlined />
+              </div>
+            </div>
+          )
+        })}
+      </div>
+    </div>
+  )
+}
+
+// 政策展示组件 - 高端精致设计
 function PolicyShowcase({ policies }: { policies: typeof policyList }) {
   const [selectedIndex, setSelectedIndex] = useState(0)
   const [isPaused, setIsPaused] = useState(false)
+  const [isTransitioning, setIsTransitioning] = useState(false)
   const listRef = useRef<HTMLDivElement>(null)
   const selectedPolicy = policies[selectedIndex]
 
-  // 自动滚动效果 - 2.5秒切换
+  // 自动滚动效果 - 4秒切换
   useEffect(() => {
     if (isPaused) return
     const interval = setInterval(() => {
-      setSelectedIndex((prev) => (prev + 1) % policies.length)
-    }, 2500)
+      handlePolicyChange((prev) => (prev + 1) % policies.length)
+    }, 4000)
     return () => clearInterval(interval)
   }, [isPaused, policies.length])
 
-  // 滚动到选中项 - 始终保持在第1行
+  // 滚动到选中项
   useEffect(() => {
     if (listRef.current) {
-      // 计算需要滚动的位置，使选中项始终显示在第1行
-      const itemHeight = 76 // 每个列表项的高度（包含间距）
+      const itemHeight = 88
       listRef.current.scrollTo({
         top: selectedIndex * itemHeight,
         behavior: 'smooth'
@@ -630,89 +764,116 @@ function PolicyShowcase({ policies }: { policies: typeof policyList }) {
     }
   }, [selectedIndex])
 
+  const handlePolicyChange = (indexFn: (prev: number) => number) => {
+    if (isTransitioning) return
+    setIsTransitioning(true)
+    setSelectedIndex(indexFn)
+    setTimeout(() => setIsTransitioning(false), 500)
+  }
+
+  const handleClick = (index: number) => {
+    if (index === selectedIndex || isTransitioning) return
+    handlePolicyChange(() => index)
+  }
+
   return (
-    <div className="policy-showcase">
-      {/* 左侧 - 详细政策展示 */}
-      <div className="policy-showcase-left">
-        <div className="policy-featured">
-          <div className="policy-featured-badge">
-            <span className="badge-icon">★</span>
-            <span>精选政策</span>
+    <div className="policy-showcase-v2">
+      {/* 左侧 - 精选政策展示 */}
+      <div className="policy-showcase-left-v2">
+        <div className={`policy-featured-v2 ${isTransitioning ? 'transitioning' : ''}`}>
+          {/* 动态背景 */}
+          <div className="policy-featured-bg">
+            <div className="policy-bg-glow" />
+            <div className="policy-bg-grid" />
+            <div className="policy-bg-particles">
+              {[...Array(6)].map((_, i) => (
+                <div key={i} className="particle" style={{ 
+                  '--i': i,
+                  left: `${15 + i * 15}%`,
+                  animationDelay: `${i * 0.5}s`
+                } as React.CSSProperties} />
+              ))}
+            </div>
           </div>
 
-          <div className="policy-featured-content">
-            <div className="policy-featured-meta">
-              <span className="policy-featured-category">{selectedPolicy.category}</span>
-              <span className="policy-featured-type">{selectedPolicy.type}</span>
+          {/* 顶部装饰 */}
+          <div className="policy-featured-header">
+            <div className="policy-badge-v2">
+              <div className="badge-icon-wrapper">
+                <StarFilled />
+              </div>
+              <span>精选政策</span>
+              <div className="badge-glow" />
+            </div>
+          </div>
+
+          {/* 内容区域 */}
+          <div className="policy-featured-content-v2">
+            <div className="policy-meta-v2">
+              <span className="policy-category-v2">{selectedPolicy.category}</span>
+              <span className="policy-divider" />
+              <span className="policy-type-v2">{selectedPolicy.type}</span>
             </div>
 
-            <h3 className="policy-featured-title">{selectedPolicy.title}</h3>
+            <h3 className="policy-title-v2">{selectedPolicy.title}</h3>
 
-            <p className="policy-featured-summary">{selectedPolicy.summary}</p>
+            <p className="policy-summary-v2">{selectedPolicy.summary}</p>
 
             {selectedPolicy.highlights && (
-              <div className="policy-featured-highlights">
+              <div className="policy-highlights-v2">
                 {selectedPolicy.highlights.map((highlight, idx) => (
-                  <span key={idx} className="highlight-tag">{highlight}</span>
+                  <span key={idx} className="highlight-tag-v2" style={{ animationDelay: `${idx * 100}ms` }}>
+                    <CheckCircleFilled /> {highlight}
+                  </span>
                 ))}
               </div>
             )}
-
-            <div className="policy-featured-footer">
-              <div className="policy-featured-info">
-                <span className="info-item">
-                  <EyeOutlined /> {selectedPolicy.views} 浏览
-                </span>
-                <span className="info-item">
-                  <ClockCircleOutlined /> {selectedPolicy.date}
-                </span>
-                {selectedPolicy.deadline && (
-                  <span className="info-item deadline">
-                    <span className="deadline-label">截止:</span> {selectedPolicy.deadline}
-                  </span>
-                )}
-              </div>
-
-              <Link to={`/policy/${selectedPolicy.id}`} className="btn-view-policy">
-                查看详情 <ArrowRightOutlined />
-              </Link>
-            </div>
           </div>
 
-          {/* 装饰元素 */}
-          <div className="policy-featured-glow" />
+          {/* 底部信息 */}
+          <div className="policy-featured-footer-v2">
+            <div className="policy-stats-v2">
+              <div className="policy-stat">
+                <EyeOutlined />
+                <span className="stat-value">{selectedPolicy.views}</span>
+                <span className="stat-label">浏览</span>
+              </div>
+              <div className="policy-stat">
+                <ClockCircleOutlined />
+                <span className="stat-value">{selectedPolicy.date}</span>
+              </div>
+              {selectedPolicy.deadline && (
+                <div className="policy-stat deadline">
+                  <CalendarOutlined />
+                  <span className="stat-label">截止</span>
+                  <span className="stat-value highlight">{selectedPolicy.deadline}</span>
+                </div>
+              )}
+            </div>
+
+            <Link to={`/policy/${selectedPolicy.id}`} className="btn-view-policy-v2">
+              <span>查看详情</span>
+              <div className="btn-arrow">
+                <ArrowRightOutlined />
+              </div>
+            </Link>
+          </div>
+
+          {/* 装饰角标 */}
+          <div className="policy-corner policy-corner-tl" />
+          <div className="policy-corner policy-corner-tr" />
+          <div className="policy-corner policy-corner-bl" />
+          <div className="policy-corner policy-corner-br" />
         </div>
       </div>
 
-      {/* 右侧 - 政策列表（滚动动效） */}
-      <div className="policy-showcase-right">
-        <div
-          className="policy-list-container"
-          onMouseEnter={() => setIsPaused(true)}
-          onMouseLeave={() => setIsPaused(false)}
-        >
-          <div className="policy-list" ref={listRef}>
-            {policies.map((policy, index) => (
-              <div
-                key={policy.id}
-                className={`policy-list-item ${index === selectedIndex ? 'active' : ''}`}
-                onClick={() => setSelectedIndex(index)}
-                style={{ animationDelay: `${index * 100}ms` }}
-              >
-                <div className="policy-item-content">
-                  <div className="policy-item-meta">
-                    <span className="policy-item-category">{policy.category}</span>
-                    <span className="policy-item-date">{policy.date}</span>
-                  </div>
-                  <h4 className="policy-item-title">{policy.title}</h4>
-                </div>
-                <div className="policy-item-arrow">
-                  <ArrowRightOutlined />
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
+      {/* 右侧 - 政策列表（自动上下滚动） */}
+      <div className="policy-showcase-right-v2">
+        <PolicyAutoScrollList 
+          policies={policies}
+          selectedIndex={selectedIndex}
+          onSelect={handleClick}
+        />
       </div>
     </div>
   )

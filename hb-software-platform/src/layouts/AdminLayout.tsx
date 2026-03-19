@@ -13,6 +13,7 @@ import {
   MenuUnfoldOutlined,
   SettingOutlined,
   MessageOutlined,
+  DesktopOutlined,
 } from '@ant-design/icons'
 import { useState, useEffect } from 'react'
 import type { MenuProps } from 'antd'
@@ -169,30 +170,10 @@ const getMenuItems = (enterpriseType: string, applyStatus: string): MenuItem[] =
     label: <Link to="/enterprise/message-center">消息中心</Link>,
   })
 
-  // 通知设置（所有企业都显示）
-  baseItems.push({
-    key: '/enterprise/notification-settings',
-    icon: <SettingOutlined />,
-    label: <Link to="/enterprise/notification-settings">通知设置</Link>,
-  })
-
   return baseItems
 }
 
 const userMenuItems: MenuProps['items'] = [
-  {
-    key: 'profile',
-    icon: <UserOutlined />,
-    label: '个人中心',
-  },
-  {
-    key: 'settings',
-    icon: <SettingOutlined />,
-    label: '企业信息',
-  },
-  {
-    type: 'divider',
-  },
   {
     key: 'logout',
     icon: <LogoutOutlined />,
@@ -322,13 +303,63 @@ export default function AdminLayout() {
 
           <Space size="large">
             <ThemeToggle size="middle" />
-            <Badge count={5} size="small" offset={[-2, 2]}>
+            <div
+              style={{
+                width: 40,
+                height: 40,
+                borderRadius: 10,
+                background: 'transparent',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease',
+              }}
+              title="返回门户首页"
+              onClick={() => navigate('/')}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = 'var(--bg-tertiary)'
+                e.currentTarget.style.transform = 'scale(1.05)'
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'transparent'
+                e.currentTarget.style.transform = 'scale(1)'
+              }}
+            >
+              <HomeOutlined style={{ fontSize: 18, color: 'var(--text-tertiary)' }} />
+            </div>
+            <div
+              style={{
+                width: 40,
+                height: 40,
+                borderRadius: 10,
+                background: 'transparent',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease',
+              }}
+              title="前往管理后台"
+              onClick={() => navigate('/platform')}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = 'var(--bg-tertiary)'
+                e.currentTarget.style.transform = 'scale(1.05)'
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'transparent'
+                e.currentTarget.style.transform = 'scale(1)'
+              }}
+            >
+              <DesktopOutlined style={{ fontSize: 18, color: 'var(--text-tertiary)' }} />
+            </div>
+            <Badge count={5} size="small" offset={[-2, 2]} color="#ef4444">
               <div
                 style={{
                   width: 40,
                   height: 40,
                   borderRadius: 10,
-                  background: 'var(--bg-tertiary)',
+                  background: 'transparent',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
@@ -337,11 +368,11 @@ export default function AdminLayout() {
                 }}
                 onClick={() => navigate('/enterprise/message-center')}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.background = 'var(--bg-quaternary)'
+                  e.currentTarget.style.background = 'var(--bg-tertiary)'
                   e.currentTarget.style.transform = 'scale(1.05)'
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.background = 'var(--bg-tertiary)'
+                  e.currentTarget.style.background = 'transparent'
                   e.currentTarget.style.transform = 'scale(1)'
                 }}
               >
@@ -360,34 +391,21 @@ export default function AdminLayout() {
                   cursor: 'pointer',
                   padding: '4px 4px 4px 4px',
                   borderRadius: 24,
-                  background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.9) 0%, rgba(250, 250, 252, 0.9) 100%)',
-                  border: '1px solid rgba(0, 0, 0, 0.06)',
-                  boxShadow: `
-                    0 0 0 1px rgba(255, 255, 255, 0.5) inset,
-                    0 1px 2px rgba(0, 0, 0, 0.04),
-                    0 2px 4px rgba(0, 0, 0, 0.02)
-                  `,
+                  background: 'var(--bg-card)',
+                  border: '1px solid var(--border-light)',
+                  boxShadow: 'var(--shadow-sm)',
                   transition: 'all 0.2s cubic-bezier(0.25, 0.1, 0.25, 1)',
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.background = 'linear-gradient(180deg, rgba(255, 255, 255, 1) 0%, rgba(252, 252, 254, 1) 100%)'
-                  e.currentTarget.style.boxShadow = `
-                    0 0 0 1px rgba(255, 255, 255, 0.8) inset,
-                    0 1px 2px rgba(0, 0, 0, 0.02),
-                    0 4px 8px rgba(0, 0, 0, 0.04),
-                    0 8px 16px rgba(0, 0, 0, 0.04)
-                  `
-                  e.currentTarget.style.borderColor = 'rgba(0, 0, 0, 0.08)'
+                  e.currentTarget.style.background = 'var(--bg-card-hover)'
+                  e.currentTarget.style.boxShadow = 'var(--shadow-md)'
+                  e.currentTarget.style.borderColor = 'var(--border-medium)'
                   e.currentTarget.style.transform = 'translateY(-0.5px)'
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.background = 'linear-gradient(180deg, rgba(255, 255, 255, 0.9) 0%, rgba(250, 250, 252, 0.9) 100%)'
-                  e.currentTarget.style.boxShadow = `
-                    0 0 0 1px rgba(255, 255, 255, 0.5) inset,
-                    0 1px 2px rgba(0, 0, 0, 0.04),
-                    0 2px 4px rgba(0, 0, 0, 0.02)
-                  `
-                  e.currentTarget.style.borderColor = 'rgba(0, 0, 0, 0.06)'
+                  e.currentTarget.style.background = 'var(--bg-card)'
+                  e.currentTarget.style.boxShadow = 'var(--shadow-sm)'
+                  e.currentTarget.style.borderColor = 'var(--border-light)'
                   e.currentTarget.style.transform = 'translateY(0)'
                 }}
               >
@@ -397,16 +415,12 @@ export default function AdminLayout() {
                     width: 32,
                     height: 32,
                     borderRadius: '50%',
-                    background: 'linear-gradient(135deg, #fafafa 0%, #f0f0f2 100%)',
+                    background: 'var(--bg-tertiary)',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
                     flexShrink: 0,
-                    boxShadow: `
-                      0 0 0 1px rgba(0, 0, 0, 0.04),
-                      inset 0 1px 0 rgba(255, 255, 255, 0.8),
-                      inset 0 -1px 0 rgba(0, 0, 0, 0.02)
-                    `,
+                    boxShadow: 'var(--shadow-xs)',
                     position: 'relative',
                   }}
                 >
@@ -416,14 +430,13 @@ export default function AdminLayout() {
                       width: 28,
                       height: 28,
                       borderRadius: '50%',
-                      background: 'linear-gradient(135deg, #f5f5f7 0%, #ebebed 100%)',
+                      background: 'var(--bg-quaternary)',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      boxShadow: 'inset 0 1px 2px rgba(0, 0, 0, 0.04)',
                     }}
                   >
-                    <UserOutlined style={{ fontSize: 14, color: '#86868b' }} />
+                    <UserOutlined style={{ fontSize: 14, color: 'var(--text-tertiary)' }} />
                   </div>
                   {/* 在线状态指示 */}
                   <div
@@ -435,8 +448,8 @@ export default function AdminLayout() {
                       height: 8,
                       borderRadius: '50%',
                       background: '#34c759',
-                      border: '2px solid #fff',
-                      boxShadow: '0 0 0 1px rgba(0, 0, 0, 0.04)',
+                      border: '2px solid var(--bg-card)',
+                      boxShadow: 'var(--shadow-xs)',
                     }}
                   />
                 </div>
@@ -446,7 +459,7 @@ export default function AdminLayout() {
                   <span
                     style={{
                       fontWeight: 590,
-                      color: '#1d1d1f',
+                      color: 'var(--text-primary)',
                       fontSize: 12.5,
                       letterSpacing: '-0.01em',
                       lineHeight: 1.2,
@@ -458,14 +471,14 @@ export default function AdminLayout() {
                   <span
                     style={{
                       fontSize: 10.5,
-                      color: '#86868b',
+                      color: 'var(--text-quaternary)',
                       fontWeight: 400,
                       letterSpacing: '0.01em',
                       lineHeight: 1.2,
                       fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif',
                     }}
                   >
-                    {enterpriseType === 'supply' ? '工业软件企业' : '工业制造企业'}
+                    {enterpriseType === 'supply' ? '软件企业' : '需求企业'}
                   </span>
                 </div>
 
@@ -474,7 +487,7 @@ export default function AdminLayout() {
                   style={{
                     width: 1,
                     height: 16,
-                    background: 'rgba(0, 0, 0, 0.06)',
+                    background: 'var(--border-light)',
                     margin: '0 2px',
                   }}
                 />

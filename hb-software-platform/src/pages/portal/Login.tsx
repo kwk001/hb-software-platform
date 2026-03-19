@@ -18,9 +18,10 @@ import {
   LockOutlined,
   MobileOutlined,
   SafetyOutlined,
+  DatabaseOutlined,
 } from '@ant-design/icons'
 
-const { Title, Text, Paragraph } = Typography
+const { Title, Text } = Typography
 
 // 登录失败锁定配置
 const MAX_LOGIN_ATTEMPTS = 5
@@ -215,7 +216,7 @@ export default function Login() {
           description={`由于登录失败次数过多，账户已锁定。剩余时间：${formatLockTime(lockTimeLeft)}`}
           type="error"
           showIcon
-          style={{ marginBottom: 16 }}
+          style={{ marginBottom: 16, borderRadius: 8 }}
         />
       )}
 
@@ -225,7 +226,7 @@ export default function Login() {
           description={`已连续失败${loginAttempts}次，再失败${MAX_LOGIN_ATTEMPTS - loginAttempts}次将锁定账户1分钟`}
           type="warning"
           showIcon
-          style={{ marginBottom: 16 }}
+          style={{ marginBottom: 16, borderRadius: 8 }}
         />
       )}
 
@@ -234,9 +235,15 @@ export default function Login() {
         rules={[{ required: true, message: '请输入手机号/用户名' }]}
       >
         <Input
-          prefix={<UserOutlined style={{ color: '#bfbfbf' }} />}
+          prefix={<UserOutlined style={{ color: '#94a3b8', fontSize: 16 }} />}
           placeholder="请输入手机号/用户名"
           disabled={isLocked}
+          style={{
+            height: 44,
+            borderRadius: 8,
+            border: '1px solid #e2e8f0',
+            background: '#fff',
+          }}
         />
       </Form.Item>
 
@@ -249,18 +256,24 @@ export default function Login() {
         ]}
       >
         <Input.Password
-          prefix={<LockOutlined style={{ color: '#bfbfbf' }} />}
+          prefix={<LockOutlined style={{ color: '#94a3b8', fontSize: 16 }} />}
           placeholder="请输入密码（6-20位）"
           disabled={isLocked}
+          style={{
+            height: 44,
+            borderRadius: 8,
+            border: '1px solid #e2e8f0',
+            background: '#fff',
+          }}
         />
       </Form.Item>
 
-      <Form.Item>
-        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+      <Form.Item style={{ marginBottom: 12 }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <Form.Item name="remember" valuePropName="checked" noStyle>
-            <Checkbox>记住我</Checkbox>
+            <Checkbox style={{ color: '#64748b' }}>记住我</Checkbox>
           </Form.Item>
-          <Text style={{ cursor: 'pointer', color: '#6366f1' }}>
+          <Text style={{ cursor: 'pointer', color: '#3b82f6', fontSize: 14 }}>
             忘记密码？
           </Text>
         </div>
@@ -272,9 +285,16 @@ export default function Login() {
           htmlType="submit"
           block
           loading={loading}
-          style={{ height: 44, fontSize: 16 }}
+          style={{
+            height: 44,
+            fontSize: 15,
+            fontWeight: 500,
+            borderRadius: 8,
+            background: '#3b82f6',
+            border: 'none',
+          }}
         >
-          登录
+          登 录
         </Button>
       </Form.Item>
     </Form>
@@ -295,9 +315,15 @@ export default function Login() {
         ]}
       >
         <Input
-          prefix={<MobileOutlined style={{ color: '#bfbfbf' }} />}
+          prefix={<MobileOutlined style={{ color: '#94a3b8', fontSize: 16 }} />}
           placeholder="请输入手机号"
           maxLength={11}
+          style={{
+            height: 44,
+            borderRadius: 8,
+            border: '1px solid #e2e8f0',
+            background: '#fff',
+          }}
         />
       </Form.Item>
 
@@ -309,31 +335,52 @@ export default function Login() {
             rules={[{ required: true, message: '请输入验证码' }]}
           >
             <Input
-              prefix={<SafetyOutlined style={{ color: '#bfbfbf' }} />}
+              prefix={<SafetyOutlined style={{ color: '#94a3b8', fontSize: 16 }} />}
               placeholder="请输入验证码"
               maxLength={6}
-              style={{ width: 'calc(100% - 120px)' }}
+              style={{
+                width: 'calc(100% - 120px)',
+                height: 44,
+                borderRadius: '8px 0 0 8px',
+                border: '1px solid #e2e8f0',
+                background: '#fff',
+              }}
             />
           </Form.Item>
           <Button
             disabled={countdown > 0}
             onClick={sendCode}
-            style={{ width: 120 }}
+            style={{
+              width: 120,
+              height: 44,
+              borderRadius: '0 8px 8px 0',
+              background: countdown > 0 ? '#f1f5f9' : '#3b82f6',
+              border: '1px solid #e2e8f0',
+              borderLeft: 'none',
+              color: countdown > 0 ? '#94a3b8' : '#fff',
+            }}
           >
-            {countdown > 0 ? `${countdown}s后重发` : '获取验证码'}
+            {countdown > 0 ? `${countdown}s` : '获取验证码'}
           </Button>
         </Space.Compact>
       </Form.Item>
 
-      <Form.Item>
+      <Form.Item style={{ marginTop: 24 }}>
         <Button
           type="primary"
           htmlType="submit"
           block
           loading={loading}
-          style={{ height: 44, fontSize: 16 }}
+          style={{
+            height: 44,
+            fontSize: 15,
+            fontWeight: 500,
+            borderRadius: 8,
+            background: '#3b82f6',
+            border: 'none',
+          }}
         >
-          登录
+          登 录
         </Button>
       </Form.Item>
     </Form>
@@ -342,59 +389,137 @@ export default function Login() {
   return (
     <div
       style={{
-        minHeight: 'calc(100vh - 64px - 280px)',
-        background: 'var(--bg-secondary)',
-        padding: '60px 24px',
+        minHeight: '100vh',
         display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
+        flexDirection: 'column',
+        background: '#f8fafc',
       }}
     >
-      <Card
+      {/* 顶部Logo区域 */}
+      <div
         style={{
-          width: 480,
-          borderRadius: 16,
-          boxShadow: 'var(--shadow-lg)',
-          background: 'var(--bg-card)',
-          border: '1px solid var(--border-light)',
+          padding: '24px 40px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: 12,
         }}
-        bodyStyle={{ padding: 40 }}
       >
-        <div style={{ textAlign: 'center', marginBottom: 32 }}>
-          <Title level={3} style={{ marginBottom: 8, color: 'var(--text-primary)' }}>欢迎登录</Title>
-          <Text style={{ color: 'var(--text-secondary)' }}>湖北省工业软件公共服务平台</Text>
+        <div
+          style={{
+            width: 40,
+            height: 40,
+            background: '#3b82f6',
+            borderRadius: 10,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <DatabaseOutlined style={{ fontSize: 22, color: '#fff' }} />
         </div>
+        <Text style={{ fontSize: 18, fontWeight: 600, color: '#1e293b' }}>
+          湖北省工业软件公共服务平台
+        </Text>
+      </div>
 
-        <Tabs
-          activeKey={activeTab}
-          onChange={setActiveTab}
-          centered
-          items={[
-            {
-              key: 'password',
-              label: '密码登录',
-              children: passwordForm,
-            },
-            {
-              key: 'code',
-              label: '验证码登录',
-              children: codeForm,
-            },
-          ]}
-        />
+      {/* 中间登录表单区域 */}
+      <div
+        style={{
+          flex: 1,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: '20px 40px 60px',
+        }}
+      >
+        <Card
+          style={{
+            width: '100%',
+            maxWidth: 420,
+            borderRadius: 12,
+            boxShadow: '0 4px 20px rgba(0, 0, 0, 0.06)',
+            background: '#fff',
+            border: '1px solid #e2e8f0',
+          }}
+          bodyStyle={{ padding: '40px 36px' }}
+        >
+          {/* 欢迎标题 */}
+          <div style={{ textAlign: 'center', marginBottom: 32 }}>
+            <Title
+              level={3}
+              style={{
+                marginBottom: 8,
+                color: '#1e293b',
+                fontSize: 24,
+                fontWeight: 600,
+              }}
+            >
+              账号登录
+            </Title>
+            <Text style={{ color: '#94a3b8', fontSize: 14 }}>
+              欢迎回来，请登录您的账号
+            </Text>
+          </div>
 
-        <Divider style={{ margin: '24px 0' }}>
-          <Text type="secondary" style={{ fontSize: 12 }}>
-            还没有账号？
-          </Text>
-        </Divider>
+          {/* 登录方式切换 */}
+          <Tabs
+            activeKey={activeTab}
+            onChange={setActiveTab}
+            centered
+            style={{ marginBottom: 8 }}
+            items={[
+              {
+                key: 'password',
+                label: <span style={{ fontSize: 14 }}>密码登录</span>,
+                children: passwordForm,
+              },
+              {
+                key: 'code',
+                label: <span style={{ fontSize: 14 }}>验证码登录</span>,
+                children: codeForm,
+              },
+            ]}
+          />
 
-        <Link to="/register">
-          <Button block size="large" style={{ height: 44, fontSize: 16 }}>
-            立即注册入驻
-          </Button>
-        </Link>
-      </Card>
+          {/* 分割线 */}
+          <Divider style={{ margin: '24px 0' }}>
+            <Text type="secondary" style={{ fontSize: 12, color: '#cbd5e1' }}>
+              还没有账号？
+            </Text>
+          </Divider>
+
+          {/* 注册按钮 */}
+          <Link to="/register">
+            <Button
+              block
+              size="large"
+              style={{
+                height: 44,
+                fontSize: 14,
+                borderRadius: 8,
+                border: '1px solid #e2e8f0',
+                color: '#3b82f6',
+                background: '#fff',
+              }}
+            >
+              立即注册入驻
+            </Button>
+          </Link>
+        </Card>
+      </div>
+
+      {/* 底部版权 */}
+      <div
+        style={{
+          padding: '20px 40px',
+          textAlign: 'center',
+          color: '#94a3b8',
+          fontSize: 12,
+          borderTop: '1px solid #f1f5f9',
+        }}
+      >
+        © 2025 湖北省工业软件公共服务平台 版权所有
+      </div>
     </div>
   )
 }

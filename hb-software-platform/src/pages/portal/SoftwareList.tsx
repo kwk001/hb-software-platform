@@ -2,14 +2,14 @@ import { useState, useEffect } from 'react'
 import { Card, Row, Col, Tag, Button, Input, Select, Space, Badge, Pagination, Empty, message } from 'antd'
 import { SearchOutlined, FilterOutlined, EyeOutlined, ArrowRightOutlined, PlusOutlined } from '@ant-design/icons'
 import { Link, useNavigate } from 'react-router-dom'
-import { softwareList, softwareCategories, getCategoryColor, getCategoryLabel } from '../../data/software'
+import { softwareList, industryCategories, getCategoryColor, getCategoryLabel, getIndustryLabel } from '../../data/software'
 
 const { Search } = Input
 
 export default function SoftwareList() {
   const navigate = useNavigate()
   const [searchText, setSearchText] = useState('')
-  const [category, setCategory] = useState('all')
+  const [industry, setIndustry] = useState('all')
   const [filteredData, setFilteredData] = useState(softwareList)
   const [currentPage, setCurrentPage] = useState(1)
   const [pageSize, setPageSize] = useState(8)
@@ -51,8 +51,8 @@ export default function SoftwareList() {
   useEffect(() => {
     let result = softwareList
 
-    if (category !== 'all') {
-      result = result.filter((item) => item.category === category)
+    if (industry !== 'all') {
+      result = result.filter((item) => item.industry === industry)
     }
 
     if (searchText) {
@@ -65,7 +65,7 @@ export default function SoftwareList() {
     }
 
     setFilteredData(result)
-  }, [searchText, category])
+  }, [searchText, industry])
 
   return (
     <div style={{ background: '#F8FAFC', minHeight: 'calc(100vh - 64px)' }}>
@@ -501,27 +501,46 @@ export default function SoftwareList() {
             }}
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flexWrap: 'wrap' }}>
-              <span style={{ color: 'var(--text-primary)', fontSize: '15px', fontWeight: 600 }}>分类筛选</span>
+              <span style={{ color: 'var(--text-primary)', fontSize: '15px', fontWeight: 600 }}>行业筛选</span>
               <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
-                {softwareCategories.map((cat) => (
+                <Button
+                  key="all"
+                  type={industry === 'all' ? 'primary' : 'default'}
+                  size="middle"
+                  onClick={() => setIndustry('all')}
+                  style={{
+                    borderRadius: '10px',
+                    fontSize: '14px',
+                    height: '40px',
+                    padding: '0 20px',
+                    fontWeight: industry === 'all' ? 600 : 400,
+                    background: industry === 'all' ? 'linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%)' : 'var(--bg-card)',
+                    border: industry === 'all' ? 'none' : '1px solid var(--border-light)',
+                    boxShadow: industry === 'all' ? '0 4px 14px rgba(59, 130, 246, 0.3)' : 'none',
+                    color: industry === 'all' ? '#fff' : 'var(--text-primary)',
+                  }}
+                >
+                  全部
+                </Button>
+                {industryCategories.map((ind) => (
                   <Button
-                    key={cat.value}
-                    type={category === cat.value ? 'primary' : 'default'}
+                    key={ind.value}
+                    type={industry === ind.value ? 'primary' : 'default'}
                     size="middle"
-                    onClick={() => setCategory(cat.value)}
+                    onClick={() => setIndustry(ind.value)}
                     style={{
                       borderRadius: '10px',
                       fontSize: '14px',
                       height: '40px',
                       padding: '0 20px',
-                      fontWeight: category === cat.value ? 600 : 400,
-                      background: category === cat.value ? 'linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%)' : 'var(--bg-card)',
-                      border: category === cat.value ? 'none' : '1px solid var(--border-light)',
-                      boxShadow: category === cat.value ? '0 4px 14px rgba(59, 130, 246, 0.3)' : 'none',
-                      color: category === cat.value ? '#fff' : 'var(--text-primary)',
+                      fontWeight: industry === ind.value ? 600 : 400,
+                      background: industry === ind.value ? 'linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%)' : 'var(--bg-card)',
+                      border: industry === ind.value ? 'none' : '1px solid var(--border-light)',
+                      boxShadow: industry === ind.value ? '0 4px 14px rgba(59, 130, 246, 0.3)' : 'none',
+                      color: industry === ind.value ? '#fff' : 'var(--text-primary)',
                     }}
                   >
-                    {cat.label}
+                    {ind.label}
                   </Button>
                 ))}
               </div>

@@ -132,15 +132,17 @@ export default function EnterpriseInfoEdit() {
   }
 
   return (
-    <div style={{ padding: '24px' }}>
+    <div style={{ padding: '24px', background: '#f8fafc', minHeight: '100vh' }}>
       {/* 页面标题 */}
       <Card
         style={{
           marginBottom: 24,
-          borderRadius: 12,
-          boxShadow: '0 2px 8px rgba(0, 0, 0, 0.06)',
+          borderRadius: 16,
+          background: 'linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)',
+          border: '1px solid #e2e8f0',
+          boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)',
         }}
-        bodyStyle={{ padding: '20px 24px' }}
+        bodyStyle={{ padding: '24px 32px' }}
       >
         <div
           style={{
@@ -153,13 +155,23 @@ export default function EnterpriseInfoEdit() {
             <Button
               icon={<ArrowLeftOutlined />}
               onClick={() => navigate('/enterprise/info')}
-              style={{ borderRadius: 8 }}
+              style={{ 
+                borderRadius: 10,
+                height: 40,
+                borderColor: '#cbd5e1',
+                color: '#64748b',
+              }}
             >
               返回
             </Button>
-            <Title level={4} style={{ margin: 0 }}>
-              编辑企业信息
-            </Title>
+            <div>
+              <Title level={4} style={{ margin: 0, color: '#1e293b', fontWeight: 600 }}>
+                编辑企业信息
+              </Title>
+              <Text style={{ color: '#64748b', fontSize: 13 }}>
+                修改企业信息，提交后将重新审核
+              </Text>
+            </div>
           </Space>
         </div>
       </Card>
@@ -168,17 +180,45 @@ export default function EnterpriseInfoEdit() {
         <Col span={16}>
           <Card
             style={{
-              borderRadius: 12,
-              boxShadow: '0 2px 8px rgba(0, 0, 0, 0.06)',
+              borderRadius: 16,
+              border: '1px solid #e2e8f0',
+              boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)',
+              background: '#fff',
             }}
+            bodyStyle={{ padding: '32px' }}
           >
-            <Alert
-              message="信息修改提示"
-              description="修改企业信息后，平台将重新审核您的企业资质。审核期间不影响正常使用。"
-              type="info"
-              showIcon
-              style={{ marginBottom: 24 }}
-            />
+            {/* 提示信息 */}
+            <div style={{
+              padding: '16px 20px',
+              background: 'linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%)',
+              borderRadius: 12,
+              border: '1px solid #bfdbfe',
+              marginBottom: 32,
+              display: 'flex',
+              alignItems: 'flex-start',
+              gap: 12,
+            }}>
+              <div style={{
+                width: 32,
+                height: 32,
+                borderRadius: 8,
+                background: '#3b82f6',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexShrink: 0,
+              }}>
+                <SafetyCertificateOutlined style={{ color: '#fff', fontSize: 16 }} />
+              </div>
+              <div>
+                <Text strong style={{ color: '#1e40af', fontSize: 14, display: 'block', marginBottom: 4 }}>
+                  信息修改提示
+                </Text>
+                <Text style={{ color: '#3b82f6', fontSize: 13, lineHeight: 1.6 }}>
+                  修改企业信息后，平台将重新审核您的企业资质。审核期间不影响正常使用。
+                </Text>
+              </div>
+            </div>
 
             <Form
               form={form}
@@ -186,129 +226,187 @@ export default function EnterpriseInfoEdit() {
               onFinish={handleSubmit}
               autoComplete="off"
             >
-              <Divider>
-                <Space>
-                  <ShopOutlined style={{ color: '#1677ff' }} />
-                  <span style={{ fontWeight: 600 }}>企业基本信息</span>
-                </Space>
-              </Divider>
+              {/* 企业基本信息 */}
+              <div style={{ marginBottom: 32 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 24 }}>
+                  <div style={{
+                    width: 40,
+                    height: 40,
+                    borderRadius: 10,
+                    background: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    boxShadow: '0 4px 14px rgba(59, 130, 246, 0.3)',
+                  }}>
+                    <ShopOutlined style={{ color: '#fff', fontSize: 20 }} />
+                  </div>
+                  <div>
+                    <Text style={{ fontSize: 17, fontWeight: 600, color: '#1e293b', display: 'block' }}>
+                      企业基本信息
+                    </Text>
+                    <Text style={{ fontSize: 13, color: '#64748b' }}>
+                      请填写与营业执照一致的信息
+                    </Text>
+                  </div>
+                </div>
 
-              <Row gutter={24}>
-                <Col span={12}>
-                  <Form.Item
-                    name="enterpriseName"
-                    label="企业名称"
-                    rules={[
-                      { required: true, message: '请输入企业名称' },
-                      { max: 100, message: '企业名称不能超过100个字符' },
-                    ]}
-                  >
-                    <Input
-                      prefix={<ShopOutlined style={{ color: '#bfbfbf' }} />}
-                      placeholder="请输入企业全称"
-                      size="large"
-                    />
-                  </Form.Item>
-                </Col>
-                <Col span={12}>
-                  <Form.Item
-                    name="creditCode"
-                    label="统一社会信用代码"
-                    rules={[
-                      { required: true, message: '请输入统一社会信用代码' },
-                      { pattern: /^[A-Z0-9]{18}$/, message: '请输入18位统一社会信用代码' },
-                    ]}
-                  >
-                    <Input
-                      prefix={<CreditCardOutlined style={{ color: '#bfbfbf' }} />}
-                      placeholder="请输入18位统一社会信用代码"
-                      size="large"
-                      maxLength={18}
-                    />
-                  </Form.Item>
-                </Col>
-              </Row>
+                <Row gutter={24}>
+                  <Col span={12}>
+                    <Form.Item
+                      name="enterpriseName"
+                      label={<span style={{ fontWeight: 500, color: '#1e293b' }}>企业名称</span>}
+                      rules={[
+                        { required: true, message: '请输入企业名称' },
+                        { max: 100, message: '企业名称不能超过100个字符' },
+                      ]}
+                    >
+                      <Input
+                        prefix={<ShopOutlined style={{ color: '#94a3b8' }} />}
+                        placeholder="请输入企业全称"
+                        size="large"
+                        style={{ borderRadius: 10, height: 48 }}
+                      />
+                    </Form.Item>
+                  </Col>
+                  <Col span={12}>
+                    <Form.Item
+                      name="creditCode"
+                      label={<span style={{ fontWeight: 500, color: '#1e293b' }}>统一社会信用代码</span>}
+                      rules={[
+                        { required: true, message: '请输入统一社会信用代码' },
+                        { pattern: /^[A-Z0-9]{18}$/, message: '请输入18位统一社会信用代码' },
+                      ]}
+                    >
+                      <Input
+                        prefix={<CreditCardOutlined style={{ color: '#94a3b8' }} />}
+                        placeholder="请输入18位统一社会信用代码"
+                        size="large"
+                        maxLength={18}
+                        style={{ borderRadius: 10, height: 48 }}
+                      />
+                    </Form.Item>
+                  </Col>
+                </Row>
 
-              <Form.Item label="企业类型">
-                <Input
-                  prefix={<SafetyCertificateOutlined style={{ color: '#bfbfbf' }} />}
-                  value={getEnterpriseTypeText(userInfo.enterpriseType)}
-                  size="large"
-                  disabled
-                />
-                <Text type="secondary" style={{ fontSize: 12, marginTop: 4, display: 'block' }}>
-                  企业类型不可修改，如需修改请联系平台管理员
-                </Text>
-              </Form.Item>
+                <Form.Item label={<span style={{ fontWeight: 500, color: '#1e293b' }}>企业类型</span>}>
+                  <Input
+                    prefix={<SafetyCertificateOutlined style={{ color: '#94a3b8' }} />}
+                    value={getEnterpriseTypeText(userInfo.enterpriseType)}
+                    size="large"
+                    disabled
+                    style={{ borderRadius: 10, height: 48, background: '#f1f5f9' }}
+                  />
+                  <Text style={{ fontSize: 12, marginTop: 6, display: 'block', color: '#94a3b8' }}>
+                    企业类型不可修改，如需修改请联系平台管理员
+                  </Text>
+                </Form.Item>
+              </div>
 
-              <Divider>
-                <Space>
-                  <UserOutlined style={{ color: '#1677ff' }} />
-                  <span style={{ fontWeight: 600 }}>联系人信息</span>
-                </Space>
-              </Divider>
+              {/* 联系人信息 */}
+              <div style={{ marginBottom: 32 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 24 }}>
+                  <div style={{
+                    width: 40,
+                    height: 40,
+                    borderRadius: 10,
+                    background: 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    boxShadow: '0 4px 14px rgba(139, 92, 246, 0.3)',
+                  }}>
+                    <UserOutlined style={{ color: '#fff', fontSize: 20 }} />
+                  </div>
+                  <div>
+                    <Text style={{ fontSize: 17, fontWeight: 600, color: '#1e293b', display: 'block' }}>
+                      联系人信息
+                    </Text>
+                    <Text style={{ fontSize: 13, color: '#64748b' }}>
+                      用于接收平台通知和审核结果
+                    </Text>
+                  </div>
+                </div>
 
-              <Row gutter={24}>
-                <Col span={12}>
-                  <Form.Item
-                    name="contactName"
-                    label="联系人姓名"
-                    rules={[
-                      { required: true, message: '请输入联系人姓名' },
-                      { max: 50, message: '联系人姓名不能超过50个字符' },
-                    ]}
-                  >
-                    <Input
-                      prefix={<UserOutlined style={{ color: '#bfbfbf' }} />}
-                      placeholder="请输入联系人姓名"
-                      size="large"
-                    />
-                  </Form.Item>
-                </Col>
-                <Col span={12}>
-                  <Form.Item name="phone" label="手机号">
-                    <Input
-                      prefix={<PhoneOutlined style={{ color: '#bfbfbf' }} />}
-                      size="large"
-                      disabled
-                    />
-                  </Form.Item>
-                </Col>
-              </Row>
+                <Row gutter={24}>
+                  <Col span={12}>
+                    <Form.Item
+                      name="contactName"
+                      label={<span style={{ fontWeight: 500, color: '#1e293b' }}>联系人姓名</span>}
+                      rules={[
+                        { required: true, message: '请输入联系人姓名' },
+                        { max: 50, message: '联系人姓名不能超过50个字符' },
+                      ]}
+                    >
+                      <Input
+                        prefix={<UserOutlined style={{ color: '#94a3b8' }} />}
+                        placeholder="请输入联系人姓名"
+                        size="large"
+                        style={{ borderRadius: 10, height: 48 }}
+                      />
+                    </Form.Item>
+                  </Col>
+                  <Col span={12}>
+                    <Form.Item label={<span style={{ fontWeight: 500, color: '#1e293b' }}>手机号</span>}>
+                      <Input
+                        prefix={<PhoneOutlined style={{ color: '#94a3b8' }} />}
+                        value={phone}
+                        size="large"
+                        disabled
+                        style={{ borderRadius: 10, height: 48, background: '#f1f5f9' }}
+                      />
+                    </Form.Item>
+                  </Col>
+                </Row>
 
-              <Form.Item
-                name="contactEmail"
-                label="联系人邮箱"
-                rules={[
-                  { required: true, message: '请输入联系人邮箱' },
-                  { type: 'email', message: '请输入正确的邮箱格式' },
-                ]}
-              >
-                <Input
-                  prefix={<MailOutlined style={{ color: '#bfbfbf' }} />}
-                  placeholder="请输入联系人邮箱"
-                  size="large"
-                />
-              </Form.Item>
+                <Form.Item
+                  name="contactEmail"
+                  label={<span style={{ fontWeight: 500, color: '#1e293b' }}>联系人邮箱</span>}
+                  rules={[
+                    { required: true, message: '请输入联系人邮箱' },
+                    { type: 'email', message: '请输入正确的邮箱格式' },
+                  ]}
+                >
+                  <Input
+                    prefix={<MailOutlined style={{ color: '#94a3b8' }} />}
+                    placeholder="请输入联系人邮箱"
+                    size="large"
+                    style={{ borderRadius: 10, height: 48 }}
+                  />
+                </Form.Item>
+              </div>
 
-              <Divider />
+              <Divider style={{ margin: '32px 0', borderColor: '#e2e8f0' }} />
 
               <Form.Item style={{ marginBottom: 0 }}>
-                <Space size={16}>
+                <Space size="middle">
                   <Button
                     type="primary"
                     htmlType="submit"
                     size="large"
                     icon={<SaveOutlined />}
                     loading={loading}
-                    style={{ borderRadius: 8, height: 44, padding: '0 32px' }}
+                    style={{ 
+                      borderRadius: 10, 
+                      height: 48, 
+                      padding: '0 36px',
+                      background: '#4f46e5',
+                      borderColor: '#4f46e5',
+                      boxShadow: '0 4px 14px rgba(79, 70, 229, 0.3)',
+                    }}
                   >
                     保存修改
                   </Button>
                   <Button
                     size="large"
                     onClick={() => navigate('/enterprise/info')}
-                    style={{ borderRadius: 8, height: 44, padding: '0 32px' }}
+                    style={{ 
+                      borderRadius: 10, 
+                      height: 48, 
+                      padding: '0 36px',
+                      borderColor: '#cbd5e1',
+                      color: '#64748b',
+                    }}
                   >
                     取消
                   </Button>

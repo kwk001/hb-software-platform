@@ -13,8 +13,10 @@ import {
   Modal,
   Descriptions,
   Badge,
-  Statistic,
+  Typography,
   DatePicker,
+  Tooltip,
+  Avatar,
 } from 'antd'
 import {
   EyeOutlined,
@@ -25,12 +27,22 @@ import {
   ClockCircleOutlined,
   CloseCircleOutlined,
   BarChartOutlined,
+  FilterOutlined,
+  CalendarOutlined,
+  DollarOutlined,
+  TagOutlined,
+  ExclamationCircleOutlined,
+  CloseOutlined,
+  PhoneOutlined,
+  UserOutlined,
+  BuildOutlined,
 } from '@ant-design/icons'
 import type { RangePickerProps } from 'antd/es/date-picker'
 
 const { Search } = Input
 const { Option } = Select
 const { RangePicker } = DatePicker
+const { Title, Text } = Typography
 
 // 需求对接状态码（与PRD一致）
 // 0: 待处理, 1: 处理中, 2: 已处理, 3: 已关闭
@@ -43,10 +55,10 @@ const DEMAND_STATUS = {
 
 // 需求状态
 const demandStatuses = [
-  { value: DEMAND_STATUS.PENDING, label: '待处理', color: 'default' },
-  { value: DEMAND_STATUS.PROCESSING, label: '对接中', color: 'processing' },
-  { value: DEMAND_STATUS.PROCESSED, label: '已完成', color: 'success' },
-  { value: DEMAND_STATUS.CLOSED, label: '已关闭', color: 'default' },
+  { value: DEMAND_STATUS.PENDING, label: '待处理', color: 'default', bgColor: '#fff2f0', borderColor: '#ffccc7', icon: <ClockCircleOutlined /> },
+  { value: DEMAND_STATUS.PROCESSING, label: '对接中', color: 'processing', bgColor: '#e6f4ff', borderColor: '#91caff', icon: <FileTextOutlined /> },
+  { value: DEMAND_STATUS.PROCESSED, label: '已完成', color: 'success', bgColor: '#f6ffed', borderColor: '#b7eb8f', icon: <CheckCircleOutlined /> },
+  { value: DEMAND_STATUS.CLOSED, label: '已关闭', color: 'default', bgColor: '#f5f5f5', borderColor: '#d9d9d9', icon: <CloseCircleOutlined /> },
 ]
 
 // 行业列表
@@ -181,20 +193,44 @@ const DemandSummary = () => {
 
   const getStatusTag = (status: number) => {
     const statusInfo = demandStatuses.find(s => s.value === status)
-    return <Badge status={statusInfo?.color as any} text={statusInfo?.label || String(status)} />
+    if (!statusInfo) return null
+    return (
+      <div style={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: 6,
+        padding: '4px 12px',
+        borderRadius: 6,
+        background: statusInfo.bgColor,
+        border: `1px solid ${statusInfo.borderColor}`,
+        fontSize: 13,
+        fontWeight: 500,
+        color: statusInfo.color === 'success' ? '#52c41a' : statusInfo.color === 'processing' ? '#1677ff' : '#666',
+      }}>
+        {statusInfo.icon}
+        <span>{statusInfo.label}</span>
+      </div>
+    )
   }
 
   const getUrgencyTag = (urgency: string) => {
-    switch (urgency) {
-      case 'urgent':
-        return <Tag color="red">紧急</Tag>
-      case 'normal':
-        return <Tag color="blue">一般</Tag>
-      case 'planning':
-        return <Tag color="green">长期规划</Tag>
-      default:
-        return <Tag>{urgency}</Tag>
+    const config: Record<string, { color: string; bg: string; border: string; label: string }> = {
+      urgent: { color: '#ff4d4f', bg: '#fff2f0', border: '#ffccc7', label: '紧急' },
+      normal: { color: '#1677ff', bg: '#e6f4ff', border: '#91caff', label: '一般' },
+      planning: { color: '#52c41a', bg: '#f6ffed', border: '#b7eb8f', label: '长期规划' },
     }
+    const cfg = config[urgency] || config.normal
+    return (
+      <Tag style={{
+        background: cfg.bg,
+        borderColor: cfg.border,
+        color: cfg.color,
+        borderRadius: 4,
+        fontWeight: 500,
+      }}>
+        {cfg.label}
+      </Tag>
+    )
   }
 
   const columns = [
@@ -202,34 +238,48 @@ const DemandSummary = () => {
       title: '需求标题',
       dataIndex: 'title',
       key: 'title',
-      render: (text: string) => <span style={{ fontWeight: 500 }}>{text}</span>,
+      render: (text: string) => (
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <FileTextOutlined style={{ color: '#1677ff', fontSize: 16 }} />
+          <Text strong style={{ color: '#1f2937', fontSize: 14 }}>{text}</Text>
+        </div>
+      ),
     },
     {
-      title: '企业名称',
+      title: '企业信息',
       dataIndex: 'enterpriseName',
       key: 'enterpriseName',
-    },
-    {
-      title: '行业',
-      dataIndex: 'industry',
-      key: 'industry',
-      render: (industry: string) => <Tag color="blue">{industry}</Tag>,
+      render: (text: string, record: any) => (
+        <Space direction="vertical" size={2}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+            <Avatar size="small" icon={<BuildOutlined />} style={{ background: '#1677ff' }} />
+            <Text strong style={{ color: '#1f2937' }}>{text}</Text>
+          </div>
+          <Tag color="blue" style={{ borderRadius: 4, fontSize: 11, margin: 0 }}>{record.industry}</Tag>
+        </Space>
+      ),
     },
     {
       title: '意向软件',
       dataIndex: 'softwareName',
       key: 'softwareName',
       render: (text: string, record: any) => (
-        <div>
-          <div>{text}</div>
-          <div style={{ fontSize: '12px', color: '#999' }}>{record.softwareCompany}</div>
-        </div>
+        <Space direction="vertical" size={2}>
+          <Text strong style={{ color: '#1677ff' }}>{text}</Text>
+          <Text type="secondary" style={{ fontSize: 12 }}>{record.softwareCompany}</Text>
+        </Space>
       ),
     },
     {
       title: '预算',
       dataIndex: 'budget',
       key: 'budget',
+      render: (text: string) => (
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+          <DollarOutlined style={{ color: '#faad14' }} />
+          <Text strong style={{ color: '#faad14' }}>{text}</Text>
+        </div>
+      ),
     },
     {
       title: '紧急程度',
@@ -247,39 +297,43 @@ const DemandSummary = () => {
       title: '提交时间',
       dataIndex: 'createTime',
       key: 'createTime',
+      render: (text: string) => (
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+          <CalendarOutlined style={{ color: '#8c8c8c', fontSize: 12 }} />
+          <Text type="secondary" style={{ fontSize: 13 }}>{text}</Text>
+        </div>
+      ),
     },
     {
       title: '操作',
       key: 'action',
-      width: 200,
+      width: 140,
       render: (_: any, record: any) => (
         <Space size="small">
-          <Button
-            type="link"
-            size="small"
-            icon={<EyeOutlined />}
-            onClick={() => handleViewDetail(record)}
-          >
-            查看
-          </Button>
-          {(record.status === DEMAND_STATUS.PENDING || record.status === DEMAND_STATUS.PROCESSING) && (
+          <Tooltip title="查看详情">
             <Button
-              type="link"
+              type="primary"
+              ghost
               size="small"
-              onClick={() => handleProcess(record)}
+              icon={<EyeOutlined />}
+              onClick={() => handleViewDetail(record)}
+              style={{ borderRadius: 6 }}
             >
-              处理
+              查看
             </Button>
-          )}
+          </Tooltip>
           {record.status !== DEMAND_STATUS.CLOSED && record.status !== DEMAND_STATUS.PROCESSED && (
-            <Button
-              type="link"
-              size="small"
-              danger
-              onClick={() => handleClose(record)}
-            >
-              关闭
-            </Button>
+            <Tooltip title="关闭需求">
+              <Button
+                size="small"
+                danger
+                icon={<CloseOutlined />}
+                onClick={() => handleClose(record)}
+                style={{ borderRadius: 6 }}
+              >
+                关闭
+              </Button>
+            </Tooltip>
           )}
         </Space>
       ),
@@ -305,47 +359,139 @@ const DemandSummary = () => {
     setHandleModalVisible(false)
   }
 
+  // 统计卡片样式
+  const statCardStyle = (color: string, bgColor: string) => ({
+    borderRadius: 16,
+    border: 'none',
+    background: bgColor,
+    boxShadow: '0 4px 20px rgba(0, 0, 0, 0.06)',
+    overflow: 'hidden',
+  })
+
   return (
-    <div>
+    <div style={{ padding: '24px', background: '#f8fafc', minHeight: '100vh' }}>
+      {/* 页面标题 */}
+      <Card style={{
+        marginBottom: 24,
+        borderRadius: 16,
+        border: '1px solid #e8ecef',
+        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.04)',
+        background: 'linear-gradient(135deg, #ffffff 0%, #fafbfc 100%)'
+      }}>
+        <Row gutter={[24, 24]} align="middle">
+          <Col flex="auto">
+            <Space direction="vertical" size={4}>
+              <Title level={4} style={{ margin: 0, color: '#1f2937', fontWeight: 600 }}>
+                <BarChartOutlined style={{ marginRight: 8, color: '#1677ff' }} />
+                需求汇总
+              </Title>
+              <Text type="secondary" style={{ fontSize: 13 }}>查看和管理所有企业发布的需求信息</Text>
+            </Space>
+          </Col>
+        </Row>
+      </Card>
+
       {/* 统计卡片 */}
-      <Row gutter={16} style={{ marginBottom: '24px' }}>
+      <Row gutter={[20, 20]} style={{ marginBottom: 24 }}>
         <Col xs={24} sm={12} lg={6}>
-          <Card style={{ borderRadius: '12px' }}>
-            <div style={{ textAlign: 'center' }}>
-              <div style={{ fontSize: '32px', fontWeight: 'bold', color: '#ff4d4f' }}>{stats.pending}</div>
-              <div style={{ color: '#666' }}>待处理</div>
-            </div>
+          <Card style={statCardStyle('#ff4d4f', 'linear-gradient(135deg, #fff2f0 0%, #fff5f5 100%)')} bodyStyle={{ padding: '20px 24px' }}>
+            <Space direction="vertical" size={8} style={{ width: '100%' }}>
+              <Space style={{ width: '100%', justifyContent: 'space-between' }}>
+                <Text type="secondary" style={{ fontSize: 13, fontWeight: 500 }}>待处理</Text>
+                <div style={{
+                  width: 36,
+                  height: 36,
+                  borderRadius: 8,
+                  background: '#ff4d4f15',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: 18,
+                  color: '#ff4d4f',
+                }}><ClockCircleOutlined /></div>
+              </Space>
+              <Text style={{ fontSize: 32, fontWeight: 700, color: '#ff4d4f', lineHeight: 1.2 }}>{stats.pending}</Text>
+            </Space>
           </Card>
         </Col>
         <Col xs={24} sm={12} lg={6}>
-          <Card style={{ borderRadius: '12px' }}>
-            <div style={{ textAlign: 'center' }}>
-              <div style={{ fontSize: '32px', fontWeight: 'bold', color: '#1890ff' }}>{stats.in_progress}</div>
-              <div style={{ color: '#666' }}>对接中</div>
-            </div>
+          <Card style={statCardStyle('#1677ff', 'linear-gradient(135deg, #e6f4ff 0%, #f0f7ff 100%)')} bodyStyle={{ padding: '20px 24px' }}>
+            <Space direction="vertical" size={8} style={{ width: '100%' }}>
+              <Space style={{ width: '100%', justifyContent: 'space-between' }}>
+                <Text type="secondary" style={{ fontSize: 13, fontWeight: 500 }}>对接中</Text>
+                <div style={{
+                  width: 36,
+                  height: 36,
+                  borderRadius: 8,
+                  background: '#1677ff15',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: 18,
+                  color: '#1677ff',
+                }}><FileTextOutlined /></div>
+              </Space>
+              <Text style={{ fontSize: 32, fontWeight: 700, color: '#1677ff', lineHeight: 1.2 }}>{stats.in_progress}</Text>
+            </Space>
           </Card>
         </Col>
         <Col xs={24} sm={12} lg={6}>
-          <Card style={{ borderRadius: '12px' }}>
-            <div style={{ textAlign: 'center' }}>
-              <div style={{ fontSize: '32px', fontWeight: 'bold', color: '#52c41a' }}>{stats.finished}</div>
-              <div style={{ color: '#666' }}>已完成</div>
-            </div>
+          <Card style={statCardStyle('#52c41a', 'linear-gradient(135deg, #f6ffed 0%, #f0fff0 100%)')} bodyStyle={{ padding: '20px 24px' }}>
+            <Space direction="vertical" size={8} style={{ width: '100%' }}>
+              <Space style={{ width: '100%', justifyContent: 'space-between' }}>
+                <Text type="secondary" style={{ fontSize: 13, fontWeight: 500 }}>已完成</Text>
+                <div style={{
+                  width: 36,
+                  height: 36,
+                  borderRadius: 8,
+                  background: '#52c41a15',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: 18,
+                  color: '#52c41a',
+                }}><CheckCircleOutlined /></div>
+              </Space>
+              <Text style={{ fontSize: 32, fontWeight: 700, color: '#52c41a', lineHeight: 1.2 }}>{stats.finished}</Text>
+            </Space>
           </Card>
         </Col>
         <Col xs={24} sm={12} lg={6}>
-          <Card style={{ borderRadius: '12px' }}>
-            <div style={{ textAlign: 'center' }}>
-              <div style={{ fontSize: '32px', fontWeight: 'bold', color: '#722ed1' }}>{stats.total}</div>
-              <div style={{ color: '#666' }}>需求总数</div>
-            </div>
+          <Card style={statCardStyle('#722ed1', 'linear-gradient(135deg, #f9f0ff 0%, #faf5ff 100%)')} bodyStyle={{ padding: '20px 24px' }}>
+            <Space direction="vertical" size={8} style={{ width: '100%' }}>
+              <Space style={{ width: '100%', justifyContent: 'space-between' }}>
+                <Text type="secondary" style={{ fontSize: 13, fontWeight: 500 }}>需求总数</Text>
+                <div style={{
+                  width: 36,
+                  height: 36,
+                  borderRadius: 8,
+                  background: '#722ed115',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: 18,
+                  color: '#722ed1',
+                }}><BarChartOutlined /></div>
+              </Space>
+              <Text style={{ fontSize: 32, fontWeight: 700, color: '#722ed1', lineHeight: 1.2 }}>{stats.total}</Text>
+            </Space>
           </Card>
         </Col>
       </Row>
 
       <Card
-        title="需求汇总"
-        style={{ borderRadius: '12px' }}
+        style={{
+          borderRadius: 16,
+          border: '1px solid #e8ecef',
+          boxShadow: '0 4px 20px rgba(0, 0, 0, 0.04)',
+          overflow: 'hidden'
+        }}
+        title={
+          <Space>
+            <FilterOutlined style={{ color: '#1677ff' }} />
+            <Text strong style={{ fontSize: 16, color: '#1f2937' }}>需求列表</Text>
+          </Space>
+        }
       >
         <Row gutter={[16, 16]} style={{ marginBottom: '24px' }}>
           <Col xs={24} sm={12} lg={6}>
@@ -353,13 +499,14 @@ const DemandSummary = () => {
               placeholder="搜索需求标题或企业名称"
               allowClear
               enterButton={<><SearchOutlined /> 搜索</>}
+              style={{ borderRadius: 8 }}
             />
           </Col>
           <Col xs={24} sm={12} lg={5}>
             <Select
               value={status}
               onChange={setStatus}
-              style={{ width: '100%' }}
+              style={{ width: '100%', borderRadius: 8 }}
               placeholder="选择状态"
             >
               <Option value="all">全部状态</Option>
@@ -372,7 +519,7 @@ const DemandSummary = () => {
             <Select
               value={industry}
               onChange={setIndustry}
-              style={{ width: '100%' }}
+              style={{ width: '100%', borderRadius: 8 }}
               placeholder="选择行业"
             >
               <Option value="all">全部行业</Option>
@@ -382,10 +529,10 @@ const DemandSummary = () => {
             </Select>
           </Col>
           <Col xs={24} sm={12} lg={5}>
-            <RangePicker style={{ width: '100%' }} placeholder={['开始日期', '结束日期']} />
+            <RangePicker style={{ width: '100%', borderRadius: 8 }} placeholder={['开始日期', '结束日期']} />
           </Col>
           <Col xs={24} sm={12} lg={3}>
-            <Button icon={<ReloadOutlined />} style={{ width: '100%' }}>
+            <Button icon={<ReloadOutlined />} style={{ width: '100%', borderRadius: 8 }}>
               刷新
             </Button>
           </Col>
@@ -402,75 +549,292 @@ const DemandSummary = () => {
             showQuickJumper: true,
             showTotal: (total) => `共 ${total} 条`,
           }}
+          style={{
+            '.ant-table-thead > tr > th': {
+              background: '#fafbfc',
+              fontWeight: 600,
+              color: '#1f2937',
+            }
+          }}
         />
       </Card>
 
       {/* 详情弹窗 */}
       <Modal
-        title="需求详情"
+        title={
+          <Space>
+            <FileTextOutlined style={{ color: '#1677ff' }} />
+            <Text strong style={{ fontSize: 16 }}>需求详情</Text>
+          </Space>
+        }
         open={detailModalVisible}
         onCancel={() => setDetailModalVisible(false)}
         footer={[
-          <Button key="close" onClick={() => setDetailModalVisible(false)}>
+          <Button key="close" onClick={() => setDetailModalVisible(false)} style={{ borderRadius: 6 }}>
             关闭
           </Button>,
         ]}
-        width={700}
+        width={720}
+        bodyStyle={{ padding: '24px' }}
       >
         {selectedDemand && (
-          <Descriptions column={2} bordered>
-            <Descriptions.Item label="需求标题" span={2}>{selectedDemand.title}</Descriptions.Item>
-            <Descriptions.Item label="企业名称">{selectedDemand.enterpriseName}</Descriptions.Item>
-            <Descriptions.Item label="所属行业">{selectedDemand.industry}</Descriptions.Item>
-            <Descriptions.Item label="意向软件">{selectedDemand.softwareName}</Descriptions.Item>
-            <Descriptions.Item label="软件企业">{selectedDemand.softwareCompany}</Descriptions.Item>
-            <Descriptions.Item label="预算范围">{selectedDemand.budget}</Descriptions.Item>
-            <Descriptions.Item label="紧急程度">{getUrgencyTag(selectedDemand.urgency)}</Descriptions.Item>
-            <Descriptions.Item label="是否公开">{selectedDemand.isPublic ? '公开' : '私密'}</Descriptions.Item>
-            <Descriptions.Item label="联系人">{selectedDemand.contactName}</Descriptions.Item>
-            <Descriptions.Item label="联系电话">{selectedDemand.contactPhone}</Descriptions.Item>
-            <Descriptions.Item label="需求描述" span={2}>{selectedDemand.description}</Descriptions.Item>
-            <Descriptions.Item label="技术要求" span={2}>{selectedDemand.technicalRequirements || '无'}</Descriptions.Item>
-            <Descriptions.Item label="提交时间">{selectedDemand.createTime}</Descriptions.Item>
-            <Descriptions.Item label="当前状态">{getStatusTag(selectedDemand.status)}</Descriptions.Item>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+            {/* 头部信息 */}
+            <div style={{
+              padding: '20px',
+              background: 'linear-gradient(135deg, #f8fafc 0%, #f0f7ff 100%)',
+              borderRadius: 12,
+              border: '1px solid #e8ecef',
+            }}>
+              <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12, marginBottom: 12 }}>
+                <Avatar size={48} icon={<BuildOutlined />} style={{ background: '#1677ff' }} />
+                <div style={{ flex: 1 }}>
+                  <Text strong style={{ fontSize: 18, color: '#1f2937', display: 'block', marginBottom: 8 }}>
+                    {selectedDemand.title}
+                  </Text>
+                  <Space size={12}>
+                    {getStatusTag(selectedDemand.status)}
+                    {getUrgencyTag(selectedDemand.urgency)}
+                    <Tag color={selectedDemand.isPublic ? 'green' : 'default'} style={{ borderRadius: 4 }}>
+                      {selectedDemand.isPublic ? '公开' : '私密'}
+                    </Tag>
+                  </Space>
+                </div>
+              </div>
+            </div>
+
+            {/* 企业信息 */}
+            <div>
+              <Text strong style={{ fontSize: 14, color: '#1f2937', display: 'block', marginBottom: 12 }}>
+                <BuildOutlined style={{ marginRight: 8, color: '#1677ff' }} />
+                企业信息
+              </Text>
+              <Row gutter={[16, 12]}>
+                <Col span={12}>
+                  <div style={{ padding: '12px 16px', background: '#fafbfc', borderRadius: 8 }}>
+                    <Text type="secondary" style={{ fontSize: 12, display: 'block', marginBottom: 4 }}>企业名称</Text>
+                    <Text strong style={{ color: '#1f2937' }}>{selectedDemand.enterpriseName}</Text>
+                  </div>
+                </Col>
+                <Col span={12}>
+                  <div style={{ padding: '12px 16px', background: '#fafbfc', borderRadius: 8 }}>
+                    <Text type="secondary" style={{ fontSize: 12, display: 'block', marginBottom: 4 }}>所属行业</Text>
+                    <Tag color="blue" style={{ borderRadius: 4 }}>{selectedDemand.industry}</Tag>
+                  </div>
+                </Col>
+                <Col span={12}>
+                  <div style={{ padding: '12px 16px', background: '#fafbfc', borderRadius: 8 }}>
+                    <Text type="secondary" style={{ fontSize: 12, display: 'block', marginBottom: 4 }}>联系人</Text>
+                    <Space>
+                      <UserOutlined style={{ color: '#8c8c8c' }} />
+                      <Text strong>{selectedDemand.contactName}</Text>
+                    </Space>
+                  </div>
+                </Col>
+                <Col span={12}>
+                  <div style={{ padding: '12px 16px', background: '#fafbfc', borderRadius: 8 }}>
+                    <Text type="secondary" style={{ fontSize: 12, display: 'block', marginBottom: 4 }}>联系电话</Text>
+                    <Space>
+                      <PhoneOutlined style={{ color: '#8c8c8c' }} />
+                      <Text strong>{selectedDemand.contactPhone}</Text>
+                    </Space>
+                  </div>
+                </Col>
+              </Row>
+            </div>
+
+            {/* 意向软件 */}
+            <div>
+              <Text strong style={{ fontSize: 14, color: '#1f2937', display: 'block', marginBottom: 12 }}>
+                <TagOutlined style={{ marginRight: 8, color: '#1677ff' }} />
+                意向软件
+              </Text>
+              <Row gutter={[16, 12]}>
+                <Col span={12}>
+                  <div style={{ padding: '12px 16px', background: '#fafbfc', borderRadius: 8 }}>
+                    <Text type="secondary" style={{ fontSize: 12, display: 'block', marginBottom: 4 }}>软件名称</Text>
+                    <Text strong style={{ color: '#1677ff' }}>{selectedDemand.softwareName}</Text>
+                  </div>
+                </Col>
+                <Col span={12}>
+                  <div style={{ padding: '12px 16px', background: '#fafbfc', borderRadius: 8 }}>
+                    <Text type="secondary" style={{ fontSize: 12, display: 'block', marginBottom: 4 }}>软件企业</Text>
+                    <Text strong>{selectedDemand.softwareCompany}</Text>
+                  </div>
+                </Col>
+                <Col span={12}>
+                  <div style={{ padding: '12px 16px', background: '#fafbfc', borderRadius: 8 }}>
+                    <Text type="secondary" style={{ fontSize: 12, display: 'block', marginBottom: 4 }}>产品类型</Text>
+                    <Tag color="cyan" style={{ borderRadius: 4 }}>{selectedDemand.category}</Tag>
+                  </div>
+                </Col>
+                <Col span={12}>
+                  <div style={{ padding: '12px 16px', background: '#fafbfc', borderRadius: 8 }}>
+                    <Text type="secondary" style={{ fontSize: 12, display: 'block', marginBottom: 4 }}>预算范围</Text>
+                    <Space>
+                      <DollarOutlined style={{ color: '#faad14' }} />
+                      <Text strong style={{ color: '#faad14' }}>{selectedDemand.budget}</Text>
+                    </Space>
+                  </div>
+                </Col>
+              </Row>
+            </div>
+
+            {/* 需求详情 */}
+            <div>
+              <Text strong style={{ fontSize: 14, color: '#1f2937', display: 'block', marginBottom: 12 }}>
+                <FileTextOutlined style={{ marginRight: 8, color: '#1677ff' }} />
+                需求描述
+              </Text>
+              <div style={{
+                padding: '16px',
+                background: '#fafbfc',
+                borderRadius: 8,
+                border: '1px solid #f0f0f0',
+                lineHeight: 1.8,
+              }}>
+                <Text>{selectedDemand.description}</Text>
+              </div>
+            </div>
+
+            {/* 技术要求 */}
+            <div>
+              <Text strong style={{ fontSize: 14, color: '#1f2937', display: 'block', marginBottom: 12 }}>
+                <ExclamationCircleOutlined style={{ marginRight: 8, color: '#1677ff' }} />
+                技术要求
+              </Text>
+              <div style={{
+                padding: '16px',
+                background: '#fafbfc',
+                borderRadius: 8,
+                border: '1px solid #f0f0f0',
+                lineHeight: 1.8,
+              }}>
+                <Text>{selectedDemand.technicalRequirements || '无'}</Text>
+              </div>
+            </div>
+
+            {/* 处理信息 */}
             {selectedDemand.handleResult && (
-              <Descriptions.Item label="处理结果" span={2}>{selectedDemand.handleResult}</Descriptions.Item>
+              <div>
+                <Text strong style={{ fontSize: 14, color: '#1f2937', display: 'block', marginBottom: 12 }}>
+                  <CheckCircleOutlined style={{ marginRight: 8, color: '#52c41a' }} />
+                  处理结果
+                </Text>
+                <div style={{
+                  padding: '16px',
+                  background: '#f6ffed',
+                  borderRadius: 8,
+                  border: '1px solid #b7eb8f',
+                  lineHeight: 1.8,
+                }}>
+                  <Text>{selectedDemand.handleResult}</Text>
+                  {selectedDemand.handleTime && (
+                    <div style={{ marginTop: 8, paddingTop: 8, borderTop: '1px dashed #b7eb8f' }}>
+                      <Text type="secondary" style={{ fontSize: 12 }}>处理时间：{selectedDemand.handleTime}</Text>
+                    </div>
+                  )}
+                </div>
+              </div>
             )}
-            {selectedDemand.handleTime && (
-              <Descriptions.Item label="处理时间">{selectedDemand.handleTime}</Descriptions.Item>
-            )}
+
+            {/* 关闭原因 */}
             {selectedDemand.closeReason && (
-              <Descriptions.Item label="关闭原因" span={2}>{selectedDemand.closeReason}</Descriptions.Item>
+              <div>
+                <Text strong style={{ fontSize: 14, color: '#1f2937', display: 'block', marginBottom: 12 }}>
+                  <CloseCircleOutlined style={{ marginRight: 8, color: '#ff4d4f' }} />
+                  关闭原因
+                </Text>
+                <div style={{
+                  padding: '16px',
+                  background: '#fff2f0',
+                  borderRadius: 8,
+                  border: '1px solid #ffccc7',
+                  lineHeight: 1.8,
+                }}>
+                  <Text>{selectedDemand.closeReason}</Text>
+                  {selectedDemand.closeTime && (
+                    <div style={{ marginTop: 8, paddingTop: 8, borderTop: '1px dashed #ffccc7' }}>
+                      <Text type="secondary" style={{ fontSize: 12 }}>关闭时间：{selectedDemand.closeTime}</Text>
+                    </div>
+                  )}
+                </div>
+              </div>
             )}
-          </Descriptions>
+
+            {/* 提交时间 */}
+            <div style={{
+              padding: '12px 16px',
+              background: '#f5f5f5',
+              borderRadius: 8,
+              display: 'flex',
+              alignItems: 'center',
+              gap: 8,
+            }}>
+              <CalendarOutlined style={{ color: '#8c8c8c' }} />
+              <Text type="secondary" style={{ fontSize: 12 }}>提交时间：{selectedDemand.createTime}</Text>
+            </div>
+          </div>
         )}
       </Modal>
 
       {/* 处理弹窗 */}
       <Modal
-        title="处理需求"
+        title={
+          <Space>
+            <CheckCircleOutlined style={{ color: '#52c41a' }} />
+            <Text strong style={{ fontSize: 16 }}>处理需求</Text>
+          </Space>
+        }
         open={handleModalVisible}
         onCancel={() => setHandleModalVisible(false)}
         onOk={handleProcessSubmit}
         okText="保存"
         cancelText="取消"
         width={600}
+        bodyStyle={{ padding: '24px' }}
       >
         {selectedDemand && (
-          <div>
-            <div style={{ marginBottom: '16px', padding: '16px', background: '#f5f5f5', borderRadius: '8px' }}>
-              <div style={{ fontWeight: 500, marginBottom: '8px' }}>{selectedDemand.title}</div>
-              <div style={{ fontSize: '13px', color: '#666' }}>
-                {selectedDemand.enterpriseName} | {selectedDemand.softwareName}
-              </div>
-            </div>
-            <div style={{ marginBottom: '16px' }}>
-              <div style={{ fontWeight: 500, marginBottom: '8px' }}>处理结果</div>
-              <Input.TextArea rows={4} placeholder="请输入处理结果..." />
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+            <div style={{
+              padding: '16px 20px',
+              background: 'linear-gradient(135deg, #f8fafc 0%, #f0f7ff 100%)',
+              borderRadius: 12,
+              border: '1px solid #e8ecef',
+            }}>
+              <Text strong style={{ fontSize: 16, color: '#1f2937', display: 'block', marginBottom: 8 }}>
+                {selectedDemand.title}
+              </Text>
+              <Space size={16}>
+                <Space>
+                  <BuildOutlined style={{ color: '#8c8c8c' }} />
+                  <Text type="secondary">{selectedDemand.enterpriseName}</Text>
+                </Space>
+                <Space>
+                  <TagOutlined style={{ color: '#8c8c8c' }} />
+                  <Text type="secondary">{selectedDemand.softwareName}</Text>
+                </Space>
+              </Space>
             </div>
             <div>
-              <div style={{ fontWeight: 500, marginBottom: '8px' }}>后续安排</div>
-              <Input.TextArea rows={3} placeholder="请输入后续安排（选填）..." />
+              <Text strong style={{ fontSize: 14, color: '#1f2937', display: 'block', marginBottom: 8 }}>
+                处理结果
+              </Text>
+              <Input.TextArea
+                rows={4}
+                placeholder="请输入处理结果..."
+                style={{ borderRadius: 8 }}
+              />
+            </div>
+            <div>
+              <Text strong style={{ fontSize: 14, color: '#1f2937', display: 'block', marginBottom: 8 }}>
+                后续安排
+              </Text>
+              <Input.TextArea
+                rows={3}
+                placeholder="请输入后续安排（选填）..."
+                style={{ borderRadius: 8 }}
+              />
             </div>
           </div>
         )}

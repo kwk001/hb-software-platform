@@ -132,14 +132,14 @@ const designSystem = {
 }
 
 const styles: Record<string, CSSProperties> = {
-  // 欢迎区域 - 蓝色渐变背景（与企业端保持一致）
+  // 欢迎区域 - 蓝色渐变背景
   welcomeCard: {
     borderRadius: designSystem.borderRadius.xxl,
-    background: 'linear-gradient(135deg, #4f46e5 0%, #6366f1 100%)',
+    background: 'linear-gradient(135deg, #4f46e5 0%, #6366f1 50%, #818cf8 100%)',
     border: 'none',
     position: 'relative',
     overflow: 'hidden',
-    boxShadow: `${designSystem.shadows.xl}, inset 0 1px 0 rgba(255,255,255,0.1)`,
+    boxShadow: `${designSystem.shadows.xl}, inset 0 1px 0 rgba(255,255,255,0.15)`,
   },
 }
 
@@ -361,79 +361,122 @@ export default function PlatformDashboard() {
   return (
     <div>
       {/* 欢迎区域 */}
-      <Card style={{ ...styles.welcomeCard, marginBottom: 24 }} bodyStyle={{ padding: '32px' }}>
+      <Card style={{ ...styles.welcomeCard, marginBottom: 24 }} bodyStyle={{ padding: '36px 40px' }}>
+        {/* 背景装饰 */}
+        <div style={{
+          position: 'absolute',
+          top: -80,
+          right: -80,
+          width: 350,
+          height: 350,
+          background: 'radial-gradient(circle, rgba(129, 140, 248, 0.25) 0%, transparent 70%)',
+          pointerEvents: 'none',
+        }} />
+        <div style={{
+          position: 'absolute',
+          bottom: -40,
+          left: -40,
+          width: 250,
+          height: 250,
+          background: 'radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, transparent 60%)',
+          pointerEvents: 'none',
+        }} />
+
         <div style={{ position: 'relative', zIndex: 1 }}>
-          <Row gutter={[24, 24]} align="middle">
+          <Row gutter={[48, 24]} align="middle">
             <Col flex="auto">
               <Space direction="vertical" size="middle">
                 <div>
+                  {/* 标签 */}
                   <div style={{
                     display: 'inline-flex',
                     alignItems: 'center',
-                    gap: 8,
-                    padding: '8px 16px',
-                    background: 'rgba(255,255,255,0.08)',
+                    gap: 6,
+                    padding: '6px 14px',
+                    background: 'rgba(255,255,255,0.1)',
                     borderRadius: 20,
-                    marginBottom: 16,
-                    border: '1px solid rgba(255,255,255,0.1)',
+                    marginBottom: 20,
+                    border: '1px solid rgba(255,255,255,0.15)',
+                    backdropFilter: 'blur(10px)',
                   }}>
-                    <DashboardOutlined style={{ color: designSystem.colors.accent, fontSize: 14 }} />
-                    <span style={{ color: 'rgba(255,255,255,0.9)', fontSize: 13, fontWeight: 500, letterSpacing: '0.5px' }}>
+                    <DashboardOutlined style={{ color: '#a5b4fc', fontSize: 13 }} />
+                    <span style={{ color: 'rgba(255,255,255,0.9)', fontSize: 12, fontWeight: 500 }}>
                       平台管理后台
                     </span>
                   </div>
-                  <Title level={3} style={{
+
+                  {/* 标题 */}
+                  <Title level={2} style={{
                     color: '#fff',
                     margin: 0,
-                    fontSize: 32,
+                    fontSize: 34,
                     fontWeight: 600,
                     letterSpacing: '-0.5px',
                     lineHeight: 1.2,
                   }}>
                     欢迎回来，平台管理员
                   </Title>
+
+                  {/* 副标题 */}
                   <Text style={{
-                    color: 'rgba(255,255,255,0.6)',
-                    fontSize: 15,
-                    marginTop: 12,
+                    color: 'rgba(255,255,255,0.7)',
+                    fontSize: 14,
+                    marginTop: 10,
                     display: 'block',
-                    fontWeight: 400,
                   }}>
-                    今天是 2026年3月13日
+                    今天是 2026年3月13日，祝您工作愉快
                   </Text>
                 </div>
 
-                {/* 关键指标 - 极简风格 */}
+                {/* 关键指标 */}
                 <div style={{
                   display: 'flex',
-                  gap: 12,
-                  marginTop: 24,
+                  gap: 16,
+                  marginTop: 8,
                 }}>
                   {[
-                    { label: '待审核', value: '35', color: designSystem.colors.accent },
-                    { label: '今日新增', value: '23', color: '#fff' },
-                    { label: '系统状态', value: '正常', color: designSystem.colors.success },
+                    { label: '待审核', value: '35', color: '#fde68a', icon: <SafetyCertificateOutlined /> },
+                    { label: '今日新增', value: '23', color: '#fff', icon: <RiseOutlined /> },
+                    { label: '系统状态', value: '正常', color: '#86efac', icon: <CheckCircleOutlined /> },
                   ].map((item, i) => (
                     <div key={i} style={{
-                      padding: '12px 20px',
-                      background: 'rgba(255,255,255,0.05)',
-                      borderRadius: 12,
-                      border: '1px solid rgba(255,255,255,0.08)',
-                      minWidth: 100,
+                      padding: '14px 22px',
+                      background: 'rgba(255,255,255,0.06)',
+                      borderRadius: 14,
+                      border: '1px solid rgba(255,255,255,0.1)',
+                      minWidth: 110,
                       textAlign: 'center',
-                    }}>
+                      backdropFilter: 'blur(8px)',
+                      transition: 'all 0.3s ease',
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.background = 'rgba(255,255,255,0.1)'
+                      e.currentTarget.style.transform = 'translateY(-2px)'
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = 'rgba(255,255,255,0.06)'
+                      e.currentTarget.style.transform = 'translateY(0)'
+                    }}
+                    >
                       <div style={{
-                        fontSize: 24,
+                        fontSize: 26,
                         fontWeight: 700,
                         color: item.color,
                         letterSpacing: '-0.5px',
+                        marginBottom: 4,
                       }}>{item.value}</div>
                       <div style={{
                         fontSize: 12,
-                        color: 'rgba(255,255,255,0.5)',
-                        marginTop: 2,
+                        color: 'rgba(255,255,255,0.6)',
                         fontWeight: 500,
-                      }}>{item.label}</div>
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: 4,
+                      }}>
+                        {item.icon}
+                        {item.label}
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -442,30 +485,31 @@ export default function PlatformDashboard() {
 
             {/* 右侧操作按钮 */}
             <Col>
-              <Space direction="vertical" size="small" style={{ gap: 12 }}>
+              <Space direction="vertical" size="middle" style={{ gap: 12 }}>
                 <Link to="/platform/audit/enterprise" style={{ textDecoration: 'none' }}>
                   <Button
                     type="primary"
                     size="large"
                     icon={<CheckCircleOutlined />}
                     style={{
-                      background: designSystem.colors.accent,
-                      borderColor: designSystem.colors.accent,
+                      background: 'rgba(255,255,255,0.95)',
+                      borderColor: 'rgba(255,255,255,0.95)',
+                      color: '#4f46e5',
                       height: 48,
                       padding: '0 28px',
                       fontWeight: 600,
                       fontSize: 15,
                       borderRadius: 12,
-                      boxShadow: '0 4px 16px rgba(212, 165, 116, 0.3)',
+                      boxShadow: '0 4px 16px rgba(0,0,0,0.15)',
                       transition: 'all 0.3s ease',
                     }}
                     onMouseEnter={(e) => {
                       e.currentTarget.style.transform = 'translateY(-2px)'
-                      e.currentTarget.style.boxShadow = '0 8px 24px rgba(212, 165, 116, 0.4)'
+                      e.currentTarget.style.boxShadow = '0 6px 20px rgba(0,0,0,0.2)'
                     }}
                     onMouseLeave={(e) => {
                       e.currentTarget.style.transform = 'translateY(0)'
-                      e.currentTarget.style.boxShadow = '0 4px 16px rgba(212, 165, 116, 0.3)'
+                      e.currentTarget.style.boxShadow = '0 4px 16px rgba(0,0,0,0.15)'
                     }}
                   >
                     开始审核
@@ -485,14 +529,17 @@ export default function PlatformDashboard() {
                       fontSize: 15,
                       borderRadius: 12,
                       transition: 'all 0.3s ease',
+                      backdropFilter: 'blur(8px)',
                     }}
                     onMouseEnter={(e) => {
                       e.currentTarget.style.background = 'rgba(255,255,255,0.12)'
                       e.currentTarget.style.borderColor = 'rgba(255,255,255,0.25)'
+                      e.currentTarget.style.transform = 'translateY(-2px)'
                     }}
                     onMouseLeave={(e) => {
                       e.currentTarget.style.background = 'rgba(255,255,255,0.08)'
                       e.currentTarget.style.borderColor = 'rgba(255,255,255,0.15)'
+                      e.currentTarget.style.transform = 'translateY(0)'
                     }}
                   >
                     查看报表

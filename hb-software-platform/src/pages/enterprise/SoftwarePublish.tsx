@@ -7,9 +7,9 @@ import {
   Select,
   Button,
   Typography,
-  Steps,
   Upload,
   Radio,
+  Checkbox,
   Space,
   message,
   Alert,
@@ -265,102 +265,179 @@ export default function SoftwarePublish() {
   }
 
   const steps = [
-    { title: '基本信息', icon: <InfoCircleOutlined /> },
-    { title: '功能介绍', icon: <FileTextOutlined /> },
-    { title: '附件上传', icon: <UploadOutlined /> },
+    { title: '基本信息', icon: <InfoCircleOutlined />, description: '填写软件基本信息' },
+    { title: '功能介绍', icon: <FileTextOutlined />, description: '描述软件功能特点' },
+    { title: '附件上传', icon: <UploadOutlined />, description: '上传产品相关资料' },
   ]
 
   const renderStepContent = () => {
     switch (currentStep) {
       case 0:
         return (
-          <Space direction="vertical" style={{ width: '100%' }} size="large">
-            <Alert
-              message="软件基本信息"
-              description="请填写软件的基本信息，这些信息将展示在平台门户上供制造企业浏览。"
-              type="info"
-              showIcon
-            />
+          <div style={{ maxWidth: 720, margin: '0 auto' }}>
+            {/* 步骤标题 */}
+            <div style={{ textAlign: 'center', marginBottom: 40 }}>
+              <div style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 8,
+                padding: '8px 16px',
+                background: 'linear-gradient(135deg, #4f46e5 0%, #6366f1 100%)',
+                borderRadius: 20,
+                marginBottom: 16,
+              }}>
+                <InfoCircleOutlined style={{ color: '#fff', fontSize: 14 }} />
+                <span style={{ color: '#fff', fontSize: 13, fontWeight: 500 }}>软件基本信息</span>
+              </div>
+              <p style={{ color: '#64748b', fontSize: 14, margin: 0 }}>
+                请填写软件的基本信息，这些信息将展示在平台门户上供制造企业浏览
+              </p>
+            </div>
 
-            <Form.Item
-              name="name"
-              label="软件名称"
-              rules={[{ required: true, message: '请输入软件名称' }]}
-            >
-              <Input placeholder="请输入软件产品名称" size="large" />
-            </Form.Item>
+            <Space direction="vertical" style={{ width: '100%' }} size="large">
+              <Form.Item
+                name="name"
+                label={<span style={{ fontWeight: 500, color: '#1e293b' }}>软件名称</span>}
+                rules={[{ required: true, message: '请输入软件名称' }]}
+              >
+                <Input 
+                  placeholder="请输入软件产品名称" 
+                  size="large"
+                  style={{ borderRadius: 10, height: 48 }}
+                />
+              </Form.Item>
 
-            <Form.Item
-              name="category"
-              label="软件类别"
-              rules={[{ required: true, message: '请选择软件类别' }]}
-            >
-              <Select placeholder="请选择软件类别" size="large">
-                {softwareCategories.map((cat) => (
-                  <Option key={cat.value} value={cat.value}>
-                    {cat.label}
-                  </Option>
-                ))}
-              </Select>
-            </Form.Item>
-
-            <Form.Item
-              name="industries"
-              label="适用行业"
-              rules={[{ required: true, message: '请选择适用行业' }]}
-            >
-              <Select mode="multiple" placeholder="请选择适用行业" size="large">
-                {industries.map((ind) => (
-                  <Option key={ind.value} value={ind.value}>
-                    {ind.label}
-                  </Option>
-                ))}
-              </Select>
-            </Form.Item>
-
-            <Form.Item
-              name="deployment"
-              label="部署方式"
-              rules={[{ required: true, message: '请选择部署方式' }]}
-            >
-              <Radio.Group>
-                <Space direction="vertical">
-                  {deploymentTypes.map((type) => (
-                    <Radio key={type.value} value={type.value}>
-                      {type.label}
-                    </Radio>
+              <Form.Item
+                name="category"
+                label={<span style={{ fontWeight: 500, color: '#1e293b' }}>软件类别</span>}
+                rules={[{ required: true, message: '请选择软件类别' }]}
+              >
+                <Select 
+                  placeholder="请选择软件类别" 
+                  size="large"
+                  style={{ borderRadius: 10 }}
+                  dropdownStyle={{ borderRadius: 10 }}
+                >
+                  {softwareCategories.map((cat) => (
+                    <Option key={cat.value} value={cat.value}>
+                      {cat.label}
+                    </Option>
                   ))}
-                </Space>
-              </Radio.Group>
-            </Form.Item>
+                </Select>
+              </Form.Item>
 
-            <Form.Item
-              name="priceRange"
-              label="价格区间"
-              rules={[{ required: true, message: '请选择价格区间' }]}
-            >
-              <Select placeholder="请选择价格区间" size="large">
-                {priceRanges.map((price) => (
-                  <Option key={price.value} value={price.value}>
-                    {price.label}
-                  </Option>
-                ))}
-              </Select>
-            </Form.Item>
+              <Form.Item
+                name="industries"
+                label={<span style={{ fontWeight: 500, color: '#1e293b' }}>适用行业</span>}
+                rules={[{ required: true, message: '请选择适用行业' }]}
+              >
+                <Select 
+                  mode="multiple" 
+                  placeholder="请选择适用行业" 
+                  size="large"
+                  style={{ borderRadius: 10 }}
+                  dropdownStyle={{ borderRadius: 10 }}
+                  tagRender={(props) => {
+                    const { label, closable, onClose } = props
+                    return (
+                      <Tag
+                        closable={closable}
+                        onClose={onClose}
+                        style={{
+                          background: '#e0e7ff',
+                          color: '#4f46e5',
+                          border: 'none',
+                          borderRadius: 6,
+                          padding: '4px 10px',
+                          fontSize: 13,
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: 6,
+                        }}
+                      >
+                        {label}
+                      </Tag>
+                    )
+                  }}
+                >
+                  {industries.map((ind) => (
+                    <Option key={ind.value} value={ind.value}>
+                      {ind.label}
+                    </Option>
+                  ))}
+                </Select>
+              </Form.Item>
 
-            <Form.Item
-              name="brief"
-              label="软件简介"
-              rules={[{ required: true, message: '请输入软件简介' }]}
-            >
-              <TextArea
-                placeholder="请简要介绍软件的核心功能和特点"
-                rows={4}
-                showCount
-                maxLength={500}
-              />
-            </Form.Item>
-          </Space>
+              <Form.Item
+                name="deployment"
+                label={<span style={{ fontWeight: 500, color: '#1e293b' }}>部署方式</span>}
+                rules={[{ required: true, message: '请选择部署方式' }]}
+              >
+                <Checkbox.Group style={{ width: '100%' }}>
+                  <Space direction="vertical" style={{ width: '100%' }}>
+                    {deploymentTypes.map((type) => (
+                      <div
+                        key={type.value}
+                        style={{
+                          padding: '12px 16px',
+                          background: '#f8fafc',
+                          borderRadius: 10,
+                          border: '1px solid #e2e8f0',
+                          transition: 'all 0.2s ease',
+                          cursor: 'pointer',
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.background = '#f1f5f9'
+                          e.currentTarget.style.borderColor = '#cbd5e1'
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.background = '#f8fafc'
+                          e.currentTarget.style.borderColor = '#e2e8f0'
+                        }}
+                      >
+                        <Checkbox value={type.value} style={{ width: '100%' }}>
+                          <span style={{ fontSize: 14, color: '#334155' }}>{type.label}</span>
+                        </Checkbox>
+                      </div>
+                    ))}
+                  </Space>
+                </Checkbox.Group>
+              </Form.Item>
+
+              <Form.Item
+                name="priceRange"
+                label={<span style={{ fontWeight: 500, color: '#1e293b' }}>价格区间</span>}
+                rules={[{ required: true, message: '请选择价格区间' }]}
+              >
+                <Select 
+                  placeholder="请选择价格区间" 
+                  size="large"
+                  style={{ borderRadius: 10 }}
+                  dropdownStyle={{ borderRadius: 10 }}
+                >
+                  {priceRanges.map((price) => (
+                    <Option key={price.value} value={price.value}>
+                      {price.label}
+                    </Option>
+                  ))}
+                </Select>
+              </Form.Item>
+
+              <Form.Item
+                name="brief"
+                label={<span style={{ fontWeight: 500, color: '#1e293b' }}>软件简介</span>}
+                rules={[{ required: true, message: '请输入软件简介' }]}
+              >
+                <TextArea
+                  placeholder="请简要介绍软件的核心功能和特点"
+                  rows={4}
+                  showCount
+                  maxLength={500}
+                  style={{ borderRadius: 10, resize: 'none' }}
+                />
+              </Form.Item>
+            </Space>
+          </div>
         )
 
       case 1:
@@ -505,23 +582,49 @@ export default function SoftwarePublish() {
 
   return (
     <div>
-      <Card style={{ marginBottom: 24, borderRadius: 12 }}>
+      {/* 页面头部 */}
+      <Card 
+        style={{ 
+          marginBottom: 24, 
+          borderRadius: 16,
+          background: 'linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)',
+          border: '1px solid #e2e8f0',
+        }}
+        bodyStyle={{ padding: '24px 32px' }}
+      >
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Title level={4} style={{ margin: 0 }}>
-            {draftId ? '编辑软件草稿' : '发布软件产品'}
-            {draftId && <Tag color="orange" style={{ marginLeft: 12 }}>草稿模式</Tag>}
-          </Title>
-          <Space>
+          <div>
+            <Title level={4} style={{ margin: 0, color: '#1e293b', fontWeight: 600 }}>
+              {draftId ? '编辑软件草稿' : '发布软件产品'}
+            </Title>
+            <Text style={{ color: '#64748b', fontSize: 13, marginTop: 4, display: 'block' }}>
+              完善软件信息，让更多制造企业发现您的产品
+            </Text>
+          </div>
+          <Space size="middle">
+            {draftId && (
+              <Tag color="orange" style={{ padding: '4px 12px', fontSize: 13 }}>
+                草稿模式
+              </Tag>
+            )}
             <Button 
               icon={<FileOutlined />}
               onClick={() => setDraftModalVisible(true)}
+              style={{ borderRadius: 8, height: 40 }}
             >
               草稿箱 ({drafts.length})
             </Button>
             <Button 
+              type="primary"
               icon={<SaveOutlined />}
               onClick={handleSaveDraft}
               loading={saveLoading}
+              style={{ 
+                borderRadius: 8, 
+                height: 40,
+                background: '#4f46e5',
+                borderColor: '#4f46e5',
+              }}
             >
               保存草稿
             </Button>
@@ -529,12 +632,123 @@ export default function SoftwarePublish() {
         </div>
       </Card>
 
-      <Card style={{ borderRadius: 12 }}>
-        <Steps
-          current={currentStep}
-          items={steps}
-          style={{ marginBottom: 40 }}
-        />
+      {/* 步骤条 */}
+      <Card 
+        style={{ 
+          borderRadius: 16,
+          border: '1px solid #e2e8f0',
+          boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+        }}
+        bodyStyle={{ padding: '40px' }}
+      >
+        {/* 自定义步骤条 */}
+        <div style={{ marginBottom: 48, padding: '0 40px' }}>
+          <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', position: 'relative' }}>
+            {/* 连接线 */}
+            <div style={{
+              position: 'absolute',
+              top: 20,
+              left: '16.67%',
+              right: '16.67%',
+              height: 2,
+              background: '#e2e8f0',
+              zIndex: 0,
+            }}>
+              <div style={{
+                height: '100%',
+                background: 'linear-gradient(90deg, #4f46e5 0%, #6366f1 100%)',
+                width: currentStep === 0 ? '0%' : currentStep === 1 ? '50%' : '100%',
+                transition: 'width 0.4s ease',
+              }} />
+            </div>
+
+            {steps.map((step, index) => {
+              const isActive = index === currentStep
+              const isCompleted = index < currentStep
+              const isPending = index > currentStep
+
+              return (
+                <div
+                  key={index}
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    zIndex: 1,
+                    flex: 1,
+                  }}
+                >
+                  {/* 步骤图标 */}
+                  <div
+                    style={{
+                      width: 44,
+                      height: 44,
+                      borderRadius: '50%',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      background: isActive
+                        ? 'linear-gradient(135deg, #4f46e5 0%, #6366f1 100%)'
+                        : isCompleted
+                        ? '#4f46e5'
+                        : '#f1f5f9',
+                      border: isActive
+                        ? '3px solid #c7d2fe'
+                        : isCompleted
+                        ? 'none'
+                        : '2px solid #e2e8f0',
+                      boxShadow: isActive
+                        ? '0 4px 14px rgba(79, 70, 229, 0.4)'
+                        : isCompleted
+                        ? '0 2px 8px rgba(79, 70, 229, 0.3)'
+                        : 'none',
+                      transition: 'all 0.3s ease',
+                      marginBottom: 12,
+                    }}
+                  >
+                    {isCompleted ? (
+                      <CheckCircleOutlined style={{ color: '#fff', fontSize: 20 }} />
+                    ) : (
+                      <span style={{
+                        color: isActive ? '#fff' : '#94a3b8',
+                        fontSize: 16,
+                        fontWeight: 600,
+                      }}>
+                        {index + 1}
+                      </span>
+                    )}
+                  </div>
+
+                  {/* 步骤标题 */}
+                  <span
+                    style={{
+                      fontSize: 15,
+                      fontWeight: isActive ? 600 : 500,
+                      color: isActive ? '#4f46e5' : isCompleted ? '#1e293b' : '#94a3b8',
+                      marginBottom: 4,
+                      transition: 'all 0.3s ease',
+                    }}
+                  >
+                    {step.title}
+                  </span>
+
+                  {/* 步骤描述 */}
+                  <span
+                    style={{
+                      fontSize: 12,
+                      color: isActive ? '#64748b' : isCompleted ? '#64748b' : '#cbd5e1',
+                      textAlign: 'center',
+                      maxWidth: 120,
+                      lineHeight: 1.4,
+                    }}
+                  >
+                    {step.description}
+                  </span>
+                </div>
+              )
+            })}
+          </div>
+        </div>
 
         <Form
           form={form}
@@ -544,23 +758,39 @@ export default function SoftwarePublish() {
         >
           {renderStepContent()}
 
-          <Divider style={{ margin: '40px 0' }} />
+          <Divider style={{ margin: '48px 0' }} />
 
-          <Space style={{ width: '100%', justifyContent: 'space-between' }}>
+          {/* 底部操作按钮 */}
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             {currentStep > 0 ? (
-              <Button size="large" onClick={handlePrev} style={{ width: 120 }}>
+              <Button 
+                size="large" 
+                onClick={handlePrev} 
+                style={{ 
+                  width: 120, 
+                  borderRadius: 10,
+                  height: 44,
+                  borderColor: '#cbd5e1',
+                  color: '#64748b',
+                }}
+              >
                 <ArrowLeftOutlined /> 上一步
               </Button>
             ) : (
               <div />
             )}
 
-            <Space>
+            <Space size="middle">
               <Button
                 size="large"
                 onClick={handleSaveDraft}
                 loading={saveLoading}
                 icon={<SaveOutlined />}
+                style={{ 
+                  borderRadius: 10, 
+                  height: 44,
+                  borderColor: '#cbd5e1',
+                }}
               >
                 保存草稿
               </Button>
@@ -569,7 +799,14 @@ export default function SoftwarePublish() {
                   type="primary"
                   size="large"
                   onClick={handleNext}
-                  style={{ width: 120 }}
+                  style={{ 
+                    width: 120, 
+                    borderRadius: 10,
+                    height: 44,
+                    background: '#4f46e5',
+                    borderColor: '#4f46e5',
+                    boxShadow: '0 4px 14px rgba(79, 70, 229, 0.3)',
+                  }}
                 >
                   下一步 <ArrowRightOutlined />
                 </Button>
@@ -579,40 +816,64 @@ export default function SoftwarePublish() {
                   size="large"
                   onClick={handleSubmit}
                   loading={loading}
-                  style={{ width: 160 }}
+                  style={{ 
+                    width: 160, 
+                    borderRadius: 10,
+                    height: 44,
+                    background: '#4f46e5',
+                    borderColor: '#4f46e5',
+                    boxShadow: '0 4px 14px rgba(79, 70, 229, 0.3)',
+                  }}
                 >
                   提交审核
                 </Button>
               )}
             </Space>
-          </Space>
+          </div>
         </Form>
       </Card>
 
       {/* 草稿箱弹窗 */}
       <Modal
-        title="草稿箱"
+        title={
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <FileOutlined style={{ color: '#4f46e5' }} />
+            <span>草稿箱</span>
+          </div>
+        }
         open={draftModalVisible}
         onCancel={() => setDraftModalVisible(false)}
         footer={null}
-        width={600}
+        width={640}
+        bodyStyle={{ padding: '24px' }}
       >
         {drafts.length === 0 ? (
           <Empty
             image={Empty.PRESENTED_IMAGE_SIMPLE}
             description="暂无草稿"
+            style={{ padding: '40px 0' }}
           />
         ) : (
           <List
             dataSource={drafts}
+            style={{ maxHeight: 400, overflow: 'auto' }}
             renderItem={(draft) => (
               <List.Item
+                style={{
+                  padding: '16px 20px',
+                  marginBottom: 12,
+                  background: '#f8fafc',
+                  borderRadius: 12,
+                  border: '1px solid #e2e8f0',
+                }}
                 actions={[
                   <Button
                     key="edit"
-                    type="link"
+                    type="primary"
+                    ghost
                     icon={<EditOutlined />}
                     onClick={() => handleUseDraft(draft)}
+                    style={{ borderRadius: 6 }}
                   >
                     编辑
                   </Button>,
@@ -621,21 +882,30 @@ export default function SoftwarePublish() {
                     title="确定删除此草稿？"
                     onConfirm={() => handleDeleteDraft(draft.id)}
                   >
-                    <Button type="link" danger icon={<DeleteOutlined />}>
+                    <Button 
+                      type="link" 
+                      danger 
+                      icon={<DeleteOutlined />}
+                      style={{ padding: '4px 8px' }}
+                    >
                       删除
                     </Button>
                   </Popconfirm>,
                 ]}
               >
                 <List.Item.Meta
-                  title={draft.name}
+                  title={
+                    <Text strong style={{ fontSize: 15, color: '#1e293b' }}>
+                      {draft.name}
+                    </Text>
+                  }
                   description={
-                    <Space direction="vertical" size={0}>
-                      <Text type="secondary">
-                        创建时间：{new Date(draft.createTime).toLocaleString()}
+                    <Space direction="vertical" size={2} style={{ marginTop: 4 }}>
+                      <Text type="secondary" style={{ fontSize: 12 }}>
+                        创建：{new Date(draft.createTime).toLocaleString()}
                       </Text>
-                      <Text type="secondary">
-                        更新时间：{new Date(draft.updateTime).toLocaleString()}
+                      <Text type="secondary" style={{ fontSize: 12 }}>
+                        更新：{new Date(draft.updateTime).toLocaleString()}
                       </Text>
                     </Space>
                   }

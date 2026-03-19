@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
   Card,
-  Descriptions,
   Button,
   Tag,
   Space,
@@ -10,7 +9,6 @@ import {
   Divider,
   Row,
   Col,
-  Statistic,
 } from 'antd'
 import {
   EditOutlined,
@@ -114,15 +112,17 @@ export default function EnterpriseInfo() {
   }
 
   return (
-    <div style={{ padding: '24px' }}>
+    <div style={{ padding: '24px', background: '#f8fafc', minHeight: '100vh' }}>
       {/* 页面标题 */}
       <Card
         style={{
           marginBottom: 24,
-          borderRadius: 12,
-          boxShadow: '0 2px 8px rgba(0, 0, 0, 0.06)',
+          borderRadius: 16,
+          background: 'linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)',
+          border: '1px solid #e2e8f0',
+          boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)',
         }}
-        bodyStyle={{ padding: '20px 24px' }}
+        bodyStyle={{ padding: '24px 32px' }}
       >
         <div
           style={{
@@ -135,19 +135,36 @@ export default function EnterpriseInfo() {
             <Button
               icon={<ArrowLeftOutlined />}
               onClick={() => navigate('/enterprise')}
-              style={{ borderRadius: 8 }}
+              style={{ 
+                borderRadius: 10,
+                height: 40,
+                borderColor: '#cbd5e1',
+                color: '#64748b',
+              }}
             >
               返回工作台
             </Button>
-            <Title level={4} style={{ margin: 0 }}>
-              企业信息
-            </Title>
+            <div>
+              <Title level={4} style={{ margin: 0, color: '#1e293b', fontWeight: 600 }}>
+                企业信息
+              </Title>
+              <Text style={{ color: '#64748b', fontSize: 13 }}>
+                查看和管理您的企业信息
+              </Text>
+            </div>
           </Space>
           <Button
             type="primary"
             icon={<EditOutlined />}
             onClick={() => navigate('/enterprise/info/edit')}
-            style={{ borderRadius: 8, height: 40, padding: '0 24px' }}
+            style={{ 
+              borderRadius: 10, 
+              height: 44, 
+              padding: '0 28px',
+              background: '#4f46e5',
+              borderColor: '#4f46e5',
+              boxShadow: '0 4px 14px rgba(79, 70, 229, 0.3)',
+            }}
           >
             编辑信息
           </Button>
@@ -159,142 +176,328 @@ export default function EnterpriseInfo() {
         <Col span={8}>
           <Card
             style={{
-              borderRadius: 12,
-              boxShadow: '0 2px 8px rgba(0, 0, 0, 0.06)',
+              borderRadius: 16,
+              border: '1px solid #e2e8f0',
+              boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)',
+              background: userInfo.applyStatus === 'approved' 
+                ? 'linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%)'
+                : userInfo.applyStatus === 'pending'
+                ? 'linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%)'
+                : 'linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%)',
             }}
+            bodyStyle={{ padding: '24px' }}
           >
-            <Statistic
-              title="入驻状态"
-              value={userInfo.applyStatus === 'approved' ? '已入驻' : userInfo.applyStatus === 'pending' ? '待审核' : '已拒绝'}
-              valueStyle={{
-                color: userInfo.applyStatus === 'approved' ? '#52c41a' : userInfo.applyStatus === 'pending' ? '#faad14' : '#f5222d',
-                fontSize: 24,
-                fontWeight: 600,
-              }}
-              prefix={
-                userInfo.applyStatus === 'approved' ? (
-                  <CheckCircleOutlined style={{ color: '#52c41a' }} />
+            <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+              <div
+                style={{
+                  width: 56,
+                  height: 56,
+                  borderRadius: 14,
+                  background: userInfo.applyStatus === 'approved' 
+                    ? '#22c55e'
+                    : userInfo.applyStatus === 'pending'
+                    ? '#f59e0b'
+                    : '#ef4444',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  boxShadow: userInfo.applyStatus === 'approved'
+                    ? '0 4px 14px rgba(34, 197, 94, 0.4)'
+                    : userInfo.applyStatus === 'pending'
+                    ? '0 4px 14px rgba(245, 158, 11, 0.4)'
+                    : '0 4px 14px rgba(239, 68, 68, 0.4)',
+                }}
+              >
+                {userInfo.applyStatus === 'approved' ? (
+                  <CheckCircleOutlined style={{ color: '#fff', fontSize: 28 }} />
                 ) : userInfo.applyStatus === 'pending' ? (
-                  <ClockCircleOutlined style={{ color: '#faad14' }} />
+                  <ClockCircleOutlined style={{ color: '#fff', fontSize: 28 }} />
                 ) : (
-                  <CloseCircleOutlined style={{ color: '#f5222d' }} />
-                )
-              }
-            />
+                  <CloseCircleOutlined style={{ color: '#fff', fontSize: 28 }} />
+                )}
+              </div>
+              <div>
+                <Text style={{ color: '#64748b', fontSize: 13, display: 'block', marginBottom: 4 }}>
+                  入驻状态
+                </Text>
+                <Text style={{ 
+                  fontSize: 22, 
+                  fontWeight: 700,
+                  color: userInfo.applyStatus === 'approved' 
+                    ? '#16a34a'
+                    : userInfo.applyStatus === 'pending'
+                    ? '#d97706'
+                    : '#dc2626',
+                }}>
+                  {userInfo.applyStatus === 'approved' ? '已入驻' : userInfo.applyStatus === 'pending' ? '待审核' : '已拒绝'}
+                </Text>
+              </div>
+            </div>
           </Card>
         </Col>
         <Col span={8}>
           <Card
             style={{
-              borderRadius: 12,
-              boxShadow: '0 2px 8px rgba(0, 0, 0, 0.06)',
+              borderRadius: 16,
+              border: '1px solid #e2e8f0',
+              boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)',
+              background: userInfo.enterpriseType === 'supply'
+                ? 'linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%)'
+                : 'linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%)',
             }}
+            bodyStyle={{ padding: '24px' }}
           >
-            <Statistic
-              title="企业类型"
-              value={getEnterpriseTypeText(userInfo.enterpriseType)}
-              valueStyle={{
-                color: userInfo.enterpriseType === 'supply' ? '#52c41a' : '#1677ff',
-                fontSize: 24,
-                fontWeight: 600,
-              }}
-              prefix={<ShopOutlined />}
-            />
+            <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+              <div
+                style={{
+                  width: 56,
+                  height: 56,
+                  borderRadius: 14,
+                  background: userInfo.enterpriseType === 'supply' ? '#22c55e' : '#3b82f6',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  boxShadow: userInfo.enterpriseType === 'supply'
+                    ? '0 4px 14px rgba(34, 197, 94, 0.4)'
+                    : '0 4px 14px rgba(59, 130, 246, 0.4)',
+                }}
+              >
+                <ShopOutlined style={{ color: '#fff', fontSize: 28 }} />
+              </div>
+              <div>
+                <Text style={{ color: '#64748b', fontSize: 13, display: 'block', marginBottom: 4 }}>
+                  企业类型
+                </Text>
+                <Text style={{ 
+                  fontSize: 22, 
+                  fontWeight: 700,
+                  color: userInfo.enterpriseType === 'supply' ? '#16a34a' : '#2563eb',
+                }}>
+                  {getEnterpriseTypeText(userInfo.enterpriseType)}
+                </Text>
+              </div>
+            </div>
           </Card>
         </Col>
         <Col span={8}>
           <Card
             style={{
-              borderRadius: 12,
-              boxShadow: '0 2px 8px rgba(0, 0, 0, 0.06)',
+              borderRadius: 16,
+              border: '1px solid #e2e8f0',
+              boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)',
+              background: 'linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%)',
             }}
+            bodyStyle={{ padding: '24px' }}
           >
-            <Statistic
-              title="入驻时间"
-              value={userInfo.applyTime ? new Date(userInfo.applyTime).toLocaleDateString('zh-CN') : '-'}
-              valueStyle={{
-                fontSize: 20,
-                fontWeight: 600,
-              }}
-              prefix={<SafetyCertificateOutlined />}
-            />
+            <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+              <div
+                style={{
+                  width: 56,
+                  height: 56,
+                  borderRadius: 14,
+                  background: '#a855f7',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  boxShadow: '0 4px 14px rgba(168, 85, 247, 0.4)',
+                }}
+              >
+                <SafetyCertificateOutlined style={{ color: '#fff', fontSize: 28 }} />
+              </div>
+              <div>
+                <Text style={{ color: '#64748b', fontSize: 13, display: 'block', marginBottom: 4 }}>
+                  入驻时间
+                </Text>
+                <Text style={{ fontSize: 20, fontWeight: 700, color: '#7c3aed' }}>
+                  {userInfo.applyTime ? new Date(userInfo.applyTime).toLocaleDateString('zh-CN') : '-'}
+                </Text>
+              </div>
+            </div>
           </Card>
         </Col>
       </Row>
 
       {/* 企业详细信息 */}
       <Card
-        title={
-          <Space>
-            <ShopOutlined style={{ color: '#1677ff' }} />
-            <span style={{ fontSize: 18, fontWeight: 600 }}>企业基本信息</span>
-          </Space>
-        }
         style={{
-          borderRadius: 12,
-          boxShadow: '0 2px 8px rgba(0, 0, 0, 0.06)',
+          borderRadius: 16,
+          border: '1px solid #e2e8f0',
+          boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)',
+          background: '#fff',
         }}
+        bodyStyle={{ padding: '32px' }}
       >
-        <Descriptions
-          column={2}
-          labelStyle={{
-            fontWeight: 500,
-            color: 'var(--text-tertiary)',
-            width: 140,
-          }}
-          contentStyle={{
-            fontWeight: 500,
-            color: 'var(--text-primary)',
-          }}
-        >
-          <Descriptions.Item label={<Space><ShopOutlined /> 企业名称</Space>}>
-            {userInfo.enterpriseInfo?.enterpriseName || '-'}
-          </Descriptions.Item>
-          <Descriptions.Item label={<Space><CreditCardOutlined /> 统一社会信用代码</Space>}>
-            {userInfo.enterpriseInfo?.creditCode || '-'}
-          </Descriptions.Item>
-          <Descriptions.Item label={<Space><Tag color={getEnterpriseTypeColor(userInfo.enterpriseType)}>企业类型</Tag></Space>}>
-            {getEnterpriseTypeText(userInfo.enterpriseType)}
-          </Descriptions.Item>
-          <Descriptions.Item label={<Space><SafetyCertificateOutlined /> 入驻状态</Space>}>
-            {getStatusTag(userInfo.applyStatus)}
-          </Descriptions.Item>
-        </Descriptions>
+        {/* 企业基本信息 */}
+        <div style={{ marginBottom: 32 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 24 }}>
+            <div
+              style={{
+                width: 40,
+                height: 40,
+                borderRadius: 10,
+                background: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                boxShadow: '0 4px 14px rgba(59, 130, 246, 0.3)',
+              }}
+            >
+              <ShopOutlined style={{ color: '#fff', fontSize: 20 }} />
+            </div>
+            <div>
+              <Text style={{ fontSize: 18, fontWeight: 600, color: '#1e293b', display: 'block' }}>
+                企业基本信息
+              </Text>
+              <Text style={{ fontSize: 13, color: '#64748b' }}>
+                企业的核心注册信息
+              </Text>
+            </div>
+          </div>
 
-        <Divider style={{ margin: '24px 0', borderColor: 'var(--border-light)' }} />
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px 40px' }}>
+            <div style={{ 
+              padding: '16px 20px', 
+              background: '#f8fafc', 
+              borderRadius: 12,
+              border: '1px solid #e2e8f0',
+            }}>
+              <Text style={{ fontSize: 12, color: '#64748b', display: 'block', marginBottom: 6 }}>
+                <ShopOutlined style={{ marginRight: 6 }} /> 企业名称
+              </Text>
+              <Text style={{ fontSize: 15, fontWeight: 600, color: '#1e293b' }}>
+                {userInfo.enterpriseInfo?.enterpriseName || '-'}
+              </Text>
+            </div>
 
-        <Title level={5} style={{ marginBottom: 16, color: 'var(--text-primary)' }}>
-          <Space>
-            <UserOutlined style={{ color: 'var(--brand-primary)' }} />
-            联系人信息
-          </Space>
-        </Title>
+            <div style={{ 
+              padding: '16px 20px', 
+              background: '#f8fafc', 
+              borderRadius: 12,
+              border: '1px solid #e2e8f0',
+            }}>
+              <Text style={{ fontSize: 12, color: '#64748b', display: 'block', marginBottom: 6 }}>
+                <CreditCardOutlined style={{ marginRight: 6 }} /> 统一社会信用代码
+              </Text>
+              <Text style={{ fontSize: 15, fontWeight: 600, color: '#1e293b' }}>
+                {userInfo.enterpriseInfo?.creditCode || '-'}
+              </Text>
+            </div>
 
-        <Descriptions
-          column={2}
-          labelStyle={{
-            fontWeight: 500,
-            color: 'var(--text-tertiary)',
-            width: 140,
-          }}
-          contentStyle={{
-            fontWeight: 500,
-            color: 'var(--text-primary)',
-          }}
-        >
-          <Descriptions.Item label={<Space><UserOutlined /> 联系人姓名</Space>}>
-            {userInfo.enterpriseInfo?.contactName || '-'}
-          </Descriptions.Item>
-          <Descriptions.Item label={<Space><PhoneOutlined /> 手机号</Space>}>
-            {phone}
-          </Descriptions.Item>
-          <Descriptions.Item label={<Space><MailOutlined /> 联系人邮箱</Space>}>
-            {userInfo.enterpriseInfo?.contactEmail || '-'}
-          </Descriptions.Item>
-          <Descriptions.Item label={<Space><SafetyCertificateOutlined /> 注册时间</Space>}>
-            {userInfo.registerTime ? new Date(userInfo.registerTime).toLocaleString('zh-CN') : '-'}
-          </Descriptions.Item>
-        </Descriptions>
+            <div style={{ 
+              padding: '16px 20px', 
+              background: '#f8fafc', 
+              borderRadius: 12,
+              border: '1px solid #e2e8f0',
+            }}>
+              <Text style={{ fontSize: 12, color: '#64748b', display: 'block', marginBottom: 6 }}>
+                <Tag color={getEnterpriseTypeColor(userInfo.enterpriseType)} style={{ marginRight: 6 }}>企业类型</Tag>
+              </Text>
+              <Text style={{ fontSize: 15, fontWeight: 600, color: '#1e293b' }}>
+                {getEnterpriseTypeText(userInfo.enterpriseType)}
+              </Text>
+            </div>
+
+            <div style={{ 
+              padding: '16px 20px', 
+              background: '#f8fafc', 
+              borderRadius: 12,
+              border: '1px solid #e2e8f0',
+            }}>
+              <Text style={{ fontSize: 12, color: '#64748b', display: 'block', marginBottom: 6 }}>
+                <SafetyCertificateOutlined style={{ marginRight: 6 }} /> 入驻状态
+              </Text>
+              <div>{getStatusTag(userInfo.applyStatus)}</div>
+            </div>
+          </div>
+        </div>
+
+        <Divider style={{ margin: '32px 0', borderColor: '#e2e8f0' }} />
+
+        {/* 联系人信息 */}
+        <div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 24 }}>
+            <div
+              style={{
+                width: 40,
+                height: 40,
+                borderRadius: 10,
+                background: 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                boxShadow: '0 4px 14px rgba(139, 92, 246, 0.3)',
+              }}
+            >
+              <UserOutlined style={{ color: '#fff', fontSize: 20 }} />
+            </div>
+            <div>
+              <Text style={{ fontSize: 18, fontWeight: 600, color: '#1e293b', display: 'block' }}>
+                联系人信息
+              </Text>
+              <Text style={{ fontSize: 13, color: '#64748b' }}>
+                企业联系人的详细信息
+              </Text>
+            </div>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px 40px' }}>
+            <div style={{ 
+              padding: '16px 20px', 
+              background: '#f8fafc', 
+              borderRadius: 12,
+              border: '1px solid #e2e8f0',
+            }}>
+              <Text style={{ fontSize: 12, color: '#64748b', display: 'block', marginBottom: 6 }}>
+                <UserOutlined style={{ marginRight: 6 }} /> 联系人姓名
+              </Text>
+              <Text style={{ fontSize: 15, fontWeight: 600, color: '#1e293b' }}>
+                {userInfo.enterpriseInfo?.contactName || '-'}
+              </Text>
+            </div>
+
+            <div style={{ 
+              padding: '16px 20px', 
+              background: '#f8fafc', 
+              borderRadius: 12,
+              border: '1px solid #e2e8f0',
+            }}>
+              <Text style={{ fontSize: 12, color: '#64748b', display: 'block', marginBottom: 6 }}>
+                <PhoneOutlined style={{ marginRight: 6 }} /> 手机号
+              </Text>
+              <Text style={{ fontSize: 15, fontWeight: 600, color: '#1e293b' }}>
+                {phone}
+              </Text>
+            </div>
+
+            <div style={{ 
+              padding: '16px 20px', 
+              background: '#f8fafc', 
+              borderRadius: 12,
+              border: '1px solid #e2e8f0',
+            }}>
+              <Text style={{ fontSize: 12, color: '#64748b', display: 'block', marginBottom: 6 }}>
+                <MailOutlined style={{ marginRight: 6 }} /> 联系人邮箱
+              </Text>
+              <Text style={{ fontSize: 15, fontWeight: 600, color: '#1e293b' }}>
+                {userInfo.enterpriseInfo?.contactEmail || '-'}
+              </Text>
+            </div>
+
+            <div style={{ 
+              padding: '16px 20px', 
+              background: '#f8fafc', 
+              borderRadius: 12,
+              border: '1px solid #e2e8f0',
+            }}>
+              <Text style={{ fontSize: 12, color: '#64748b', display: 'block', marginBottom: 6 }}>
+                <SafetyCertificateOutlined style={{ marginRight: 6 }} /> 注册时间
+              </Text>
+              <Text style={{ fontSize: 15, fontWeight: 600, color: '#1e293b' }}>
+                {userInfo.registerTime ? new Date(userInfo.registerTime).toLocaleString('zh-CN') : '-'}
+              </Text>
+            </div>
+          </div>
+        </div>
       </Card>
     </div>
   )

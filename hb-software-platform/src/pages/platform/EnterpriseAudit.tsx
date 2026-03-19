@@ -253,39 +253,121 @@ export default function EnterpriseAudit() {
   })
 
   return (
-    <div>
-      <Card style={{ marginBottom: 24, borderRadius: 12 }}>
-        <Title level={4} style={{ margin: 0 }}>企业入驻审核</Title>
+    <div style={{ padding: '24px', background: '#f8fafc', minHeight: '100vh' }}>
+      {/* 页面标题 */}
+      <Card
+        style={{
+          marginBottom: 24,
+          borderRadius: 16,
+          background: 'linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)',
+          border: '1px solid #e2e8f0',
+          boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)',
+        }}
+        bodyStyle={{ padding: '24px 32px' }}
+      >
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div>
+            <Title level={4} style={{ margin: 0, color: '#1e293b', fontWeight: 600 }}>
+              企业入驻审核
+            </Title>
+            <Text style={{ color: '#64748b', fontSize: 13, marginTop: 4, display: 'block' }}>
+              审核和管理企业入驻申请
+            </Text>
+          </div>
+          <div style={{
+            display: 'flex',
+            gap: 16,
+            padding: '12px 20px',
+            background: '#fff',
+            borderRadius: 12,
+            border: '1px solid #e2e8f0',
+          }}>
+            <div style={{ textAlign: 'center' }}>
+              <Text style={{ color: '#64748b', fontSize: 12, display: 'block' }}>待审核</Text>
+              <Text style={{ color: '#f59e0b', fontSize: 20, fontWeight: 700 }}>
+                {enterpriseData.filter(i => i.status === ENTERPRISE_STATUS.PENDING).length}
+              </Text>
+            </div>
+            <div style={{ width: 1, background: '#e2e8f0' }} />
+            <div style={{ textAlign: 'center' }}>
+              <Text style={{ color: '#64748b', fontSize: 12, display: 'block' }}>已入驻</Text>
+              <Text style={{ color: '#22c55e', fontSize: 20, fontWeight: 700 }}>
+                {enterpriseData.filter(i => i.status === ENTERPRISE_STATUS.APPROVED).length}
+              </Text>
+            </div>
+            <div style={{ width: 1, background: '#e2e8f0' }} />
+            <div style={{ textAlign: 'center' }}>
+              <Text style={{ color: '#64748b', fontSize: 12, display: 'block' }}>已驳回</Text>
+              <Text style={{ color: '#ef4444', fontSize: 20, fontWeight: 700 }}>
+                {enterpriseData.filter(i => i.status === ENTERPRISE_STATUS.REJECTED).length}
+              </Text>
+            </div>
+          </div>
+        </div>
       </Card>
 
-      <Card style={{ borderRadius: 12 }}>
+      <Card
+        style={{
+          borderRadius: 16,
+          border: '1px solid #e2e8f0',
+          boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)',
+          background: '#fff',
+        }}
+        bodyStyle={{ padding: '24px' }}
+      >
         {/* 搜索栏 */}
-        <Space style={{ marginBottom: 24 }}>
-          <Input
-            placeholder="搜索企业名称"
-            prefix={<SearchOutlined />}
-            style={{ width: 250 }}
-          />
-          <Select placeholder="企业类型" style={{ width: 150 }} allowClear>
-            <Option value="demand">工业制造企业</Option>
-            <Option value="supply">工业软件企业</Option>
-          </Select>
-          <Button type="primary" icon={<SearchOutlined />}>
-            搜索
-          </Button>
-        </Space>
+        <div style={{
+          padding: '20px 24px',
+          background: '#f8fafc',
+          borderRadius: 12,
+          border: '1px solid #e2e8f0',
+          marginBottom: 24,
+        }}>
+          <Space size={16} align="center">
+            <Input
+              placeholder="搜索企业名称"
+              prefix={<SearchOutlined style={{ color: '#94a3b8' }} />}
+              style={{ width: 280, borderRadius: 10 }}
+              size="large"
+            />
+            <Select
+              placeholder="企业类型"
+              style={{ width: 160, borderRadius: 10 }}
+              allowClear
+              size="large"
+              suffixIcon={<ShopOutlined style={{ color: '#94a3b8' }} />}
+            >
+              <Option value="demand">工业制造企业</Option>
+              <Option value="supply">工业软件企业</Option>
+            </Select>
+            <Button
+              type="primary"
+              icon={<SearchOutlined />}
+              size="large"
+              style={{
+                borderRadius: 10,
+                background: '#4f46e5',
+                borderColor: '#4f46e5',
+                boxShadow: '0 4px 14px rgba(79, 70, 229, 0.3)',
+              }}
+            >
+              搜索
+            </Button>
+          </Space>
+        </div>
 
         {/* 标签页 */}
         <Tabs
           activeKey={activeTab}
           onChange={setActiveTab}
+          style={{ marginBottom: 24 }}
           items={[
-            { key: 'registered', label: `已注册 (${enterpriseData.filter(i => i.status === ENTERPRISE_STATUS.REGISTERED).length})` },
-            { key: 'pending', label: `待审核 (${enterpriseData.filter(i => i.status === ENTERPRISE_STATUS.PENDING).length})` },
-            { key: 'reviewing', label: `审核中 (${enterpriseData.filter(i => i.status === ENTERPRISE_STATUS.REVIEWING).length})` },
-            { key: 'approved', label: `已入驻 (${enterpriseData.filter(i => i.status === ENTERPRISE_STATUS.APPROVED).length})` },
-            { key: 'rejected', label: `已驳回 (${enterpriseData.filter(i => i.status === ENTERPRISE_STATUS.REJECTED).length})` },
-            { key: 'all', label: '全部' },
+            { key: 'registered', label: <span style={{ fontSize: 15, fontWeight: 500 }}>已注册 ({enterpriseData.filter(i => i.status === ENTERPRISE_STATUS.REGISTERED).length})</span> },
+            { key: 'pending', label: <span style={{ fontSize: 15, fontWeight: 500 }}>待审核 ({enterpriseData.filter(i => i.status === ENTERPRISE_STATUS.PENDING).length})</span> },
+            { key: 'reviewing', label: <span style={{ fontSize: 15, fontWeight: 500 }}>审核中 ({enterpriseData.filter(i => i.status === ENTERPRISE_STATUS.REVIEWING).length})</span> },
+            { key: 'approved', label: <span style={{ fontSize: 15, fontWeight: 500 }}>已入驻 ({enterpriseData.filter(i => i.status === ENTERPRISE_STATUS.APPROVED).length})</span> },
+            { key: 'rejected', label: <span style={{ fontSize: 15, fontWeight: 500 }}>已驳回 ({enterpriseData.filter(i => i.status === ENTERPRISE_STATUS.REJECTED).length})</span> },
+            { key: 'all', label: <span style={{ fontSize: 15, fontWeight: 500 }}>全部</span> },
           ]}
         />
 
@@ -295,6 +377,7 @@ export default function EnterpriseAudit() {
           dataSource={filteredData}
           rowKey="id"
           loading={loading}
+          style={{ borderRadius: 12, overflow: 'hidden' }}
           pagination={{
             pageSize: 10,
             showSizeChanger: true,
@@ -305,12 +388,32 @@ export default function EnterpriseAudit() {
 
       {/* 详情弹窗 */}
       <Modal
-        title="企业详情"
+        title={
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <div style={{
+              width: 36,
+              height: 36,
+              borderRadius: 10,
+              background: '#4f46e5',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+              <ShopOutlined style={{ color: '#fff', fontSize: 18 }} />
+            </div>
+            <span style={{ fontSize: 18, fontWeight: 600, color: '#1e293b' }}>企业详情</span>
+          </div>
+        }
         open={detailVisible}
         onCancel={() => setDetailVisible(false)}
         width={800}
+        bodyStyle={{ padding: '32px' }}
         footer={[
-          <Button key="close" onClick={() => setDetailVisible(false)}>
+          <Button
+            key="close"
+            onClick={() => setDetailVisible(false)}
+            style={{ borderRadius: 10, height: 40 }}
+          >
             关闭
           </Button>,
           (selectedEnterprise?.status === ENTERPRISE_STATUS.PENDING || selectedEnterprise?.status === ENTERPRISE_STATUS.REVIEWING) && (
@@ -322,6 +425,7 @@ export default function EnterpriseAudit() {
                   setDetailVisible(false)
                   handleAudit(selectedEnterprise, 'reject')
                 }}
+                style={{ borderRadius: 10, height: 40 }}
               >
                 驳回
               </Button>
@@ -332,6 +436,12 @@ export default function EnterpriseAudit() {
                   setDetailVisible(false)
                   handleAudit(selectedEnterprise, 'approve')
                 }}
+                style={{
+                  borderRadius: 10,
+                  height: 40,
+                  background: '#22c55e',
+                  borderColor: '#22c55e',
+                }}
               >
                 通过
               </Button>
@@ -340,87 +450,147 @@ export default function EnterpriseAudit() {
         ]}
       >
         {selectedEnterprise && (
-          <Descriptions column={2} bordered>
-            <Descriptions.Item label="企业名称" span={2}>
-              {selectedEnterprise.name}
-            </Descriptions.Item>
-            <Descriptions.Item label="企业类型">
-              {selectedEnterprise.type}
-            </Descriptions.Item>
-            <Descriptions.Item label="统一社会信用代码">
-              {selectedEnterprise.creditCode}
-            </Descriptions.Item>
-            <Descriptions.Item label="所属行业">
-              {selectedEnterprise.industry}
-            </Descriptions.Item>
-            <Descriptions.Item label="企业规模">
-              {selectedEnterprise.scale}
-            </Descriptions.Item>
-            <Descriptions.Item label="联系人">
-              {selectedEnterprise.contactName}
-            </Descriptions.Item>
-            <Descriptions.Item label="联系电话">
-              {selectedEnterprise.contactPhone}
-            </Descriptions.Item>
-            <Descriptions.Item label="联系邮箱" span={2}>
-              {selectedEnterprise.contactEmail}
-            </Descriptions.Item>
-            <Descriptions.Item label="注册地址" span={2}>
-              {selectedEnterprise.address}
-            </Descriptions.Item>
-            <Descriptions.Item label="营业执照" span={2}>
-              <Image
-                src={selectedEnterprise.licenseUrl}
-                alt="营业执照"
-                style={{ maxWidth: 400 }}
-              />
-            </Descriptions.Item>
-            {selectedEnterprise.status === ENTERPRISE_STATUS.REJECTED && (
-              <Descriptions.Item label="驳回原因" span={2}>
-                <Text type="danger">{selectedEnterprise.rejectReason}</Text>
+          <div style={{
+            padding: '24px',
+            background: '#f8fafc',
+            borderRadius: 12,
+            border: '1px solid #e2e8f0',
+          }}>
+            <Descriptions column={2} bordered style={{ background: '#fff' }}>
+              <Descriptions.Item label="企业名称" span={2}>
+                <Text strong style={{ fontSize: 16, color: '#1e293b' }}>{selectedEnterprise.name}</Text>
               </Descriptions.Item>
-            )}
-          </Descriptions>
+              <Descriptions.Item label="企业类型">
+                <Tag color={selectedEnterprise.type === '工业制造企业' ? 'blue' : 'green'} style={{ fontSize: 13 }}>
+                  {selectedEnterprise.type}
+                </Tag>
+              </Descriptions.Item>
+              <Descriptions.Item label="统一社会信用代码">
+                {selectedEnterprise.creditCode}
+              </Descriptions.Item>
+              <Descriptions.Item label="所属行业">
+                {selectedEnterprise.industry}
+              </Descriptions.Item>
+              <Descriptions.Item label="企业规模">
+                {selectedEnterprise.scale}
+              </Descriptions.Item>
+              <Descriptions.Item label="联系人">
+                {selectedEnterprise.contactName}
+              </Descriptions.Item>
+              <Descriptions.Item label="联系电话">
+                {selectedEnterprise.contactPhone}
+              </Descriptions.Item>
+              <Descriptions.Item label="联系邮箱" span={2}>
+                {selectedEnterprise.contactEmail}
+              </Descriptions.Item>
+              <Descriptions.Item label="注册地址" span={2}>
+                {selectedEnterprise.address}
+              </Descriptions.Item>
+              <Descriptions.Item label="营业执照" span={2}>
+                <Image
+                  src={selectedEnterprise.licenseUrl}
+                  alt="营业执照"
+                  style={{ maxWidth: 400, borderRadius: 8, boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
+                />
+              </Descriptions.Item>
+              {selectedEnterprise.status === ENTERPRISE_STATUS.REJECTED && (
+                <Descriptions.Item label="驳回原因" span={2}>
+                  <div style={{
+                    padding: '12px 16px',
+                    background: '#fef2f2',
+                    borderRadius: 8,
+                    border: '1px solid #fecaca',
+                  }}>
+                    <Text style={{ color: '#dc2626' }}>{selectedEnterprise.rejectReason}</Text>
+                  </div>
+                </Descriptions.Item>
+              )}
+            </Descriptions>
+          </div>
         )}
       </Modal>
 
       {/* 审核弹窗 */}
       <Modal
-        title={auditType === 'approve' ? '审核通过' : '审核驳回'}
+        title={
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <div style={{
+              width: 36,
+              height: 36,
+              borderRadius: 10,
+              background: auditType === 'approve' ? '#22c55e' : '#ef4444',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+              {auditType === 'approve' ? (
+                <CheckCircleOutlined style={{ color: '#fff', fontSize: 18 }} />
+              ) : (
+                <CloseCircleOutlined style={{ color: '#fff', fontSize: 18 }} />
+              )}
+            </div>
+            <span style={{ fontSize: 18, fontWeight: 600, color: '#1e293b' }}>
+              {auditType === 'approve' ? '审核通过' : '审核驳回'}
+            </span>
+          </div>
+        }
         open={auditVisible}
         onCancel={() => setAuditVisible(false)}
         onOk={handleAuditSubmit}
         confirmLoading={loading}
         okText="确认"
         cancelText="取消"
+        width={560}
+        bodyStyle={{ padding: '32px' }}
         okButtonProps={{
           type: auditType === 'approve' ? 'primary' : 'default',
           danger: auditType === 'reject',
+          style: {
+            borderRadius: 10,
+            height: 44,
+            padding: '0 28px',
+            background: auditType === 'approve' ? '#22c55e' : undefined,
+            borderColor: auditType === 'approve' ? '#22c55e' : undefined,
+          },
+        }}
+        cancelButtonProps={{
+          style: { borderRadius: 10, height: 44, padding: '0 28px' },
         }}
       >
         <Form form={form} layout="vertical">
-          <Form.Item>
-            <Text>
-              您正在审核企业：<Text strong>{selectedEnterprise?.name}</Text>
+          <div style={{
+            padding: '16px 20px',
+            background: '#f8fafc',
+            borderRadius: 12,
+            border: '1px solid #e2e8f0',
+            marginBottom: 24,
+          }}>
+            <Text style={{ color: '#64748b', fontSize: 14 }}>
+              您正在审核企业：<Text strong style={{ color: '#1e293b', fontSize: 16 }}>{selectedEnterprise?.name}</Text>
             </Text>
-          </Form.Item>
+          </div>
           {auditType === 'reject' && (
             <Form.Item
               name="reason"
-              label="驳回原因"
+              label={<span style={{ fontWeight: 600, color: '#1e293b' }}>驳回原因</span>}
               rules={[{ required: true, message: '请输入驳回原因' }]}
             >
               <TextArea
                 rows={4}
                 placeholder="请输入驳回原因，将通知给企业"
+                style={{ borderRadius: 10, resize: 'none' }}
               />
             </Form.Item>
           )}
           {auditType === 'approve' && (
-            <Form.Item name="remark" label="审核备注">
+            <Form.Item
+              name="remark"
+              label={<span style={{ fontWeight: 600, color: '#1e293b' }}>审核备注</span>}
+            >
               <TextArea
                 rows={4}
                 placeholder="可选：添加审核备注"
+                style={{ borderRadius: 10, resize: 'none' }}
               />
             </Form.Item>
           )}

@@ -30,7 +30,7 @@ import {
   ClockCircleOutlined,
 } from '@ant-design/icons'
 
-const { Text } = Typography
+const { Title, Text } = Typography
 
 const { Search } = Input
 const { Option } = Select
@@ -271,51 +271,110 @@ const MySoftware = () => {
   ]
 
   return (
-    <div>
-      <div style={{ marginBottom: '24px' }}>
-        <Button icon={<ArrowLeftOutlined />} onClick={() => navigate('/enterprise')}>
-          返回工作台
-        </Button>
-      </div>
+    <div style={{ padding: '24px', background: '#f8fafc', minHeight: '100vh' }}>
+      {/* 页面标题 */}
+      <Card
+        style={{
+          marginBottom: 24,
+          borderRadius: 16,
+          background: 'linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)',
+          border: '1px solid #e2e8f0',
+          boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)',
+        }}
+        bodyStyle={{ padding: '24px 32px' }}
+      >
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <Space size={16} align="center">
+            <Button
+              icon={<ArrowLeftOutlined />}
+              onClick={() => navigate('/enterprise')}
+              style={{
+                borderRadius: 10,
+                height: 40,
+                borderColor: '#cbd5e1',
+                color: '#64748b',
+              }}
+            >
+              返回工作台
+            </Button>
+            <div>
+              <Title level={4} style={{ margin: 0, color: '#1e293b', fontWeight: 600 }}>
+                我的软件
+              </Title>
+              <Text style={{ color: '#64748b', fontSize: 13 }}>
+                管理您发布的软件产品
+              </Text>
+            </div>
+          </Space>
+          <Button
+            type="primary"
+            icon={<PlusOutlined />}
+            onClick={() => navigate('/enterprise/software/publish')}
+            style={{
+              borderRadius: 10,
+              height: 44,
+              padding: '0 24px',
+              background: '#4f46e5',
+              borderColor: '#4f46e5',
+              boxShadow: '0 4px 14px rgba(79, 70, 229, 0.3)',
+            }}
+          >
+            发布软件
+          </Button>
+        </div>
+      </Card>
 
-      <Card style={{ borderRadius: '8px' }}>
+      <Card
+        style={{
+          borderRadius: 16,
+          border: '1px solid #e2e8f0',
+          boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)',
+          background: '#fff',
+        }}
+        bodyStyle={{ padding: '24px' }}
+      >
         <Tabs
           activeKey={activeTab}
           onChange={setActiveTab}
-          tabBarExtraContent={
-            <Button
-              type="primary"
-              icon={<PlusOutlined />}
-              onClick={() => navigate('/enterprise/software/publish')}
-            >
-              发布软件
-            </Button>
-          }
+          style={{ marginBottom: 24 }}
         >
-          <Tabs.TabPane tab="已发布软件" key="published">
-            <Row gutter={[16, 16]} style={{ marginBottom: '24px' }}>
-              <Col xs={24} sm={12} lg={8}>
-                <Search
-                  placeholder="搜索软件名称"
-                  allowClear
-                  enterButton={<><SearchOutlined /> 搜索</>}
-                />
-              </Col>
-              <Col xs={24} sm={12} lg={8}>
-                <Select
-                  value={status}
-                  onChange={setStatus}
-                  style={{ width: '100%' }}
-                  placeholder="选择状态"
-                >
-                  <Option value="all">全部状态</Option>
-                  <Option value="published">已上架</Option>
-                  <Option value="reviewing">审核中</Option>
-                  <Option value="draft">草稿</Option>
-                  <Option value="rejected">已驳回</Option>
-                </Select>
-              </Col>
-            </Row>
+          <Tabs.TabPane tab={<span style={{ fontSize: 15, fontWeight: 500 }}>已发布软件</span>} key="published">
+            {/* 搜索和筛选区域 */}
+            <div style={{
+              padding: '20px 24px',
+              background: '#f8fafc',
+              borderRadius: 12,
+              border: '1px solid #e2e8f0',
+              marginBottom: 24,
+            }}>
+              <Row gutter={[16, 16]} align="middle">
+                <Col xs={24} sm={12} lg={10}>
+                  <Search
+                    placeholder="搜索软件名称"
+                    allowClear
+                    enterButton={<><SearchOutlined /> 搜索</>}
+                    size="large"
+                    style={{ borderRadius: 10 }}
+                  />
+                </Col>
+                <Col xs={24} sm={12} lg={8}>
+                  <Select
+                    value={status}
+                    onChange={setStatus}
+                    style={{ width: '100%' }}
+                    placeholder="选择状态"
+                    size="large"
+                    suffixIcon={<ClockCircleOutlined style={{ color: '#94a3b8' }} />}
+                  >
+                    <Option value="all">全部状态</Option>
+                    <Option value="published">已上架</Option>
+                    <Option value="reviewing">审核中</Option>
+                    <Option value="draft">草稿</Option>
+                    <Option value="rejected">已驳回</Option>
+                  </Select>
+                </Col>
+              </Row>
+            </div>
 
             <Table
               columns={columns}
@@ -328,47 +387,100 @@ const MySoftware = () => {
                 showQuickJumper: true,
                 showTotal: (total) => `共 ${total} 条`,
               }}
+              style={{ borderRadius: 12, overflow: 'hidden' }}
             />
           </Tabs.TabPane>
 
           <Tabs.TabPane
             tab={
-              <span>
+              <span style={{ fontSize: 15, fontWeight: 500 }}>
                 草稿箱
                 {drafts.length > 0 && (
-                  <Tag color="orange" style={{ marginLeft: 8 }}>
+                  <span style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    minWidth: 20,
+                    height: 20,
+                    background: '#f59e0b',
+                    color: '#fff',
+                    borderRadius: 10,
+                    fontSize: 12,
+                    fontWeight: 600,
+                    marginLeft: 8,
+                    padding: '0 6px',
+                  }}>
                     {drafts.length}
-                  </Tag>
+                  </span>
                 )}
               </span>
             }
             key="drafts"
           >
             {drafts.length === 0 ? (
-              <Empty
-                image={Empty.PRESENTED_IMAGE_SIMPLE}
-                description={
-                  <Space direction="vertical" size="large">
-                    <Text type="secondary">暂无草稿</Text>
-                    <Button
-                      type="primary"
-                      icon={<PlusOutlined />}
-                      onClick={() => navigate('/enterprise/software/publish')}
-                    >
-                      创建新软件
-                    </Button>
-                  </Space>
-                }
-              />
+              <div style={{
+                padding: '60px 40px',
+                background: '#f8fafc',
+                borderRadius: 12,
+                border: '1px dashed #cbd5e1',
+                textAlign: 'center',
+              }}>
+                <Empty
+                  image={Empty.PRESENTED_IMAGE_SIMPLE}
+                  description={
+                    <Space direction="vertical" size="large">
+                      <Text style={{ color: '#64748b', fontSize: 14 }}>暂无草稿</Text>
+                      <Button
+                        type="primary"
+                        icon={<PlusOutlined />}
+                        onClick={() => navigate('/enterprise/software/publish')}
+                        style={{
+                          borderRadius: 10,
+                          height: 44,
+                          background: '#4f46e5',
+                          borderColor: '#4f46e5',
+                          boxShadow: '0 4px 14px rgba(79, 70, 229, 0.3)',
+                        }}
+                      >
+                        创建新软件
+                      </Button>
+                    </Space>
+                  }
+                />
+              </div>
             ) : (
               <>
-                <Alert
-                  message="草稿提示"
-                  description="草稿仅保存在本地浏览器中，清除浏览器数据会导致草稿丢失。请及时提交或保存重要内容。"
-                  type="info"
-                  showIcon
-                  style={{ marginBottom: 16 }}
-                />
+                <div style={{
+                  padding: '16px 20px',
+                  background: 'linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%)',
+                  borderRadius: 12,
+                  border: '1px solid #bfdbfe',
+                  marginBottom: 24,
+                  display: 'flex',
+                  alignItems: 'flex-start',
+                  gap: 12,
+                }}>
+                  <div style={{
+                    width: 32,
+                    height: 32,
+                    borderRadius: 8,
+                    background: '#3b82f6',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexShrink: 0,
+                  }}>
+                    <FileOutlined style={{ color: '#fff', fontSize: 16 }} />
+                  </div>
+                  <div>
+                    <Text strong style={{ color: '#1e40af', fontSize: 14, display: 'block', marginBottom: 4 }}>
+                      草稿提示
+                    </Text>
+                    <Text style={{ color: '#3b82f6', fontSize: 13, lineHeight: 1.6 }}>
+                      草稿仅保存在本地浏览器中，清除浏览器数据会导致草稿丢失。请及时提交或保存重要内容。
+                    </Text>
+                  </div>
+                </div>
                 <Table
                   columns={draftColumns}
                   dataSource={drafts}

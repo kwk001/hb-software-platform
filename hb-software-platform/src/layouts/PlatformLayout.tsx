@@ -95,63 +95,34 @@ const menuItems: MenuItem[] = [
   },
   {
     key: 'system',
-      icon: <SettingOutlined />,
-      label: '系统管理',
-      children: [
-        {
-          key: '/platform/users',
-          label: <Link to="/platform/users">用户管理</Link>,
-        },
-        {
-          key: '/platform/dict',
-          label: <Link to="/platform/dict">数据字典</Link>,
-        },
-        {
-          key: '/platform/role',
-          label: <Link to="/platform/role">角色管理</Link>,
-        },
-        {
-          key: '/platform/menu',
-          label: <Link to="/platform/menu">菜单管理</Link>,
-        },
-        {
-          key: '/platform/dept',
-          label: <Link to="/platform/dept">部门管理</Link>,
-        },
-        {
-          key: '/platform/post',
-          label: <Link to="/platform/post">岗位管理</Link>,
-        },
-        {
-          key: '/platform/logs/operation',
-          label: <Link to="/platform/logs/operation">操作日志</Link>,
-        },
-        {
-          key: '/platform/logs/login',
-          label: <Link to="/platform/logs/login">登录日志</Link>,
-        },
-        {
-          key: '/platform/data-migration',
-          label: <Link to="/platform/data-migration">数据迁移</Link>,
-        },
-      ],
-    },
-  ]
+    icon: <SettingOutlined />,
+    label: '系统管理',
+    children: [
+      {
+        key: '/platform/users',
+        label: <Link to="/platform/users">用户管理</Link>,
+      },
+      {
+        key: '/platform/dict',
+        label: <Link to="/platform/dict">数据字典</Link>,
+      },
+      {
+        key: '/platform/role',
+        label: <Link to="/platform/role">角色管理</Link>,
+      },
+      {
+        key: '/platform/logs/operation',
+        label: <Link to="/platform/logs/operation">操作日志</Link>,
+      },
+      {
+        key: '/platform/logs/login',
+        label: <Link to="/platform/logs/login">登录日志</Link>,
+      },
+    ],
+  },
+]
 
 const userMenuItems: MenuProps['items'] = [
-  {
-    key: 'profile',
-    icon: <UserOutlined />,
-    label: '个人中心',
-  },
-  {
-    key: 'settings',
-    icon: <SettingOutlined />,
-    label: '系统设置',
-  },
-  {
-    type: 'divider',
-  },
   {
     key: 'logout',
     icon: <LogoutOutlined />,
@@ -176,12 +147,11 @@ export default function PlatformLayout() {
         trigger={null}
         collapsible
         collapsed={collapsed}
-        theme="dark"
         width={260}
         style={{
-          boxShadow: '4px 0 24px rgba(0, 0, 0, 0.3)',
+          boxShadow: '4px 0 24px rgba(0, 0, 0, 0.08)',
           zIndex: 100,
-          background: 'var(--bg-sidebar)',
+          background: '#fff',
         }}
       >
         <div
@@ -191,8 +161,8 @@ export default function PlatformLayout() {
             alignItems: 'center',
             justifyContent: collapsed ? 'center' : 'flex-start',
             padding: collapsed ? 0 : '0 20px',
-            borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
-            background: 'rgba(0, 0, 0, 0.2)',
+            borderBottom: '1px solid #f1f5f9',
+            background: '#fff',
           }}
         >
           <Link to="/platform" style={{ display: 'flex', alignItems: 'center' }}>
@@ -213,22 +183,21 @@ export default function PlatformLayout() {
             </div>
             {!collapsed && (
               <div style={{ marginLeft: 12 }}>
-                <Text strong style={{ fontSize: 16, color: '#fff', display: 'block' }}>
+                <Text strong style={{ fontSize: 16, color: '#1e293b', display: 'block' }}>
                   平台管理
                 </Text>
-                <Text style={{ fontSize: 11, color: 'rgba(255, 255, 255, 0.5)' }}>Admin Portal</Text>
+                <Text style={{ fontSize: 11, color: '#94a3b8' }}>Admin Portal</Text>
               </div>
             )}
           </Link>
         </div>
         <Menu
-          theme="dark"
           mode="inline"
           selectedKeys={[location.pathname]}
           defaultOpenKeys={['audit', 'system']}
           items={menuItems}
-          style={{ 
-            border: 'none', 
+          style={{
+            border: 'none',
             padding: '12px 8px',
             background: 'transparent',
           }}
@@ -267,25 +236,51 @@ export default function PlatformLayout() {
 
           <Space size="large">
             <ThemeToggle size="middle" />
+            <div
+              style={{
+                width: 40,
+                height: 40,
+                borderRadius: 10,
+                background: 'transparent',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease',
+              }}
+              title="返回门户首页"
+              onClick={() => navigate('/')}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = 'var(--bg-tertiary)'
+                e.currentTarget.style.transform = 'scale(1.05)'
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'transparent'
+                e.currentTarget.style.transform = 'scale(1)'
+              }}
+            >
+              <HomeOutlined style={{ fontSize: 18, color: 'var(--text-tertiary)' }} />
+            </div>
             <Badge count={12} size="small" offset={[-2, 2]} color="#ef4444">
               <div
                 style={{
                   width: 40,
                   height: 40,
                   borderRadius: 10,
-                  background: 'var(--bg-tertiary)',
+                  background: 'transparent',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   cursor: 'pointer',
                   transition: 'all 0.3s ease',
                 }}
+                onClick={() => navigate('/platform/messages')}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.background = 'var(--bg-quaternary)'
+                  e.currentTarget.style.background = 'var(--bg-tertiary)'
                   e.currentTarget.style.transform = 'scale(1.05)'
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.background = 'var(--bg-tertiary)'
+                  e.currentTarget.style.background = 'transparent'
                   e.currentTarget.style.transform = 'scale(1)'
                 }}
               >

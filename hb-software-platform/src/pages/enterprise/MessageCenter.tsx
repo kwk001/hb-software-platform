@@ -166,45 +166,104 @@ const MessageCenter = () => {
   }
 
   return (
-    <div>
-      <div style={{ marginBottom: '24px' }}>
-        <Button icon={<ArrowLeftOutlined />} onClick={() => navigate('/enterprise')}>
-          返回工作台
-        </Button>
-      </div>
-
+    <div style={{ padding: '24px', background: '#f8fafc', minHeight: '100vh' }}>
+      {/* 页面标题 */}
       <Card
-        title={
-          <Space>
-            <span style={{ color: 'var(--text-primary)' }}>消息中心</span>
-            {unreadCount > 0 && (
-              <Badge count={unreadCount} style={{ backgroundColor: 'var(--brand-error)' }} />
-            )}
+        style={{
+          marginBottom: 24,
+          borderRadius: 16,
+          background: 'linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)',
+          border: '1px solid #e2e8f0',
+          boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)',
+        }}
+        bodyStyle={{ padding: '24px 32px' }}
+      >
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <Space size={16} align="center">
+            <Button
+              icon={<ArrowLeftOutlined />}
+              onClick={() => navigate('/enterprise')}
+              style={{
+                borderRadius: 10,
+                height: 40,
+                borderColor: '#cbd5e1',
+                color: '#64748b',
+              }}
+            >
+              返回工作台
+            </Button>
+            <div>
+              <Title level={4} style={{ margin: 0, color: '#1e293b', fontWeight: 600 }}>
+                消息中心
+              </Title>
+              <Text style={{ color: '#64748b', fontSize: 13 }}>
+                查看和管理您的消息通知
+              </Text>
+            </div>
           </Space>
-        }
-        extra={
           <Button
             type="primary"
             icon={<CheckCircleOutlined />}
             onClick={handleMarkAllRead}
             disabled={unreadCount === 0}
+            style={{
+              borderRadius: 10,
+              height: 44,
+              padding: '0 24px',
+              background: unreadCount === 0 ? '#cbd5e1' : '#4f46e5',
+              borderColor: unreadCount === 0 ? '#cbd5e1' : '#4f46e5',
+              boxShadow: unreadCount === 0 ? 'none' : '0 4px 14px rgba(79, 70, 229, 0.3)',
+            }}
           >
             全部已读
           </Button>
-        }
-        style={{ borderRadius: '12px', background: 'var(--bg-card)' }}
+        </div>
+      </Card>
+
+      <Card
+        style={{
+          borderRadius: 16,
+          border: '1px solid #e2e8f0',
+          boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)',
+          background: '#fff',
+        }}
+        bodyStyle={{ padding: '24px' }}
       >
-        <Tabs activeKey={activeTab} onChange={setActiveTab}>
+        <Tabs
+          activeKey={activeTab}
+          onChange={setActiveTab}
+          style={{ marginBottom: 24 }}
+        >
           {messageTypes.map(type => (
             <TabPane
               tab={
-                <Space>
-                  {type.icon}
-                  <span style={{ color: 'var(--text-primary)' }}>{type.label}</span>
+                <span style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 8,
+                  fontSize: 15,
+                  fontWeight: 500,
+                }}>
+                  <span style={{ fontSize: 16 }}>{type.icon}</span>
+                  <span>{type.label}</span>
                   {type.value === 'unread' && unreadCount > 0 && (
-                    <Badge count={unreadCount} style={{ backgroundColor: 'var(--brand-error)' }} />
+                    <span style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      minWidth: 20,
+                      height: 20,
+                      background: '#ef4444',
+                      color: '#fff',
+                      borderRadius: 10,
+                      fontSize: 12,
+                      fontWeight: 600,
+                      padding: '0 6px',
+                    }}>
+                      {unreadCount}
+                    </span>
                   )}
-                </Space>
+                </span>
               }
               key={type.value}
             >
@@ -213,12 +272,14 @@ const MessageCenter = () => {
                 renderItem={item => (
                   <List.Item
                     style={{
-                      background: item.isRead ? 'var(--bg-card)' : 'var(--brand-success-bg)',
-                      borderRadius: '8px',
-                      marginBottom: '12px',
-                      padding: '16px',
+                      background: item.isRead ? '#fff' : '#f0fdf4',
+                      borderRadius: '12px',
+                      marginBottom: '16px',
+                      padding: '20px 24px',
                       cursor: 'pointer',
-                      transition: 'all 0.3s',
+                      transition: 'all 0.3s ease',
+                      border: item.isRead ? '1px solid #e2e8f0' : '1px solid #bbf7d0',
+                      boxShadow: item.isRead ? '0 2px 4px rgba(0,0,0,0.02)' : '0 4px 12px rgba(34, 197, 94, 0.1)',
                     }}
                     onClick={() => handleViewDetail(item)}
                     actions={[
@@ -229,6 +290,7 @@ const MessageCenter = () => {
                           e.stopPropagation()
                           handleViewDetail(item)
                         }}
+                        style={{ color: '#4f46e5' }}
                       >
                         查看
                       </Button>,
@@ -249,37 +311,59 @@ const MessageCenter = () => {
                       avatar={
                         <div
                           style={{
-                            width: '48px',
-                            height: '48px',
-                            borderRadius: '50%',
+                            width: '56px',
+                            height: '56px',
+                            borderRadius: '14px',
                             background: item.bgColor,
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
-                            fontSize: '24px',
+                            fontSize: '28px',
+                            boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
                           }}
                         >
                           {item.icon}
                         </div>
                       }
                       title={
-                        <Space>
-                          <span style={{ fontWeight: 600, fontSize: '16px' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 8 }}>
+                          <span style={{ fontWeight: 600, fontSize: '17px', color: '#1e293b' }}>
                             {item.title}
                           </span>
-                          {!item.isRead && <Badge status="error" text="未读" />}
+                          {!item.isRead && (
+                            <span style={{
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              gap: 4,
+                              padding: '2px 10px',
+                              background: '#fee2e2',
+                              color: '#dc2626',
+                              borderRadius: 10,
+                              fontSize: 12,
+                              fontWeight: 600,
+                            }}>
+                              <span style={{
+                                width: 6,
+                                height: 6,
+                                background: '#dc2626',
+                                borderRadius: '50%',
+                              }} />
+                              未读
+                            </span>
+                          )}
                           {getTypeTag(item.type, item.subtype)}
-                        </Space>
+                        </div>
                       }
                       description={
                         <div>
                           <Paragraph
                             ellipsis={{ rows: 2 }}
-                            style={{ marginBottom: '8px', color: '#666' }}
+                            style={{ marginBottom: 10, color: '#64748b', fontSize: 14, lineHeight: 1.6 }}
                           >
                             {item.content}
                           </Paragraph>
-                          <Text type="secondary" style={{ fontSize: '13px' }}>
+                          <Text style={{ fontSize: 13, color: '#94a3b8', display: 'flex', alignItems: 'center', gap: 6 }}>
+                            <ClockCircleOutlined style={{ fontSize: 12 }} />
                             {item.time}
                           </Text>
                         </div>
@@ -289,10 +373,17 @@ const MessageCenter = () => {
                 )}
                 locale={{
                   emptyText: (
-                    <Empty
-                      image={Empty.PRESENTED_IMAGE_SIMPLE}
-                      description="暂无消息"
-                    />
+                    <div style={{
+                      padding: '60px 40px',
+                      background: '#f8fafc',
+                      borderRadius: 12,
+                      border: '1px dashed #cbd5e1',
+                    }}>
+                      <Empty
+                        image={Empty.PRESENTED_IMAGE_SIMPLE}
+                        description={<span style={{ color: '#64748b', fontSize: 14 }}>暂无消息</span>}
+                      />
+                    </div>
                   ),
                 }}
               />
@@ -303,54 +394,95 @@ const MessageCenter = () => {
 
       {/* 消息详情弹窗 */}
       <Modal
-        title="消息详情"
+        title={
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <div style={{
+              width: 36,
+              height: 36,
+              borderRadius: 10,
+              background: '#4f46e5',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+              <MailOutlined style={{ color: '#fff', fontSize: 18 }} />
+            </div>
+            <span style={{ fontSize: 18, fontWeight: 600, color: '#1e293b' }}>消息详情</span>
+          </div>
+        }
         open={detailModalVisible}
         onCancel={() => setDetailModalVisible(false)}
         footer={[
-          <Button key="close" onClick={() => setDetailModalVisible(false)}>
+          <Button
+            key="close"
+            onClick={() => setDetailModalVisible(false)}
+            style={{
+              borderRadius: 10,
+              height: 44,
+              padding: '0 28px',
+              background: '#4f46e5',
+              borderColor: '#4f46e5',
+              color: '#fff',
+            }}
+          >
             关闭
           </Button>,
         ]}
-        width={560}
+        width={600}
+        bodyStyle={{ padding: '32px' }}
       >
         {selectedMessage && (
           <div>
             <div
               style={{
                 display: 'flex',
-                alignItems: 'center',
-                marginBottom: '16px',
+                alignItems: 'flex-start',
+                marginBottom: '24px',
+                padding: '20px',
+                background: selectedMessage.bgColor,
+                borderRadius: 12,
               }}
             >
               <div
                 style={{
-                  width: '48px',
-                  height: '48px',
-                  borderRadius: '50%',
-                  background: selectedMessage.bgColor,
+                  width: '56px',
+                  height: '56px',
+                  borderRadius: '14px',
+                  background: '#fff',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  fontSize: '24px',
+                  fontSize: '28px',
                   marginRight: '16px',
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
+                  flexShrink: 0,
                 }}
               >
                 {selectedMessage.icon}
               </div>
-              <div>
-                <Title level={5} style={{ margin: 0 }}>
+              <div style={{ flex: 1 }}>
+                <Title level={5} style={{ margin: 0, marginBottom: 10, color: '#1e293b', fontSize: 18 }}>
                   {selectedMessage.title}
                 </Title>
-                <Space style={{ marginTop: '8px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
                   {getTypeTag(selectedMessage.type, selectedMessage.subtype)}
-                  <Text type="secondary">{selectedMessage.time}</Text>
-                </Space>
+                  <Text style={{ color: '#64748b', fontSize: 13, display: 'flex', alignItems: 'center', gap: 6 }}>
+                    <ClockCircleOutlined style={{ fontSize: 12 }} />
+                    {selectedMessage.time}
+                  </Text>
+                </div>
               </div>
             </div>
-            <Divider />
-            <Paragraph style={{ fontSize: '15px', lineHeight: '1.8' }}>
-              {selectedMessage.content}
-            </Paragraph>
+            <div style={{
+              padding: '24px',
+              background: '#f8fafc',
+              borderRadius: 12,
+              border: '1px solid #e2e8f0',
+            }}>
+              <Paragraph style={{ fontSize: '15px', lineHeight: '1.8', color: '#334155', margin: 0 }}>
+                {selectedMessage.content}
+              </Paragraph>
+            </div>
           </div>
         )}
       </Modal>

@@ -279,55 +279,156 @@ export default function SoftwareAudit() {
   })
 
   return (
-    <div>
-      <Card style={{ marginBottom: 24, borderRadius: 12 }}>
-        <Title level={4} style={{ margin: 0 }}>软件发布审核</Title>
+    <div style={{ padding: '24px', background: '#f8fafc', minHeight: '100vh' }}>
+      {/* 页面标题 */}
+      <Card
+        style={{
+          marginBottom: 24,
+          borderRadius: 16,
+          background: 'linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)',
+          border: '1px solid #e2e8f0',
+          boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)',
+        }}
+        bodyStyle={{ padding: '24px 32px' }}
+      >
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div>
+            <Title level={4} style={{ margin: 0, color: '#1e293b', fontWeight: 600 }}>
+              软件发布审核
+            </Title>
+            <Text style={{ color: '#64748b', fontSize: 13, marginTop: 4, display: 'block' }}>
+              审核和管理软件产品发布申请
+            </Text>
+          </div>
+          <div style={{
+            display: 'flex',
+            gap: 16,
+            padding: '12px 20px',
+            background: '#fff',
+            borderRadius: 12,
+            border: '1px solid #e2e8f0',
+          }}>
+            <div style={{ textAlign: 'center' }}>
+              <Text style={{ color: '#64748b', fontSize: 12, display: 'block' }}>待审核</Text>
+              <Text style={{ color: '#f59e0b', fontSize: 20, fontWeight: 700 }}>
+                {softwareData.filter(i => i.status === SOFTWARE_STATUS.PENDING).length}
+              </Text>
+            </div>
+            <div style={{ width: 1, background: '#e2e8f0' }} />
+            <div style={{ textAlign: 'center' }}>
+              <Text style={{ color: '#64748b', fontSize: 12, display: 'block' }}>已上架</Text>
+              <Text style={{ color: '#22c55e', fontSize: 20, fontWeight: 700 }}>
+                {softwareData.filter(i => i.status === SOFTWARE_STATUS.APPROVED).length}
+              </Text>
+            </div>
+            <div style={{ width: 1, background: '#e2e8f0' }} />
+            <div style={{ textAlign: 'center' }}>
+              <Text style={{ color: '#64748b', fontSize: 12, display: 'block' }}>已驳回</Text>
+              <Text style={{ color: '#ef4444', fontSize: 20, fontWeight: 700 }}>
+                {softwareData.filter(i => i.status === SOFTWARE_STATUS.REJECTED).length}
+              </Text>
+            </div>
+          </div>
+        </div>
       </Card>
 
-      <Card style={{ borderRadius: 12 }}>
+      <Card
+        style={{
+          borderRadius: 16,
+          border: '1px solid #e2e8f0',
+          boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)',
+          background: '#fff',
+        }}
+        bodyStyle={{ padding: '24px' }}
+      >
         {/* 搜索栏 */}
-        <Space style={{ marginBottom: 24 }}>
-          <Input
-            placeholder="搜索软件名称"
-            prefix={<SearchOutlined />}
-            style={{ width: 250 }}
-          />
-          <Select placeholder="软件类别" style={{ width: 150 }} allowClear>
-            <Option value="production">生产管控</Option>
-            <Option value="management">经营管理</Option>
-            <Option value="supply">供应链</Option>
-            <Option value="design">研发设计</Option>
-          </Select>
-          <Button type="primary" icon={<SearchOutlined />}>
-            搜索
-          </Button>
-        </Space>
+        <div style={{
+          padding: '20px 24px',
+          background: '#f8fafc',
+          borderRadius: 12,
+          border: '1px solid #e2e8f0',
+          marginBottom: 24,
+        }}>
+          <Space size={16} align="center">
+            <Input
+              placeholder="搜索软件名称"
+              prefix={<SearchOutlined style={{ color: '#94a3b8' }} />}
+              style={{ width: 280, borderRadius: 10 }}
+              size="large"
+            />
+            <Select
+              placeholder="软件类别"
+              style={{ width: 160, borderRadius: 10 }}
+              allowClear
+              size="large"
+              suffixIcon={<AppstoreOutlined style={{ color: '#94a3b8' }} />}
+            >
+              <Option value="production">生产管控</Option>
+              <Option value="management">经营管理</Option>
+              <Option value="supply">供应链</Option>
+              <Option value="design">研发设计</Option>
+            </Select>
+            <Button
+              type="primary"
+              icon={<SearchOutlined />}
+              size="large"
+              style={{
+                borderRadius: 10,
+                background: '#4f46e5',
+                borderColor: '#4f46e5',
+                boxShadow: '0 4px 14px rgba(79, 70, 229, 0.3)',
+              }}
+            >
+              搜索
+            </Button>
+          </Space>
+        </div>
 
         {/* 标签页 */}
         <Tabs
           activeKey={activeTab}
           onChange={setActiveTab}
+          style={{ marginBottom: 24 }}
           items={[
-            { key: 'draft', label: `草稿 (${softwareData.filter(i => i.status === SOFTWARE_STATUS.DRAFT).length})` },
-            { key: 'pending', label: `待审核 (${softwareData.filter(i => i.status === SOFTWARE_STATUS.PENDING).length})` },
-            { key: 'approved', label: `已上架 (${softwareData.filter(i => i.status === SOFTWARE_STATUS.APPROVED).length})` },
-            { key: 'rejected', label: `已驳回 (${softwareData.filter(i => i.status === SOFTWARE_STATUS.REJECTED).length})` },
-            { key: 'offline', label: `已下架 (${softwareData.filter(i => i.status === SOFTWARE_STATUS.OFFLINE).length})` },
-            { key: 'update_pending', label: `更新待审 (${softwareData.filter(i => i.status === SOFTWARE_STATUS.UPDATE_PENDING).length})` },
-            { key: 'all', label: '全部' },
+            { key: 'draft', label: <span style={{ fontSize: 15, fontWeight: 500 }}>草稿 ({softwareData.filter(i => i.status === SOFTWARE_STATUS.DRAFT).length})</span> },
+            { key: 'pending', label: <span style={{ fontSize: 15, fontWeight: 500 }}>待审核 ({softwareData.filter(i => i.status === SOFTWARE_STATUS.PENDING).length})</span> },
+            { key: 'approved', label: <span style={{ fontSize: 15, fontWeight: 500 }}>已上架 ({softwareData.filter(i => i.status === SOFTWARE_STATUS.APPROVED).length})</span> },
+            { key: 'rejected', label: <span style={{ fontSize: 15, fontWeight: 500 }}>已驳回 ({softwareData.filter(i => i.status === SOFTWARE_STATUS.REJECTED).length})</span> },
+            { key: 'offline', label: <span style={{ fontSize: 15, fontWeight: 500 }}>已下架 ({softwareData.filter(i => i.status === SOFTWARE_STATUS.OFFLINE).length})</span> },
+            { key: 'update_pending', label: <span style={{ fontSize: 15, fontWeight: 500 }}>更新待审 ({softwareData.filter(i => i.status === SOFTWARE_STATUS.UPDATE_PENDING).length})</span> },
+            { key: 'all', label: <span style={{ fontSize: 15, fontWeight: 500 }}>全部</span> },
           ]}
         />
 
         {/* 批量操作栏 */}
         {activeTab === 'pending' && (
-          <div style={{ marginBottom: 16, padding: 12, background: '#f5f5f5', borderRadius: 8 }}>
-            <Space>
-              <span>已选择 <Text strong>{selectedRowKeys.length}</Text> 项</span>
+          <div style={{
+            marginBottom: 24,
+            padding: '16px 20px',
+            background: '#f0fdf4',
+            borderRadius: 12,
+            border: '1px solid #bbf7d0',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+          }}>
+            <Space size={16}>
+              <span style={{ color: '#166534', fontSize: 14 }}>
+                已选择 <Text strong style={{ color: '#16a34a', fontSize: 16 }}>{selectedRowKeys.length}</Text> 项
+              </span>
+            </Space>
+            <Space size={12}>
               <Button
                 type="primary"
                 icon={<CheckCircleOutlined />}
                 onClick={() => handleBatchAudit('approve')}
                 disabled={selectedRowKeys.length === 0}
+                style={{
+                  borderRadius: 10,
+                  height: 40,
+                  background: selectedRowKeys.length === 0 ? '#cbd5e1' : '#22c55e',
+                  borderColor: selectedRowKeys.length === 0 ? '#cbd5e1' : '#22c55e',
+                }}
               >
                 批量通过
               </Button>
@@ -336,6 +437,7 @@ export default function SoftwareAudit() {
                 icon={<CloseCircleOutlined />}
                 onClick={() => handleBatchAudit('reject')}
                 disabled={selectedRowKeys.length === 0}
+                style={{ borderRadius: 10, height: 40 }}
               >
                 批量驳回
               </Button>
@@ -349,6 +451,7 @@ export default function SoftwareAudit() {
           dataSource={filteredData}
           rowKey="id"
           loading={loading}
+          style={{ borderRadius: 12, overflow: 'hidden' }}
           rowSelection={
             activeTab === 'pending'
               ? {
@@ -367,12 +470,32 @@ export default function SoftwareAudit() {
 
       {/* 详情弹窗 */}
       <Modal
-        title="软件详情"
+        title={
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <div style={{
+              width: 36,
+              height: 36,
+              borderRadius: 10,
+              background: '#4f46e5',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+              <AppstoreOutlined style={{ color: '#fff', fontSize: 18 }} />
+            </div>
+            <span style={{ fontSize: 18, fontWeight: 600, color: '#1e293b' }}>软件详情</span>
+          </div>
+        }
         open={detailVisible}
         onCancel={() => setDetailVisible(false)}
         width={900}
+        bodyStyle={{ padding: '32px' }}
         footer={[
-          <Button key="close" onClick={() => setDetailVisible(false)}>
+          <Button
+            key="close"
+            onClick={() => setDetailVisible(false)}
+            style={{ borderRadius: 10, height: 40 }}
+          >
             关闭
           </Button>,
           (selectedSoftware?.status === SOFTWARE_STATUS.PENDING || selectedSoftware?.status === SOFTWARE_STATUS.UPDATE_PENDING) && (
@@ -384,6 +507,7 @@ export default function SoftwareAudit() {
                   setDetailVisible(false)
                   handleAudit(selectedSoftware, 'reject')
                 }}
+                style={{ borderRadius: 10, height: 40 }}
               >
                 驳回
               </Button>
@@ -394,6 +518,12 @@ export default function SoftwareAudit() {
                   setDetailVisible(false)
                   handleAudit(selectedSoftware, 'approve')
                 }}
+                style={{
+                  borderRadius: 10,
+                  height: 40,
+                  background: '#22c55e',
+                  borderColor: '#22c55e',
+                }}
               >
                 通过
               </Button>
@@ -402,25 +532,37 @@ export default function SoftwareAudit() {
         ]}
       >
         {selectedSoftware && (
-          <div>
+          <div style={{
+            padding: '24px',
+            background: '#f8fafc',
+            borderRadius: 12,
+            border: '1px solid #e2e8f0',
+          }}>
             <Row gutter={[24, 24]}>
               <Col span={8}>
-                <Image
-                  src={selectedSoftware.logo}
-                  alt="软件logo"
-                  style={{ width: '100%', borderRadius: 8 }}
-                />
+                <div style={{
+                  padding: 16,
+                  background: '#fff',
+                  borderRadius: 12,
+                  border: '1px solid #e2e8f0',
+                }}>
+                  <Image
+                    src={selectedSoftware.logo}
+                    alt="软件logo"
+                    style={{ width: '100%', borderRadius: 8 }}
+                  />
+                </div>
               </Col>
               <Col span={16}>
-                <Descriptions column={1}>
+                <Descriptions column={1} style={{ background: '#fff' }}>
                   <Descriptions.Item label="软件名称">
-                    <Text strong style={{ fontSize: 18 }}>{selectedSoftware.name}</Text>
+                    <Text strong style={{ fontSize: 18, color: '#1e293b' }}>{selectedSoftware.name}</Text>
                   </Descriptions.Item>
                   <Descriptions.Item label="软件企业">
                     {selectedSoftware.company}
                   </Descriptions.Item>
                   <Descriptions.Item label="软件类别">
-                    <Tag color="blue">{selectedSoftware.category}</Tag>
+                    <Tag color="blue" style={{ fontSize: 13 }}>{selectedSoftware.category}</Tag>
                   </Descriptions.Item>
                   <Descriptions.Item label="适用行业">
                     {selectedSoftware.industry}
@@ -429,50 +571,52 @@ export default function SoftwareAudit() {
                     {selectedSoftware.deployType}
                   </Descriptions.Item>
                   <Descriptions.Item label="价格区间">
-                    <Text style={{ color: '#f5222d', fontSize: 16 }}>{selectedSoftware.priceRange}</Text>
+                    <Text style={{ color: '#ef4444', fontSize: 16, fontWeight: 600 }}>{selectedSoftware.priceRange}</Text>
                   </Descriptions.Item>
                 </Descriptions>
               </Col>
             </Row>
 
-            <Divider />
+            <Divider style={{ borderColor: '#e2e8f0' }} />
 
-            <Descriptions column={1} bordered>
-              <Descriptions.Item label="产品简介">
-                {selectedSoftware.description}
-              </Descriptions.Item>
-              <Descriptions.Item label="功能模块">
-                {selectedSoftware.features}
-              </Descriptions.Item>
-              <Descriptions.Item label="技术架构">
-                {selectedSoftware.architecture}
-              </Descriptions.Item>
-              <Descriptions.Item label="成功案例">
-                {selectedSoftware.cases}
-              </Descriptions.Item>
-            </Descriptions>
+            <div style={{ background: '#fff', borderRadius: 12, padding: 20, border: '1px solid #e2e8f0' }}>
+              <Descriptions column={1} bordered>
+                <Descriptions.Item label="产品简介">
+                  {selectedSoftware.description}
+                </Descriptions.Item>
+                <Descriptions.Item label="功能模块">
+                  {selectedSoftware.features}
+                </Descriptions.Item>
+                <Descriptions.Item label="技术架构">
+                  {selectedSoftware.architecture}
+                </Descriptions.Item>
+                <Descriptions.Item label="成功案例">
+                  {selectedSoftware.cases}
+                </Descriptions.Item>
+              </Descriptions>
+            </div>
 
-            <Divider />
+            <Divider style={{ borderColor: '#e2e8f0' }} />
 
-            <div>
-              <Text strong>产品截图</Text>
+            <div style={{ background: '#fff', borderRadius: 12, padding: 20, border: '1px solid #e2e8f0' }}>
+              <Text strong style={{ fontSize: 16, color: '#1e293b' }}>产品截图</Text>
               <Row gutter={[16, 16]} style={{ marginTop: 16 }}>
                 {selectedSoftware.screenshots?.map((screenshot: string, index: number) => (
                   <Col span={12} key={index}>
                     <Image
                       src={screenshot}
                       alt={`截图${index + 1}`}
-                      style={{ width: '100%', borderRadius: 8 }}
+                      style={{ width: '100%', borderRadius: 8, boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
                     />
                   </Col>
                 ))}
               </Row>
             </div>
 
-            <Divider />
+            <Divider style={{ borderColor: '#e2e8f0' }} />
 
-            <div>
-              <Text strong>附件列表</Text>
+            <div style={{ background: '#fff', borderRadius: 12, padding: 20, border: '1px solid #e2e8f0' }}>
+              <Text strong style={{ fontSize: 16, color: '#1e293b' }}>附件列表</Text>
               <div style={{ marginTop: 16 }}>
                 {selectedSoftware.manual && (
                   <FilePreview
@@ -491,12 +635,16 @@ export default function SoftwareAudit() {
 
             {selectedSoftware.status === SOFTWARE_STATUS.REJECTED && (
               <>
-                <Divider />
-                <Alert
-                  message="驳回原因"
-                  description={selectedSoftware.rejectReason}
-                  type="error"
-                />
+                <Divider style={{ borderColor: '#e2e8f0' }} />
+                <div style={{
+                  padding: '16px 20px',
+                  background: '#fef2f2',
+                  borderRadius: 12,
+                  border: '1px solid #fecaca',
+                }}>
+                  <Text strong style={{ color: '#dc2626', display: 'block', marginBottom: 8 }}>驳回原因</Text>
+                  <Text style={{ color: '#991b1b' }}>{selectedSoftware.rejectReason}</Text>
+                </div>
               </>
             )}
           </div>
@@ -505,41 +653,85 @@ export default function SoftwareAudit() {
 
       {/* 审核弹窗 */}
       <Modal
-        title={auditType === 'approve' ? '审核通过' : '审核驳回'}
+        title={
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <div style={{
+              width: 36,
+              height: 36,
+              borderRadius: 10,
+              background: auditType === 'approve' ? '#22c55e' : '#ef4444',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+              {auditType === 'approve' ? (
+                <CheckCircleOutlined style={{ color: '#fff', fontSize: 18 }} />
+              ) : (
+                <CloseCircleOutlined style={{ color: '#fff', fontSize: 18 }} />
+              )}
+            </div>
+            <span style={{ fontSize: 18, fontWeight: 600, color: '#1e293b' }}>
+              {auditType === 'approve' ? '审核通过' : '审核驳回'}
+            </span>
+          </div>
+        }
         open={auditVisible}
         onCancel={() => setAuditVisible(false)}
         onOk={handleAuditSubmit}
         confirmLoading={loading}
         okText="确认"
         cancelText="取消"
+        width={560}
+        bodyStyle={{ padding: '32px' }}
         okButtonProps={{
           type: auditType === 'approve' ? 'primary' : 'default',
           danger: auditType === 'reject',
+          style: {
+            borderRadius: 10,
+            height: 44,
+            padding: '0 28px',
+            background: auditType === 'approve' ? '#22c55e' : undefined,
+            borderColor: auditType === 'approve' ? '#22c55e' : undefined,
+          },
+        }}
+        cancelButtonProps={{
+          style: { borderRadius: 10, height: 44, padding: '0 28px' },
         }}
       >
         <Form form={form} layout="vertical">
-          <Form.Item>
-            <Text>
-              您正在审核软件：<Text strong>{selectedSoftware?.name}</Text>
+          <div style={{
+            padding: '16px 20px',
+            background: '#f8fafc',
+            borderRadius: 12,
+            border: '1px solid #e2e8f0',
+            marginBottom: 24,
+          }}>
+            <Text style={{ color: '#64748b', fontSize: 14 }}>
+              您正在审核软件：<Text strong style={{ color: '#1e293b', fontSize: 16 }}>{selectedSoftware?.name}</Text>
             </Text>
-          </Form.Item>
+          </div>
           {auditType === 'reject' && (
             <Form.Item
               name="reason"
-              label="驳回原因"
+              label={<span style={{ fontWeight: 600, color: '#1e293b' }}>驳回原因</span>}
               rules={[{ required: true, message: '请输入驳回原因' }]}
             >
               <TextArea
                 rows={4}
                 placeholder="请输入驳回原因，将通知给软件企业"
+                style={{ borderRadius: 10, resize: 'none' }}
               />
             </Form.Item>
           )}
           {auditType === 'approve' && (
-            <Form.Item name="remark" label="审核备注">
+            <Form.Item
+              name="remark"
+              label={<span style={{ fontWeight: 600, color: '#1e293b' }}>审核备注</span>}
+            >
               <TextArea
                 rows={4}
                 placeholder="可选：添加审核备注"
+                style={{ borderRadius: 10, resize: 'none' }}
               />
             </Form.Item>
           )}
@@ -548,43 +740,85 @@ export default function SoftwareAudit() {
 
       {/* 批量审核弹窗 */}
       <Modal
-        title={batchAuditType === 'approve' ? '批量审核通过' : '批量审核驳回'}
+        title={
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <div style={{
+              width: 36,
+              height: 36,
+              borderRadius: 10,
+              background: batchAuditType === 'approve' ? '#22c55e' : '#ef4444',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+              {batchAuditType === 'approve' ? (
+                <CheckCircleOutlined style={{ color: '#fff', fontSize: 18 }} />
+              ) : (
+                <CloseCircleOutlined style={{ color: '#fff', fontSize: 18 }} />
+              )}
+            </div>
+            <span style={{ fontSize: 18, fontWeight: 600, color: '#1e293b' }}>
+              {batchAuditType === 'approve' ? '批量审核通过' : '批量审核驳回'}
+            </span>
+          </div>
+        }
         open={batchAuditVisible}
         onCancel={() => setBatchAuditVisible(false)}
         onOk={handleBatchAuditSubmit}
         confirmLoading={loading}
         okText="确认"
         cancelText="取消"
+        width={560}
+        bodyStyle={{ padding: '32px' }}
         okButtonProps={{
           type: batchAuditType === 'approve' ? 'primary' : 'default',
           danger: batchAuditType === 'reject',
+          style: {
+            borderRadius: 10,
+            height: 44,
+            padding: '0 28px',
+            background: batchAuditType === 'approve' ? '#22c55e' : undefined,
+            borderColor: batchAuditType === 'approve' ? '#22c55e' : undefined,
+          },
+        }}
+        cancelButtonProps={{
+          style: { borderRadius: 10, height: 44, padding: '0 28px' },
         }}
       >
         <Form form={form} layout="vertical">
-          <Form.Item>
-            <Alert
-              message={`您已选择 ${selectedRowKeys.length} 条记录进行批量${batchAuditType === 'approve' ? '通过' : '驳回'}操作`}
-              type={batchAuditType === 'approve' ? 'info' : 'warning'}
-              showIcon
-            />
-          </Form.Item>
+          <div style={{
+            padding: '16px 20px',
+            background: batchAuditType === 'approve' ? '#f0fdf4' : '#fef2f2',
+            borderRadius: 12,
+            border: `1px solid ${batchAuditType === 'approve' ? '#bbf7d0' : '#fecaca'}`,
+            marginBottom: 24,
+          }}>
+            <Text style={{ color: batchAuditType === 'approve' ? '#166534' : '#991b1b', fontSize: 14 }}>
+              您已选择 <Text strong style={{ color: batchAuditType === 'approve' ? '#16a34a' : '#dc2626', fontSize: 16 }}>{selectedRowKeys.length}</Text> 条记录进行批量{batchAuditType === 'approve' ? '通过' : '驳回'}操作
+            </Text>
+          </div>
           {batchAuditType === 'reject' && (
             <Form.Item
               name="reason"
-              label="驳回原因"
+              label={<span style={{ fontWeight: 600, color: '#1e293b' }}>驳回原因</span>}
               rules={[{ required: true, message: '请输入驳回原因' }]}
             >
               <TextArea
                 rows={4}
                 placeholder="请输入统一的驳回原因，将通知给所有被驳回的软件企业"
+                style={{ borderRadius: 10, resize: 'none' }}
               />
             </Form.Item>
           )}
           {batchAuditType === 'approve' && (
-            <Form.Item name="remark" label="审核备注">
+            <Form.Item
+              name="remark"
+              label={<span style={{ fontWeight: 600, color: '#1e293b' }}>审核备注</span>}
+            >
               <TextArea
                 rows={4}
                 placeholder="可选：添加统一的审核备注"
+                style={{ borderRadius: 10, resize: 'none' }}
               />
             </Form.Item>
           )}

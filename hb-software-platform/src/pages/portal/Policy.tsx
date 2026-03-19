@@ -11,6 +11,9 @@ import {
   Pagination,
   Empty,
   Button,
+  Tabs,
+  Badge,
+  Progress,
 } from 'antd'
 import {
   SearchOutlined,
@@ -19,17 +22,28 @@ import {
   BankOutlined,
   EyeOutlined,
   PlusOutlined,
+  TeamOutlined,
+  EnvironmentOutlined,
+  ClockCircleOutlined,
+  FireOutlined,
 } from '@ant-design/icons'
 import { policyList, getTypeColor, getCategoryColor } from '../../data/policies.tsx'
+import { activityList, getActivityTypeColor, getActivityCategoryColor, getActivityStatusColor } from '../../data/activities.tsx'
 
 const { Option } = Select
+const { TabPane } = Tabs
 
 const Policy = () => {
   const navigate = useNavigate()
+  const [activeTab, setActiveTab] = useState('policy')
   const [category, setCategory] = useState('all')
   const [type, setType] = useState('all')
   const [currentPage, setCurrentPage] = useState(1)
   const [pageSize, setPageSize] = useState(8)
+  const [activityCategory, setActivityCategory] = useState('all')
+  const [activityStatus, setActivityStatus] = useState('all')
+  const [activityPage, setActivityPage] = useState(1)
+  const [activityPageSize, setActivityPageSize] = useState(8)
 
   // 获取当前用户信息
   const getCurrentUser = () => {
@@ -289,10 +303,10 @@ const Policy = () => {
                         lineHeight: 1,
                       }}
                     >
-                      4
+                      {activityList.length}+
                     </div>
                     <div style={{ fontSize: '14px', color: 'rgba(255,255,255,0.6)', marginTop: '4px' }}>
-                      政策分类
+                      活动场次
                     </div>
                   </div>
                   <div>
@@ -304,10 +318,10 @@ const Policy = () => {
                         lineHeight: 1,
                       }}
                     >
-                      3
+                      3000+
                     </div>
                     <div style={{ fontSize: '14px', color: 'rgba(255,255,255,0.6)', marginTop: '4px' }}>
-                      政策级别
+                      参与人次
                     </div>
                   </div>
                 </div>
@@ -481,13 +495,45 @@ const Policy = () => {
         </div>
       </div>
 
-      {/* 政策列表 */}
+      {/* 政策与活动Tab切换 */}
       <div style={{ padding: '40px 0' }}>
         <div className="container">
-          <Row gutter={[24, 24]}>
-            <Col xs={24} lg={18}>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                {policyList.slice((currentPage - 1) * pageSize, currentPage * pageSize).map((item) => (
+          <Tabs
+            activeKey={activeTab}
+            onChange={setActiveTab}
+            size="large"
+            style={{ marginBottom: '24px' }}
+            items={[
+              {
+                key: 'policy',
+                label: (
+                  <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <FileTextOutlined />
+                    政策文件
+                    <Badge count={policyList.length} style={{ backgroundColor: '#3b82f6' }} />
+                  </span>
+                ),
+                children: null,
+              },
+              {
+                key: 'activity',
+                label: (
+                  <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <CalendarOutlined />
+                    活动中心
+                    <Badge count={activityList.length} style={{ backgroundColor: '#10b981' }} />
+                  </span>
+                ),
+                children: null,
+              },
+            ]}
+          />
+
+          {activeTab === 'policy' ? (
+            <Row gutter={[24, 24]}>
+              <Col xs={24} lg={18}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                  {policyList.slice((currentPage - 1) * pageSize, currentPage * pageSize).map((item) => (
                   <div
                     key={item.id}
                     style={{
@@ -836,6 +882,324 @@ const Policy = () => {
               </Card>
             </Col>
           </Row>
+          ) : (
+            // 活动列表
+            <Row gutter={[24, 24]}>
+              <Col xs={24} lg={18}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                  {activityList.slice((activityPage - 1) * activityPageSize, activityPage * activityPageSize).map((item) => (
+                    <div
+                      key={item.id}
+                      style={{
+                        display: 'flex',
+                        background: 'var(--bg-card)',
+                        borderRadius: '16px',
+                        border: '1px solid var(--border-light)',
+                        boxShadow: 'var(--shadow-sm)',
+                        overflow: 'hidden',
+                        cursor: 'pointer',
+                        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.transform = 'translateY(-2px)'
+                        e.currentTarget.style.boxShadow = 'var(--shadow-lg)'
+                        e.currentTarget.style.borderColor = 'var(--brand-primary)'
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.transform = 'translateY(0)'
+                        e.currentTarget.style.boxShadow = 'var(--shadow-sm)'
+                        e.currentTarget.style.borderColor = 'var(--border-light)'
+                      }}
+                    >
+                      {/* 左侧类型色块 */}
+                      <div
+                        style={{
+                          width: '6px',
+                          background: item.type === '线下'
+                            ? 'linear-gradient(180deg, #10b981 0%, #059669 100%)'
+                            : item.type === '线上'
+                            ? 'linear-gradient(180deg, #3b82f6 0%, #2563eb 100%)'
+                            : 'linear-gradient(180deg, #8b5cf6 0%, #7c3aed 100%)',
+                        }}
+                      />
+
+                      {/* 内容区域 */}
+                      <div style={{ flex: 1, padding: '24px' }}>
+                        {/* 头部：标签 + 状态 */}
+                        <div
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                            marginBottom: '12px',
+                          }}
+                        >
+                          <div style={{ display: 'flex', gap: '8px' }}>
+                            <span
+                              style={{
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                padding: '4px 10px',
+                                background: getActivityCategoryColor(item.category).bg,
+                                borderRadius: '6px',
+                                fontSize: '12px',
+                                fontWeight: 500,
+                                color: getActivityCategoryColor(item.category).color,
+                              }}
+                            >
+                              {item.category}
+                            </span>
+                            <span
+                              style={{
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                padding: '4px 10px',
+                                background: getActivityTypeColor(item.type).bg,
+                                borderRadius: '6px',
+                                fontSize: '12px',
+                                fontWeight: 500,
+                                color: getActivityTypeColor(item.type).color,
+                              }}
+                            >
+                              {item.type}
+                            </span>
+                          </div>
+                          <span
+                            style={{
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              padding: '4px 12px',
+                              background: getActivityStatusColor(item.status).bg,
+                              borderRadius: '20px',
+                              fontSize: '12px',
+                              fontWeight: 600,
+                              color: getActivityStatusColor(item.status).color,
+                            }}
+                          >
+                            {item.status}
+                          </span>
+                        </div>
+
+                        {/* 标题 */}
+                        <h3
+                          style={{
+                            fontSize: '17px',
+                            fontWeight: 600,
+                            color: 'var(--text-primary)',
+                            margin: '0 0 10px 0',
+                            lineHeight: 1.4,
+                            letterSpacing: '-0.2px',
+                          }}
+                        >
+                          {item.title}
+                        </h3>
+
+                        {/* 摘要 */}
+                        <p
+                          style={{
+                            fontSize: '14px',
+                            color: 'var(--text-tertiary)',
+                            lineHeight: 1.6,
+                            margin: '0 0 16px 0',
+                            display: '-webkit-box',
+                            WebkitLineClamp: 2,
+                            WebkitBoxOrient: 'vertical',
+                            overflow: 'hidden',
+                          }}
+                        >
+                          {item.summary}
+                        </p>
+
+                        {/* 活动信息 */}
+                        <div
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '24px',
+                            marginBottom: '16px',
+                            flexWrap: 'wrap',
+                          }}
+                        >
+                          <span
+                            style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '6px',
+                              fontSize: '13px',
+                              color: 'var(--text-secondary)',
+                            }}
+                          >
+                            <CalendarOutlined style={{ fontSize: '12px', color: '#3b82f6' }} />
+                            {item.startDate} ~ {item.endDate}
+                          </span>
+                          <span
+                            style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '6px',
+                              fontSize: '13px',
+                              color: 'var(--text-secondary)',
+                            }}
+                          >
+                            <EnvironmentOutlined style={{ fontSize: '12px', color: '#10b981' }} />
+                            {item.location}
+                          </span>
+                          <span
+                            style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '6px',
+                              fontSize: '13px',
+                              color: 'var(--text-secondary)',
+                            }}
+                          >
+                            <TeamOutlined style={{ fontSize: '12px', color: '#8b5cf6' }} />
+                            {item.organizer}
+                          </span>
+                        </div>
+
+                        {/* 底部：标签 + 报名进度 */}
+                        <div
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                            flexWrap: 'wrap',
+                            gap: '12px',
+                          }}
+                        >
+                          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                            {item.tags.map((tag) => (
+                              <span
+                                key={tag}
+                                style={{
+                                  padding: '3px 10px',
+                                  background: 'var(--bg-tertiary)',
+                                  borderRadius: '4px',
+                                  fontSize: '12px',
+                                  color: 'var(--text-tertiary)',
+                                }}
+                              >
+                                {tag}
+                              </span>
+                            ))}
+                          </div>
+                          <div
+                            style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '12px',
+                            }}
+                          >
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                              <EyeOutlined style={{ fontSize: '12px', color: 'var(--text-quaternary)' }} />
+                              <span style={{ fontSize: '13px', color: 'var(--text-quaternary)' }}>
+                                {item.views.toLocaleString()} 浏览
+                              </span>
+                            </div>
+                            <div style={{ width: '100px' }}>
+                              <Progress
+                                percent={Math.round((item.participants / item.maxParticipants) * 100)}
+                                size="small"
+                                strokeColor={item.participants >= item.maxParticipants ? '#ef4444' : '#3b82f6'}
+                                showInfo={false}
+                              />
+                              <div style={{ fontSize: '11px', color: 'var(--text-quaternary)', marginTop: '2px' }}>
+                                {item.participants}/{item.maxParticipants} 已报名
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* 分页 */}
+                <div
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    marginTop: '40px',
+                    padding: '20px',
+                  }}
+                >
+                  <Pagination
+                    current={activityPage}
+                    total={activityList.length}
+                    pageSize={activityPageSize}
+                    onChange={(page, size) => {
+                      setActivityPage(page)
+                      if (size) setActivityPageSize(size)
+                      window.scrollTo({ top: 0, behavior: 'smooth' })
+                    }}
+                  />
+                </div>
+              </Col>
+
+              <Col xs={24} lg={6}>
+                <Card title="热门活动" style={{ borderRadius: '8px', marginBottom: '24px' }}>
+                  <List
+                    itemLayout="horizontal"
+                    dataSource={activityList.slice(0, 5)}
+                    renderItem={(item, index) => (
+                      <List.Item style={{ padding: '12px 0' }}>
+                        <List.Item.Meta
+                          avatar={
+                            <div
+                              style={{
+                                width: '24px',
+                                height: '24px',
+                                background: index < 3 ? '#10b981' : '#86909C',
+                                color: '#fff',
+                                borderRadius: '4px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                fontSize: '12px',
+                                fontWeight: 600,
+                              }}
+                            >
+                              {index + 1}
+                            </div>
+                          }
+                          title={
+                            <a style={{ fontSize: '14px', fontWeight: 500 }}>{item.title}</a>
+                          }
+                          description={
+                            <span style={{ color: '#86909C', fontSize: '12px' }}>
+                              {item.startDate}
+                            </span>
+                          }
+                        />
+                      </List.Item>
+                    )}
+                  />
+                </Card>
+
+                <Card title="活动分类" style={{ borderRadius: '8px' }}>
+                  <List
+                    itemLayout="horizontal"
+                    dataSource={[
+                      { name: '培训', count: 3 },
+                      { name: '沙龙', count: 1 },
+                      { name: '展会', count: 2 },
+                      { name: '路演', count: 1 },
+                      { name: '对接会', count: 1 },
+                    ]}
+                    renderItem={(item) => (
+                      <List.Item
+                        style={{ padding: '12px 0' }}
+                        extra={<Tag>{item.count}</Tag>}
+                      >
+                        <List.Item.Meta title={<a style={{ fontWeight: 500 }}>{item.name}</a>} />
+                      </List.Item>
+                    )}
+                  />
+                </Card>
+              </Col>
+            </Row>
+          )}
         </div>
       </div>
     </div>

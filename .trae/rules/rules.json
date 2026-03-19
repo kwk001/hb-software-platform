@@ -1,0 +1,85 @@
+{
+  "version": "1.0.0",
+  "rules": [
+    {
+      "name": "pm_project_rules",
+      "displayName": "产品经理项目规则",
+      "description": "产品经理角色的项目级规则，包含需求分析、解决方案设计、React开发等规范",
+      "file": "pm_project_rules.md",
+      "type": "project",
+      "role": "product_manager",
+      "scope": "project",
+      "priority": "high"
+    },
+    {
+      "name": "pm_user_rules",
+      "displayName": "产品经理个人规则",
+      "description": "产品经理角色的个人规则配置",
+      "file": "pm_user_rules.md",
+      "type": "user",
+      "role": "product_manager",
+      "scope": "user",
+      "priority": "medium"
+    },
+    {
+      "name": "fullstack_project_rules",
+      "displayName": "全栈工程师项目规则",
+      "description": "全栈工程师角色的项目级规则，包含前后端开发规范",
+      "file": "fullstack_project_rules.md",
+      "type": "project",
+      "role": "fullstack_engineer",
+      "scope": "project",
+      "priority": "high"
+    },
+    {
+      "name": "fullstack_user_rules",
+      "displayName": "全栈工程师个人规则",
+      "description": "全栈工程师角色的个人规则配置",
+      "file": "fullstack_user_rules.md",
+      "type": "user",
+      "role": "fullstack_engineer",
+      "scope": "user",
+      "priority": "medium"
+    },
+    {
+      "name": "solution_project_rules",
+      "displayName": "解决方案架构师项目规则",
+      "description": "解决方案架构师角色的项目级规则，包含架构设计规范",
+      "file": "solution_project_rules.md",
+      "type": "project",
+      "role": "solution_architect",
+      "scope": "project",
+      "priority": "high"
+    },
+    {
+      "name": "solution_user_rules",
+      "displayName": "解决方案架构师个人规则",
+      "description": "解决方案架构师角色的个人规则配置",
+      "file": "solution_user_rules.md",
+      "type": "user",
+      "role": "solution_architect",
+      "scope": "user",
+      "priority": "medium"
+    },
+    {
+      "name": "test_project_rules",
+      "displayName": "测试工程师项目规则",
+      "description": "测试工程师角色的项目级规则，包含测试策略和规范",
+      "file": "test_project_rules.md",
+      "type": "project",
+      "role": "test_engineer",
+      "scope": "project",
+      "priority": "high"
+    },
+    {
+      "name": "test_user_rules",
+      "displayName": "测试工程师个人规则",
+      "description": "测试工程师角色的个人规则配置",
+      "file": "test_user_rules.md",
+      "type": "user",
+      "role": "test_engineer",
+      "scope": "user",
+      "priority": "medium"
+    }
+  ]
+}
