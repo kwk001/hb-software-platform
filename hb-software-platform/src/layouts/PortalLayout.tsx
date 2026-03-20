@@ -203,13 +203,31 @@ const navStyles = `
 
   /* 隐藏菜单项下方的下拉箭头 */
   .navbar-nav .ant-menu-item .ant-menu-item-icon,
-  .navbar-nav .ant-menu-submenu-title .anticon {
+  .navbar-nav .ant-menu-submenu-title .anticon,
+  .navbar-nav .ant-menu-submenu-arrow,
+  .navbar-nav .ant-menu-submenu-horizontal .ant-menu-submenu-arrow {
     display: none !important;
   }
 
   /* 隐藏水平菜单的省略号下拉 */
   .navbar-nav .ant-menu-overflowed-submenu {
     display: none !important;
+  }
+
+  /* 隐藏菜单项内的所有图标元素 */
+  .navbar-nav .ant-menu-item .anticon,
+  .navbar-nav .ant-menu-item .ant-menu-submenu-arrow-icon,
+  .navbar-nav .ant-menu-item .ant-menu-item-icon {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+  }
+
+  /* 强制隐藏所有下拉相关元素 */
+  .navbar-nav .ant-menu-submenu-horizontal::after,
+  .navbar-nav .ant-menu-item::after {
+    display: none !important;
+    content: none !important;
   }
 
   /* 右侧操作区 - 靠右对齐 */
@@ -268,10 +286,38 @@ const navStyles = `
     border: none;
     cursor: pointer;
     transition: all 0.15s ease;
+    position: relative;
+    overflow: hidden;
   }
-  
+
+  /* 光晕动效 */
+  .navbar-btn-primary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0.4) 50%,
+      rgba(255, 255, 255, 0) 100%
+    );
+    animation: btnShimmer 2.5s infinite;
+    pointer-events: none;
+  }
+
+  @keyframes btnShimmer {
+    0% { left: -100%; }
+    100% { left: 200%; }
+  }
+
   .navbar-btn-primary:hover {
     background: var(--brand-primary-dark);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
   }
   
   /* 用户卡片 */

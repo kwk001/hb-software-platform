@@ -340,7 +340,7 @@ const MessageTemplate = () => {
       dataIndex: 'usageCount',
       key: 'usageCount',
       width: 110,
-      align: 'center',
+      align: 'center' as const,
       render: (count: number) => (
         <Badge 
           count={count} 
@@ -358,7 +358,7 @@ const MessageTemplate = () => {
       dataIndex: 'enabled',
       key: 'enabled',
       width: 110,
-      align: 'center',
+      align: 'center' as const,
       render: (enabled: boolean) => (
         <Switch
           checked={enabled}
@@ -372,7 +372,7 @@ const MessageTemplate = () => {
       title: '操作',
       key: 'action',
       width: 180,
-      align: 'center',
+      align: 'center' as const,
       render: (_: any, record: any) => (
         <Space size="small">
           <Button

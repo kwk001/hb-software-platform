@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import {
   Row,
   Col,
@@ -26,6 +26,10 @@ import {
   EnvironmentOutlined,
   ClockCircleOutlined,
   FireOutlined,
+  PhoneOutlined,
+  MailOutlined,
+  QrcodeOutlined,
+  WechatOutlined,
 } from '@ant-design/icons'
 import { policyList, getTypeColor, getCategoryColor } from '../../data/policies.tsx'
 import { activityList, getActivityTypeColor, getActivityCategoryColor, getActivityStatusColor } from '../../data/activities.tsx'
@@ -99,26 +103,50 @@ const Policy = () => {
 
   return (
     <div style={{ background: '#F8FAFC', minHeight: 'calc(100vh - 64px)' }}>
-      {/* Hero区域 - 主题蓝渐变设计 */}
+      {/* Hero区域 - 主题色渐变设计 */}
       <div
         style={{
-          background: 'linear-gradient(135deg, #0f172a 0%, #4f46e5 50%, #4f46e5 100%)',
+          background: 'linear-gradient(135deg, #1e1b4b 0%, #312e81 20%, #4f46e5 40%, #6366f1 60%, #818cf8 100%)',
           padding: '60px 0 80px',
           position: 'relative',
           overflow: 'hidden',
         }}
       >
-        {/* 电路板纹理背景 */}
+        {/* 径向光晕装饰 - 主题色 */}
+        <div
+          style={{
+            position: 'absolute',
+            top: '-50%',
+            left: '-20%',
+            width: '80%',
+            height: '150%',
+            background: 'radial-gradient(ellipse, rgba(99, 102, 241, 0.5) 0%, transparent 60%)',
+            pointerEvents: 'none',
+          }}
+        />
+        <div
+          style={{
+            position: 'absolute',
+            bottom: '-30%',
+            right: '-10%',
+            width: '60%',
+            height: '100%',
+            background: 'radial-gradient(ellipse, rgba(79, 70, 229, 0.4) 0%, transparent 55%)',
+            pointerEvents: 'none',
+          }}
+        />
+
+        {/* 网格纹理背景 */}
         <div
           style={{
             position: 'absolute',
             inset: 0,
             backgroundImage: `
-              linear-gradient(rgba(59, 130, 246, 0.1) 1px, transparent 1px),
-              linear-gradient(90deg, rgba(59, 130, 246, 0.1) 1px, transparent 1px)
+              linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+              linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px)
             `,
-            backgroundSize: '40px 40px',
-            opacity: 0.6,
+            backgroundSize: '50px 50px',
+            opacity: 0.8,
           }}
         />
 
@@ -131,9 +159,9 @@ const Policy = () => {
               repeating-linear-gradient(
                 45deg,
                 transparent,
-                transparent 20px,
-                rgba(59, 130, 246, 0.05) 20px,
-                rgba(59, 130, 246, 0.05) 21px
+                transparent 30px,
+                rgba(255, 255, 255, 0.02) 30px,
+                rgba(255, 255, 255, 0.02) 31px
               )
             `,
           }}
@@ -147,7 +175,7 @@ const Policy = () => {
             left: '3%',
             width: '120px',
             height: '120px',
-            border: '1px solid rgba(59, 130, 246, 0.25)',
+            border: '1px solid rgba(129, 140, 248, 0.35)',
             borderRadius: '8px',
             transform: 'rotate(15deg)',
           }}
@@ -159,7 +187,7 @@ const Policy = () => {
             left: '5%',
             width: '80px',
             height: '80px',
-            border: '1px solid rgba(59, 130, 246, 0.2)',
+            border: '1px solid rgba(99, 102, 241, 0.3)',
             borderRadius: '50%',
           }}
         />
@@ -172,7 +200,7 @@ const Policy = () => {
             right: '5%',
             width: '100px',
             height: '2px',
-            background: 'linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.7), transparent)',
+            background: 'linear-gradient(90deg, transparent, rgba(129, 140, 248, 0.9), transparent)',
             transform: 'rotate(-30deg)',
           }}
         />
@@ -183,7 +211,7 @@ const Policy = () => {
             right: '8%',
             width: '60px',
             height: '60px',
-            border: '2px solid rgba(59, 130, 246, 0.35)',
+            border: '2px solid rgba(99, 102, 241, 0.45)',
             borderRadius: '4px',
             transform: 'rotate(45deg)',
           }}
@@ -197,9 +225,9 @@ const Policy = () => {
             left: '15%',
             width: '4px',
             height: '4px',
-            background: 'rgba(59, 130, 246, 0.9)',
+            background: 'rgba(129, 140, 248, 0.95)',
             borderRadius: '50%',
-            boxShadow: '0 0 12px rgba(59, 130, 246, 0.9)',
+            boxShadow: '0 0 12px rgba(129, 140, 248, 0.95)',
           }}
         />
         <div
@@ -209,9 +237,9 @@ const Policy = () => {
             right: '20%',
             width: '6px',
             height: '6px',
-            background: 'rgba(37, 99, 235, 0.7)',
+            background: 'rgba(99, 102, 241, 0.85)',
             borderRadius: '50%',
-            boxShadow: '0 0 14px rgba(37, 99, 235, 0.7)',
+            boxShadow: '0 0 14px rgba(99, 102, 241, 0.85)',
           }}
         />
 
@@ -219,15 +247,15 @@ const Policy = () => {
           <Row gutter={[48, 32]} align="middle">
             <Col xs={24} lg={14}>
               <div style={{ paddingRight: '40px' }}>
-                {/* 标签 - 发光效果 */}
+                {/* 标签 - 主题色发光效果 */}
                 <div
                   style={{
                     display: 'inline-flex',
                     alignItems: 'center',
                     gap: '8px',
                     padding: '8px 16px',
-                    background: 'rgba(59, 130, 246, 0.15)',
-                    border: '1px solid rgba(59, 130, 246, 0.3)',
+                    background: 'rgba(99, 102, 241, 0.15)',
+                    border: '1px solid rgba(129, 140, 248, 0.4)',
                     borderRadius: '20px',
                     marginBottom: '20px',
                   }}
@@ -236,12 +264,12 @@ const Policy = () => {
                     style={{
                       width: '8px',
                       height: '8px',
-                      background: '#3B82F6',
+                      background: '#6366f1',
                       borderRadius: '50%',
-                      boxShadow: '0 0 10px #3B82F6',
+                      boxShadow: '0 0 10px #6366f1',
                     }}
                   />
-                  <span style={{ fontSize: '14px', color: '#93C5FD', fontWeight: 500 }}>
+                  <span style={{ fontSize: '14px', color: '#a5b4fc', fontWeight: 500 }}>
                     政策资讯平台
                   </span>
                 </div>
@@ -328,26 +356,28 @@ const Policy = () => {
               </div>
             </Col>
             <Col xs={24} lg={10}>
-              {/* 搜索框 - 科技线条风 */}
+              {/* 搜索框 - 透明玻璃风格 */}
               <div
                 style={{
                   display: 'flex',
                   alignItems: 'center',
-                  background: 'rgba(15, 23, 42, 0.6)',
-                  backdropFilter: 'blur(20px)',
-                  border: '1px solid rgba(59, 130, 246, 0.3)',
-                  borderRadius: '12px',
-                  padding: '4px',
-                  boxShadow: '0 4px 24px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255,255,255,0.05)',
+                  background: 'rgba(255, 255, 255, 0.08)',
+                  backdropFilter: 'blur(20px) saturate(180%)',
+                  border: '1px solid rgba(255, 255, 255, 0.2)',
+                  borderRadius: '16px',
+                  padding: '6px',
+                  boxShadow: '0 8px 32px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255,255,255,0.1)',
                   transition: 'all 0.3s ease',
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.borderColor = 'rgba(59, 130, 246, 0.6)'
-                  e.currentTarget.style.boxShadow = '0 4px 24px rgba(0, 0, 0, 0.4), 0 0 20px rgba(59, 130, 246, 0.15), inset 0 1px 0 rgba(255,255,255,0.05)'
+                  e.currentTarget.style.background = 'rgba(255, 255, 255, 0.12)'
+                  e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.35)'
+                  e.currentTarget.style.boxShadow = '0 8px 32px rgba(0, 0, 0, 0.25), 0 0 30px rgba(99, 102, 241, 0.15), inset 0 1px 0 rgba(255,255,255,0.15)'
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.borderColor = 'rgba(59, 130, 246, 0.3)'
-                  e.currentTarget.style.boxShadow = '0 4px 24px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255,255,255,0.05)'
+                  e.currentTarget.style.background = 'rgba(255, 255, 255, 0.08)'
+                  e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.2)'
+                  e.currentTarget.style.boxShadow = '0 8px 32px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255,255,255,0.1)'
                 }}
               >
                 <Input
@@ -362,7 +392,7 @@ const Policy = () => {
                     color: '#fff',
                     fontSize: '15px',
                     height: '48px',
-                    paddingLeft: '16px',
+                    paddingLeft: '20px',
                   }}
                 />
                 <Button
@@ -371,20 +401,29 @@ const Policy = () => {
                   style={{
                     height: '44px',
                     width: '44px',
-                    borderRadius: '10px',
-                    background: 'linear-gradient(135deg, #3B82F6 0%, #06B6D4 100%)',
-                    border: 'none',
+                    borderRadius: '12px',
+                    background: 'rgba(255, 255, 255, 0.25)',
+                    border: '1px solid rgba(255, 255, 255, 0.3)',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    boxShadow: '0 4px 12px rgba(59, 130, 246, 0.3)',
+                    boxShadow: '0 4px 15px rgba(0, 0, 0, 0.2)',
+                    transition: 'all 0.3s ease',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.4)'
+                    e.currentTarget.style.transform = 'scale(1.05)'
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.25)'
+                    e.currentTarget.style.transform = 'scale(1)'
                   }}
                 />
               </div>
 
-              {/* 热门搜索 - 科技标签风 */}
+              {/* 热门搜索 - 玻璃标签风 */}
               <div style={{ marginTop: '16px', display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
-                <span style={{ fontSize: '13px', color: 'rgba(255,255,255,0.4)', marginRight: '4px' }}>
+                <span style={{ fontSize: '13px', color: 'rgba(255,255,255,0.5)', marginRight: '4px' }}>
                   <BankOutlined style={{ fontSize: '12px', marginRight: '4px' }} />
                   热门：
                 </span>
@@ -394,24 +433,27 @@ const Policy = () => {
                     style={{
                       display: 'inline-flex',
                       alignItems: 'center',
-                      padding: '5px 12px',
-                      background: 'transparent',
-                      border: '1px solid rgba(59, 130, 246, 0.25)',
-                      borderRadius: '6px',
+                      padding: '6px 14px',
+                      background: 'rgba(255, 255, 255, 0.06)',
+                      border: '1px solid rgba(255, 255, 255, 0.15)',
+                      borderRadius: '20px',
                       fontSize: '13px',
-                      color: 'rgba(255,255,255,0.7)',
+                      color: 'rgba(255,255,255,0.8)',
                       cursor: 'pointer',
                       transition: 'all 0.25s ease',
+                      backdropFilter: 'blur(10px)',
                     }}
                     onMouseEnter={(e) => {
-                      e.currentTarget.style.background = 'rgba(59, 130, 246, 0.15)'
-                      e.currentTarget.style.borderColor = 'rgba(59, 130, 246, 0.5)'
+                      e.currentTarget.style.background = 'rgba(255, 255, 255, 0.15)'
+                      e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.3)'
                       e.currentTarget.style.color = '#fff'
+                      e.currentTarget.style.transform = 'translateY(-2px)'
                     }}
                     onMouseLeave={(e) => {
-                      e.currentTarget.style.background = 'transparent'
-                      e.currentTarget.style.borderColor = 'rgba(59, 130, 246, 0.25)'
-                      e.currentTarget.style.color = 'rgba(255,255,255,0.7)'
+                      e.currentTarget.style.background = 'rgba(255, 255, 255, 0.06)'
+                      e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.15)'
+                      e.currentTarget.style.color = 'rgba(255,255,255,0.8)'
+                      e.currentTarget.style.transform = 'translateY(0)'
                     }}
                     onClick={() => setSearchText(tag)}
                   >
@@ -420,29 +462,7 @@ const Policy = () => {
                 ))}
               </div>
 
-              {/* 发布政策按钮 - 根据权限显示 */}
-              {canShowPublishButton() && (
-                <div style={{ marginTop: '24px' }}>
-                  <Button
-                    type="primary"
-                    size="large"
-                    icon={<PlusOutlined />}
-                    onClick={handlePublishClick}
-                    style={{
-                      height: '48px',
-                      padding: '0 24px',
-                      borderRadius: '10px',
-                      background: 'linear-gradient(135deg, #3B82F6 0%, #06B6D4 100%)',
-                      border: 'none',
-                      fontSize: '15px',
-                      fontWeight: 500,
-                      boxShadow: '0 4px 12px rgba(59, 130, 246, 0.3)',
-                    }}
-                  >
-                    发布政策
-                  </Button>
-                </div>
-              )}
+
             </Col>
           </Row>
         </div>
@@ -1202,6 +1222,93 @@ const Policy = () => {
           )}
         </div>
       </div>
+
+      {/* 底部导航 */}
+      <footer className="home-footer-v2" style={{ marginTop: '60px' }}>
+        <div className="container-v2">
+          <div className="footer-content-v2">
+            {/* 左侧：Logo和简介 */}
+            <div className="footer-brand-v2">
+              <div className="footer-logo-v2">
+                <span className="logo-icon-v2">◆</span>
+                <span className="logo-text-v2">工业软件公共服务平台</span>
+              </div>
+              <p className="footer-desc-v2">
+                专注于工业软件领域，为企业提供优质的软件产品和数字化解决方案，助力企业实现智能化转型。
+              </p>
+              <div className="footer-contact-v2">
+                <span className="contact-item-v2">
+                  <PhoneOutlined />
+                  400-888-8888
+                </span>
+                <span className="contact-item-v2">
+                  <MailOutlined />
+                  contact@example.com
+                </span>
+              </div>
+            </div>
+
+            {/* 中间：导航链接 */}
+            <div className="footer-nav-v2">
+              <div className="footer-nav-group-v2">
+                <h4 className="footer-nav-title-v2">产品服务</h4>
+                <ul className="footer-nav-list-v2">
+                  <li><Link to="/software">软件产品</Link></li>
+                  <li><Link to="/solutions">解决方案</Link></li>
+                  <li><Link to="/policy">政策资讯</Link></li>
+                  <li><Link to="/demand">需求大厅</Link></li>
+                </ul>
+              </div>
+              <div className="footer-nav-group-v2">
+                <h4 className="footer-nav-title-v2">企业服务</h4>
+                <ul className="footer-nav-list-v2">
+                  <li><Link to="/enterprise">企业入驻</Link></li>
+                  <li><Link to="/cooperation">商务合作</Link></li>
+                  <li><Link to="/consulting">技术咨询</Link></li>
+                  <li><Link to="/training">培训服务</Link></li>
+                </ul>
+              </div>
+              <div className="footer-nav-group-v2">
+                <h4 className="footer-nav-title-v2">关于我们</h4>
+                <ul className="footer-nav-list-v2">
+                  <li><Link to="/about">平台介绍</Link></li>
+                  <li><Link to="/news">新闻动态</Link></li>
+                  <li><Link to="/join">加入我们</Link></li>
+                  <li><Link to="/contact">联系我们</Link></li>
+                </ul>
+              </div>
+            </div>
+
+            {/* 右侧：二维码和社交 */}
+            <div className="footer-extra-v2">
+              <div className="footer-qr-v2">
+                <div className="qr-placeholder-v2">
+                  <QrcodeOutlined />
+                </div>
+                <span className="qr-label-v2">扫码关注公众号</span>
+              </div>
+              <div className="footer-social-v2">
+                <a href="#" className="social-link-v2" title="微信">
+                  <WechatOutlined />
+                </a>
+              </div>
+            </div>
+          </div>
+
+          {/* 底部版权 */}
+          <div className="footer-bottom-v2">
+            <div className="footer-copyright-v2">
+              <span>© 2024 工业软件公共服务平台 版权所有</span>
+              <span className="footer-divider-v2">|</span>
+              <Link to="/privacy">隐私政策</Link>
+              <span className="footer-divider-v2">|</span>
+              <Link to="/terms">服务条款</Link>
+              <span className="footer-divider-v2">|</span>
+              <span>京ICP备XXXXXXXX号</span>
+            </div>
+          </div>
+        </div>
+      </footer>
     </div>
   )
 }

@@ -29,139 +29,38 @@ import {
   EyeOutlined,
   CheckCircleFilled,
   CalendarOutlined,
+  PhoneOutlined,
+  MailOutlined,
+  QrcodeOutlined,
+  WechatOutlined,
+  WeiboOutlined,
+  VideoCameraOutlined,
 } from '@ant-design/icons'
 import { softwareList, softwareCategories, industryCategories, type SoftwareItem } from '../../data/software'
 import './home-styles.css'
 
-// 智能滚动卡片组件 - 卡片到达中心时放大并暂停
+// 智能滚动卡片组件 - CSS 匀速滑动
 interface SmartScrollCardsProps {
   softwareList: SoftwareItem[]
 }
 
 function SmartScrollCards({ softwareList }: SmartScrollCardsProps) {
-  const containerRef = useRef<HTMLDivElement>(null)
-  const trackRef = useRef<HTMLDivElement>(null)
-  const [centerIndex, setCenterIndex] = useState<number | null>(null)
-  const [isPaused, setIsPaused] = useState(false)
-  const animationRef = useRef<number | null>(null)
-  const positionRef = useRef(0)
-  const speedRef = useRef(0.5)
-  const pauseTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
-
-  // 检测哪个卡片在中心
-  const detectCenterCard = useCallback(() => {
-    if (!containerRef.current || !trackRef.current) return
-
-    const container = containerRef.current
-    const track = trackRef.current
-    const cards = track.querySelectorAll('.jsdesign-card')
-    const containerRect = container.getBoundingClientRect()
-    const centerX = containerRect.left + containerRect.width / 2
-
-    let closestIndex = -1
-    let closestDistance = Infinity
-
-    cards.forEach((card, index) => {
-      const cardRect = card.getBoundingClientRect()
-      const cardCenterX = cardRect.left + cardRect.width / 2
-      const distance = Math.abs(cardCenterX - centerX)
-
-      if (distance < closestDistance) {
-        closestDistance = distance
-        closestIndex = index
-      }
-    })
-
-    const normalizedIndex = closestIndex % softwareList.length
-
-    // 如果中心卡片变化了，触发暂停
-    if (closestIndex !== -1 && normalizedIndex !== centerIndex && closestDistance < 60) {
-      setCenterIndex(normalizedIndex)
-      setIsPaused(true)
-
-      // 清除之前的暂停定时器
-      if (pauseTimeoutRef.current) {
-        clearTimeout(pauseTimeoutRef.current)
-      }
-
-      // 1秒后恢复滚动
-      pauseTimeoutRef.current = setTimeout(() => {
-        setIsPaused(false)
-      }, 1000)
-    }
-  }, [centerIndex, softwareList.length])
-
-  // 动画循环
-  useEffect(() => {
-    const track = trackRef.current
-    if (!track) return
-
-    const animate = () => {
-      if (!isPaused) {
-        positionRef.current -= speedRef.current
-
-        // 无缝循环：当滚动到一半时重置
-        const trackWidth = track.scrollWidth / 2
-        if (Math.abs(positionRef.current) >= trackWidth) {
-          positionRef.current = 0
-        }
-
-        track.style.transform = `translateX(${positionRef.current}px)`
-      }
-
-      // 检测中心卡片
-      detectCenterCard()
-
-      animationRef.current = requestAnimationFrame(animate)
-    }
-
-    animationRef.current = requestAnimationFrame(animate)
-
-    return () => {
-      if (animationRef.current) {
-        cancelAnimationFrame(animationRef.current)
-      }
-      if (pauseTimeoutRef.current) {
-        clearTimeout(pauseTimeoutRef.current)
-      }
-    }
-  }, [isPaused, detectCenterCard])
-
-  // 鼠标悬停时暂停
-  const handleMouseEnter = () => {
-    setIsPaused(true)
-    if (pauseTimeoutRef.current) {
-      clearTimeout(pauseTimeoutRef.current)
-    }
-  }
-
-  const handleMouseLeave = () => {
-    setIsPaused(false)
-  }
-
   // 复制一份数据用于无缝循环
   const duplicatedList = [...softwareList, ...softwareList]
 
   return (
     <div className="jsdesign-right">
-      <div
-        className="jsdesign-scroll-container"
-        ref={containerRef}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-      >
-        <div className="jsdesign-scroll-track-smart" ref={trackRef}>
+      <div className="jsdesign-scroll-container">
+        <div className="jsdesign-scroll-track-smart">
           {duplicatedList.map((software, index) => (
             <Link
               to={`/software/${software.id}`}
               key={`${software.id}-${index}`}
-              className={`jsdesign-card ${centerIndex === index % softwareList.length && isPaused ? 'center-active' : ''}`}
+              className="jsdesign-card"
             >
               <div className="jsdesign-card-inner">
-                <div className="jsdesign-card-preview" style={{ background: `${software.color}15` }}>
-                  <div className="jsdesign-card-icon" style={{ background: software.color }}>
-                    {software.name.charAt(0)}
-                  </div>
+                <div className="jsdesign-card-icon" style={{ background: software.color }}>
+                  {software.name.charAt(0)}
                 </div>
                 <div className="jsdesign-card-info">
                   <span className="jsdesign-card-category">{software.categoryLabel}</span>
@@ -172,27 +71,6 @@ function SmartScrollCards({ softwareList }: SmartScrollCardsProps) {
             </Link>
           ))}
         </div>
-      </div>
-      {/* 分类导航 - 位于右侧卡片底部 */}
-      <div className="jsdesign-tab-bar-right">
-        {[
-          { value: 'all', label: '全部', icon: '⊞' },
-          { value: 'machinery', label: '机械制造', icon: '⚙' },
-          { value: 'electronics', label: '电子信息', icon: '◈' },
-          { value: 'software', label: '软件服务', icon: '◉' },
-          { value: 'enterprise', label: '企业服务', icon: '◐' },
-          { value: 'automotive', label: '汽车制造', icon: '▣' },
-          { value: 'iot', label: '工业互联网', icon: '◫' },
-        ].map((tab, index) => (
-          <Link
-            key={tab.value}
-            to={`/software?industry=${tab.value === 'all' ? '' : tab.value}`}
-            className={`jsdesign-tab-item-right ${index === 0 ? 'active' : ''}`}
-          >
-            <span className="jsdesign-tab-icon-right">{tab.icon}</span>
-            <span className="jsdesign-tab-label-right">{tab.label}</span>
-          </Link>
-        ))}
       </div>
     </div>
   )
@@ -272,11 +150,12 @@ function ProcessSection({ processSteps, processAnim }: ProcessSectionProps) {
   )
 }
 
-// 合作伙伴组件 - 全新高端UI/UX设计
+// 合作伙伴组件 - 参考 gemcoder.com Logo墙设计（横向无限滚动）
 interface Partner {
   name: string
   abbr: string
   tag: string
+  logo?: string
 }
 
 interface PartnersSectionProps {
@@ -285,18 +164,46 @@ interface PartnersSectionProps {
 }
 
 function PartnersSection({ partners, partnerAnim }: PartnersSectionProps) {
-  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
-  const scrollRef = useRef<HTMLDivElement>(null)
+  // 扩展合作伙伴数据（多行跑马灯）- 支持Logo图片
+  const row1Partners: Partner[] = [
+    { name: '湖北省工信厅', abbr: '湖北工信', tag: '政府机构', logo: '/images/partners/hubei-gongxin.svg' },
+    { name: '武汉市经信局', abbr: '武汉经信', tag: '政府机构', logo: '/images/partners/wuhan-jingxin.svg' },
+    { name: '东风汽车', abbr: '东风', tag: '制造企业', logo: '/images/partners/dongfeng.svg' },
+    { name: '烽火通信', abbr: '烽火', tag: '科技企业', logo: '/images/partners/fenghuo.svg' },
+    { name: '华工科技', abbr: '华工', tag: '科技企业', logo: '/images/partners/huagong.svg' },
+    { name: '中国信科', abbr: '信科', tag: '科技企业', logo: '/images/partners/zhongguo-xinke.svg' },
+    { name: '三峡集团', abbr: '三峡', tag: '能源企业', logo: '/images/partners/sanxia.svg' },
+    { name: '武钢集团', abbr: '武钢', tag: '制造企业', logo: '/images/partners/wugang.svg' },
+  ]
+
+  const row2Partners: Partner[] = [
+    { name: '中铁十一局', abbr: '中铁', tag: '建筑企业', logo: '/images/partners/zhongtie.svg' },
+    { name: '中交二航局', abbr: '中交', tag: '建筑企业', logo: '/images/partners/zhongjiao.svg' },
+    { name: '人福医药', abbr: '人福', tag: '医药企业', logo: '/images/partners/renfu.svg' },
+    { name: '九州通', abbr: '九州通', tag: '医药企业', logo: '/images/partners/jiuzhoutong.svg' },
+    { name: '高德红外', abbr: '高德', tag: '科技企业', logo: '/images/partners/gaode.svg' },
+    { name: '锐科激光', abbr: '锐科', tag: '科技企业', logo: '/images/partners/ruike.svg' },
+    { name: '精测电子', abbr: '精测', tag: '科技企业', logo: '/images/partners/jingce.svg' },
+    { name: '华中数控', abbr: '华中数控', tag: '制造企业', logo: '/images/partners/huazhong.svg' },
+  ]
 
   // 复制数据实现无缝滚动
-  const duplicatedPartners = [...partners, ...partners, ...partners]
+  const duplicatedRow1 = [...row1Partners, ...row1Partners, ...row1Partners]
+  const duplicatedRow2 = [...row2Partners, ...row2Partners, ...row2Partners]
+
+  // Logo加载失败时显示文字
+  const handleLogoError = (e: React.SyntheticEvent<HTMLImageElement>) => {
+    e.currentTarget.style.display = 'none'
+    const textSpan = e.currentTarget.nextElementSibling as HTMLElement
+    if (textSpan) textSpan.style.display = 'block'
+  }
 
   return (
-    <section className={`section-v2 partners-v2-new ${partnerAnim.isVisible ? 'visible' : ''}`} ref={partnerAnim.ref}>
+    <section className={`section-v2 partners-v2-marquee ${partnerAnim.isVisible ? 'visible' : ''}`} ref={partnerAnim.ref}>
       <div className="container-v2">
-        {/* 标题区域 - 与其他模块保持一致 */}
+        {/* 标题区域 */}
         <div className="section-header-v2">
-          <div className="section-tag">PARTNERS</div>
+          <div className="section-tag">合作伙伴</div>
           <h2 className="section-title-v2">
             <TrophyOutlined />
             合作伙伴
@@ -304,74 +211,52 @@ function PartnersSection({ partners, partnerAnim }: PartnersSectionProps) {
           <p className="section-desc-v2">携手行业领军企业，共建工业软件生态</p>
         </div>
 
-        {/* Logo墙 - 无限滚动 */}
-        <div className="partners-logo-wall">
-          <div className="logo-wall-track" ref={scrollRef}>
-            {duplicatedPartners.map((partner, index) => (
-              <div
-                key={index}
-                className={`logo-wall-item ${hoveredIndex === index ? 'hovered' : ''}`}
-                onMouseEnter={() => setHoveredIndex(index)}
-                onMouseLeave={() => setHoveredIndex(null)}
-              >
-                <div className="logo-item-inner">
-                  <span className="logo-text">{partner.abbr}</span>
+        {/* Logo跑马灯墙 */}
+        <div className="partners-marquee-container">
+          {/* 第一行 - 向左滚动 */}
+          <div className="marquee-row">
+            <div className="marquee-track marquee-left">
+              {duplicatedRow1.map((partner, index) => (
+                <div key={`r1-${index}`} className="marquee-item" title={partner.name}>
+                  {partner.logo ? (
+                    <>
+                      <img 
+                        src={partner.logo} 
+                        alt={partner.name}
+                        className="marquee-logo"
+                        onError={handleLogoError}
+                      />
+                      <span className="marquee-text" style={{ display: 'none' }}>{partner.abbr}</span>
+                    </>
+                  ) : (
+                    <span className="marquee-text">{partner.abbr}</span>
+                  )}
                 </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* 精选合作伙伴展示 */}
-        <div className="partners-featured-new">
-          <div className="featured-main-card">
-            <div className="featured-glass-effect" />
-            <div className="featured-content">
-              <div className="featured-badge">
-                <TrophyOutlined />
-                战略合作伙伴
-              </div>
-              <h3 className="featured-name">湖北省工信厅</h3>
-              <p className="featured-desc">指导单位 · 政策支撑 · 产业引领</p>
-              <div className="featured-divider" />
-              <div className="featured-metrics">
-                <div className="featured-metric">
-                  <span className="metric-value">100+</span>
-                  <span className="metric-label">政策支持</span>
-                </div>
-                <div className="featured-metric">
-                  <span className="metric-value">50+</span>
-                  <span className="metric-label">企业扶持</span>
-                </div>
-                <div className="featured-metric">
-                  <span className="metric-value">10亿</span>
-                  <span className="metric-label">资金支持</span>
-                </div>
-              </div>
+              ))}
             </div>
-            <div className="featured-glow" />
           </div>
-
-          {/* 其他合作伙伴网格 */}
-          <div className="partners-grid-new">
-            {partners.slice(0, 6).map((partner, index) => (
-              <div
-                key={index}
-                className="partner-grid-card"
-                style={{ animationDelay: `${index * 100}ms` }}
-              >
-                <div className="partner-grid-inner">
-                  <div className="partner-grid-logo">
-                    {partner.abbr.charAt(0)}
-                  </div>
-                  <div className="partner-grid-info">
-                    <span className="partner-grid-name">{partner.name}</span>
-                    <span className="partner-grid-tag">{partner.tag}</span>
-                  </div>
+          
+          {/* 第二行 - 向右滚动 */}
+          <div className="marquee-row">
+            <div className="marquee-track marquee-right">
+              {duplicatedRow2.map((partner, index) => (
+                <div key={`r2-${index}`} className="marquee-item" title={partner.name}>
+                  {partner.logo ? (
+                    <>
+                      <img 
+                        src={partner.logo} 
+                        alt={partner.name}
+                        className="marquee-logo"
+                        onError={handleLogoError}
+                      />
+                      <span className="marquee-text" style={{ display: 'none' }}>{partner.abbr}</span>
+                    </>
+                  ) : (
+                    <span className="marquee-text">{partner.abbr}</span>
+                  )}
                 </div>
-                <div className="partner-grid-shine" />
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
       </div>
@@ -400,14 +285,13 @@ interface SolutionsSectionProps {
 function SolutionsSection({ solutions, solutionAnim }: SolutionsSectionProps) {
   const [activeIndex, setActiveIndex] = useState(0)
   const [isAutoPlaying, setIsAutoPlaying] = useState(true)
-  const [isTransitioning, setIsTransitioning] = useState(false)
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
   useEffect(() => {
     if (!solutionAnim.isVisible || !isAutoPlaying) return
 
     intervalRef.current = setInterval(() => {
-      handleSwitch((prev) => (prev + 1) % solutions.length)
+      setActiveIndex((prev) => (prev + 1) % solutions.length)
     }, 5000)
 
     return () => {
@@ -417,16 +301,9 @@ function SolutionsSection({ solutions, solutionAnim }: SolutionsSectionProps) {
     }
   }, [solutionAnim.isVisible, isAutoPlaying, solutions.length])
 
-  const handleSwitch = (indexFn: (prev: number) => number) => {
-    if (isTransitioning) return
-    setIsTransitioning(true)
-    setActiveIndex(indexFn)
-    setTimeout(() => setIsTransitioning(false), 500)
-  }
-
   const handleClick = (index: number) => {
-    if (index === activeIndex || isTransitioning) return
-    handleSwitch(() => index)
+    if (index === activeIndex) return
+    setActiveIndex(index)
   }
 
   const handleMouseEnter = () => setIsAutoPlaying(false)
@@ -500,12 +377,11 @@ function SolutionsSection({ solutions, solutionAnim }: SolutionsSectionProps) {
 
           {/* 右侧：高端详情卡片 */}
           <div 
-            className={`solution-card-v3 ${isTransitioning ? 'transitioning' : ''}`}
+            className="solution-card-v3"
             style={{ '--card-color': activeSolution.color, '--card-gradient': activeSolution.gradient } as React.CSSProperties}
           >
-            {/* 动态背景 */}
+            {/* 动态背景 - 已隐藏渐变背景色 */}
             <div className="solution-card-bg">
-              <div className="card-bg-glow" />
               <div className="card-bg-grid" />
             </div>
 
@@ -570,16 +446,6 @@ function SolutionsSection({ solutions, solutionAnim }: SolutionsSectionProps) {
               </div>
             </div>
 
-            {/* 卡片底部 */}
-            <div className="solution-card-footer">
-              <Link to={`/solutions/${activeSolution.id}`} className="card-action-btn">
-                <span>查看详情</span>
-                <div className="btn-icon">
-                  <ArrowRightOutlined />
-                </div>
-              </Link>
-            </div>
-
             {/* 装饰元素 */}
             <div className="card-decoration">
               <div className="deco-circle" />
@@ -639,16 +505,18 @@ interface PolicyAutoScrollListProps {
 }
 
 function PolicyAutoScrollList({ policies, selectedIndex, onSelect }: PolicyAutoScrollListProps) {
-  const containerRef = useRef<HTMLDivElement>(null)
+  const scrollContainerRef = useRef<HTMLDivElement>(null)
   const [isHovering, setIsHovering] = useState(false)
   const rafRef = useRef<number | null>(null)
   const currentIndexRef = useRef(0)
-  const isScrollingRef = useRef(false)
 
-  // 使用 requestAnimationFrame 实现流畅滚动
+  // 过滤掉选中项的其他政策列表
+  const otherPolicies = policies.filter((_, index) => index !== selectedIndex)
+
+  // 使用 requestAnimationFrame 实现流畅滚动（仅对非选中项列表）
   useEffect(() => {
-    const container = containerRef.current
-    if (!container || isHovering) {
+    const container = scrollContainerRef.current
+    if (!container || isHovering || otherPolicies.length === 0) {
       if (rafRef.current) {
         cancelAnimationFrame(rafRef.current)
         rafRef.current = null
@@ -656,8 +524,8 @@ function PolicyAutoScrollList({ policies, selectedIndex, onSelect }: PolicyAutoS
       return
     }
 
-    const itemHeight = 96 // 每条政策的高度（包含间距）
-    const maxIndex = policies.length
+    const itemHeight = 88 // 每条政策的高度（包含间距）
+    const maxIndex = otherPolicies.length
     const scrollDuration = 800 // 滚动动画持续时间
     const pauseDuration = 3500 // 暂停时间
 
@@ -715,61 +583,90 @@ function PolicyAutoScrollList({ policies, selectedIndex, onSelect }: PolicyAutoS
         cancelAnimationFrame(rafRef.current)
       }
     }
-  }, [isHovering, policies.length])
+  }, [isHovering, otherPolicies.length])
 
   // 点击时选中
-  const handleItemClick = (index: number) => {
-    onSelect(index)
+  const handleItemClick = (originalIndex: number) => {
+    onSelect(originalIndex)
   }
+
+  // 获取选中项的样式
+  const getCategoryStyle = (category: string) => {
+    const categoryColors: Record<string, { bg: string; color: string }> = {
+      '申报通知': { bg: '#eff6ff', color: '#0369a1' },
+      '补贴政策': { bg: '#f0fdf4', color: '#15803d' },
+      '产业政策': { bg: '#fffbeb', color: '#b45309' },
+    }
+    return categoryColors[category] || { bg: '#f1f5f9', color: '#475569' }
+  }
+
+  const selectedPolicy = policies[selectedIndex]
+  const selectedStyle = selectedPolicy ? getCategoryStyle(selectedPolicy.category) : { bg: '#f1f5f9', color: '#475569' }
 
   return (
     <div
-      className="policy-list-container-v2"
+      className="policy-list-container-v2 policy-list-fixed-top"
       onMouseEnter={() => setIsHovering(true)}
       onMouseLeave={() => setIsHovering(false)}
     >
-      <div className="policy-list-v2 auto-scroll" ref={containerRef}>
-        {policies.map((policy, index) => {
-          const isActive = index === selectedIndex
-          const categoryColors: Record<string, { bg: string; color: string }> = {
-            '申报通知': { bg: '#eff6ff', color: '#0369a1' },
-            '补贴政策': { bg: '#f0fdf4', color: '#15803d' },
-            '产业政策': { bg: '#fffbeb', color: '#b45309' },
-          }
-          const style = categoryColors[policy.category] || { bg: '#f1f5f9', color: '#475569' }
-          return (
-            <div
-              key={policy.id}
-              className={`policy-list-item-v2 ${isActive ? 'active' : ''}`}
-              onClick={() => handleItemClick(index)}
-            >
-              <div className="policy-item-icon" style={{ background: style.bg, color: style.color }}>
-                {policy.icon || <FileTextOutlined />}
-              </div>
-              <div className="policy-item-content">
-                <div className="policy-item-header">
-                  <span className="policy-item-category" style={{ color: style.color, background: style.bg }}>
-                    {policy.category}
-                  </span>
-                  <span className="policy-item-date">{policy.date}</span>
-                </div>
-                <h4 className="policy-item-title" title={policy.title}>
-                  {policy.title}
-                </h4>
-                {policy.highlights && (
-                  <div className="policy-item-highlights">
-                    {policy.highlights.slice(0, 2).map((highlight, idx) => (
-                      <span key={idx} className="highlight-tag">{highlight}</span>
-                    ))}
-                  </div>
-                )}
-              </div>
-              <div className="policy-item-arrow">
-                <ArrowRightOutlined />
-              </div>
+      {/* 顶部固定：当前选中项 */}
+      {selectedPolicy && (
+        <div className="policy-selected-fixed">
+          <div className="policy-list-item-v2 active">
+            <div className="policy-item-icon" style={{ background: selectedStyle.bg, color: selectedStyle.color }}>
+              {selectedPolicy.icon || <FileTextOutlined />}
             </div>
-          )
-        })}
+            <div className="policy-item-content">
+              <div className="policy-item-header">
+                <span className="policy-item-category" style={{ color: selectedStyle.color, background: selectedStyle.bg }}>
+                  {selectedPolicy.category}
+                </span>
+                <span className="policy-item-date">{selectedPolicy.date}</span>
+              </div>
+              <h4 className="policy-item-title" title={selectedPolicy.title}>
+                {selectedPolicy.title}
+              </h4>
+            </div>
+            <div className="policy-item-arrow">
+              <ArrowRightOutlined />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 底部滚动：其他政策列表 */}
+      <div className="policy-list-scroll-wrapper" ref={scrollContainerRef}>
+        <div className="policy-list-v2 auto-scroll">
+          {otherPolicies.map((policy) => {
+            const originalIndex = policies.findIndex(p => p.id === policy.id)
+            const style = getCategoryStyle(policy.category)
+            return (
+              <div
+                key={policy.id}
+                className="policy-list-item-v2"
+                onClick={() => handleItemClick(originalIndex)}
+              >
+                <div className="policy-item-icon" style={{ background: style.bg, color: style.color }}>
+                  {policy.icon || <FileTextOutlined />}
+                </div>
+                <div className="policy-item-content">
+                  <div className="policy-item-header">
+                    <span className="policy-item-category" style={{ color: style.color, background: style.bg }}>
+                      {policy.category}
+                    </span>
+                    <span className="policy-item-date">{policy.date}</span>
+                  </div>
+                  <h4 className="policy-item-title" title={policy.title}>
+                    {policy.title}
+                  </h4>
+                </div>
+                <div className="policy-item-arrow">
+                  <ArrowRightOutlined />
+                </div>
+              </div>
+            )
+          })}
+        </div>
       </div>
     </div>
   )
@@ -820,8 +717,8 @@ function PolicyShowcase({ policies }: { policies: typeof policyList }) {
       {/* 左侧 - 精选政策展示 */}
       <div className="policy-showcase-left-v2">
         <div className={`policy-featured-v2 ${isTransitioning ? 'transitioning' : ''}`}>
-          {/* 动态背景 */}
-          <div className="policy-featured-bg">
+          {/* 动态背景已隐藏 */}
+          {/* <div className="policy-featured-bg">
             <div className="policy-bg-glow" />
             <div className="policy-bg-grid" />
             <div className="policy-bg-particles">
@@ -833,7 +730,7 @@ function PolicyShowcase({ policies }: { policies: typeof policyList }) {
                 } as React.CSSProperties} />
               ))}
             </div>
-          </div>
+          </div> */}
 
           {/* 顶部装饰 */}
           <div className="policy-featured-header">
@@ -966,6 +863,10 @@ const stats: StatItem[] = [
   { label: '申报券金额', value: 2.8, suffix: '', icon: LineChartOutlined, decimals: 1 },
 ]
 
+// 主题色定义 - 统一使用蓝紫色系
+const THEME_COLOR = '#6366f1'
+const THEME_GRADIENT = 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)'
+
 const solutions = [
   {
     id: 'smart-manufacturing',
@@ -973,8 +874,8 @@ const solutions = [
     subtitle: 'Smart Manufacturing',
     desc: 'MES/ERP/PLM 一体化解决方案，实现生产全流程数字化管理，助力企业打造智能工厂',
     icon: SettingOutlined,
-    color: '#6366f1',
-    gradient: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
+    color: THEME_COLOR,
+    gradient: THEME_GRADIENT,
     features: ['生产计划排程', '质量追溯管理', '设备预测维护', '智能仓储物流'],
     stats: { users: '500+', efficiency: '30%', cases: '120+' }
   },
@@ -984,8 +885,8 @@ const solutions = [
     subtitle: 'Industrial IoT',
     desc: 'IoT 平台与边缘计算服务，构建万物互联的工业生态，实现设备互联互通',
     icon: CloudOutlined,
-    color: '#06b6d4',
-    gradient: 'linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%)',
+    color: THEME_COLOR,
+    gradient: THEME_GRADIENT,
     features: ['设备远程监控', '数据采集分析', '边缘智能计算', '云端协同管理'],
     stats: { users: '800+', efficiency: '45%', cases: '200+' }
   },
@@ -995,8 +896,8 @@ const solutions = [
     subtitle: 'Digital Twin',
     desc: '3D 可视化与仿真模拟，打造虚实融合的智能制造，实现产品全生命周期管理',
     icon: ApiOutlined,
-    color: '#8b5cf6',
-    gradient: 'linear-gradient(135deg, #8b5cf6 0%, #a855f7 100%)',
+    color: THEME_COLOR,
+    gradient: THEME_GRADIENT,
     features: ['3D 可视化建模', '实时数据映射', '虚拟调试验证', '预测性分析'],
     stats: { users: '300+', efficiency: '25%', cases: '80+' }
   },
@@ -1006,8 +907,8 @@ const solutions = [
     subtitle: 'AI Quality Inspection',
     desc: '智能视觉检测与质量分析，提升产品质量与检测效率，实现零缺陷目标',
     icon: LineChartOutlined,
-    color: '#10b981',
-    gradient: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+    color: THEME_COLOR,
+    gradient: THEME_GRADIENT,
     features: ['视觉缺陷检测', '尺寸精度测量', '表面质量分析', '智能分类分拣'],
     stats: { users: '600+', efficiency: '60%', cases: '150+' }
   },
@@ -1166,11 +1067,12 @@ export default function Home() {
           
           <PolicyShowcase policies={policies} />
           
-          <div className="section-footer-v2">
+          {/* 查看全部政策按钮已隐藏 */}
+          {/* <div className="section-footer-v2">
             <Link to="/policy" className="link-arrow-v2">
               查看全部政策 <ArrowRightOutlined />
             </Link>
-          </div>
+          </div> */}
         </div>
       </section>
 
@@ -1186,7 +1088,7 @@ export default function Home() {
         <div className="container-v2">
           {/* 模块标题 */}
           <div className="section-header-v2">
-            <div className="section-tag">PRODUCTS</div>
+            <div className="section-tag">软件产品</div>
             <h2 className="section-title-v2">
               <ThunderboltOutlined />
               软件产品
@@ -1218,9 +1120,7 @@ export default function Home() {
                     <span className="jsdesign-stat-label">分类领域</span>
                   </div>
                 </div>
-                <Link to="/software" className="jsdesign-btn">
-                  进入软件中心 <ArrowRightOutlined />
-                </Link>
+
               </div>
 
               {/* 右侧：智能滚动卡片 + 分类导航 */}
@@ -1264,6 +1164,101 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* ========================================
+          Footer - 底部导航
+          ======================================== */}
+      <footer className="home-footer-v2">
+        <div className="container-v2">
+          <div className="footer-content-v2">
+            {/* 左侧：Logo和简介 */}
+            <div className="footer-brand-v2">
+              <div className="footer-logo-v2">
+                <span className="logo-icon-v2">◆</span>
+                <span className="logo-text-v2">工业软件公共服务平台</span>
+              </div>
+              <p className="footer-desc-v2">
+                专注于工业软件领域，为企业提供优质的软件产品和数字化解决方案，助力企业实现智能化转型。
+              </p>
+              <div className="footer-contact-v2">
+                <span className="contact-item-v2">
+                  <PhoneOutlined />
+                  400-888-8888
+                </span>
+                <span className="contact-item-v2">
+                  <MailOutlined />
+                  contact@example.com
+                </span>
+              </div>
+            </div>
+
+            {/* 中间：导航链接 */}
+            <div className="footer-nav-v2">
+              <div className="footer-nav-group-v2">
+                <h4 className="footer-nav-title-v2">产品服务</h4>
+                <ul className="footer-nav-list-v2">
+                  <li><Link to="/software">软件产品</Link></li>
+                  <li><Link to="/solutions">解决方案</Link></li>
+                  <li><Link to="/policy">政策资讯</Link></li>
+                  <li><Link to="/demand">需求大厅</Link></li>
+                </ul>
+              </div>
+              <div className="footer-nav-group-v2">
+                <h4 className="footer-nav-title-v2">企业服务</h4>
+                <ul className="footer-nav-list-v2">
+                  <li><Link to="/enterprise">企业入驻</Link></li>
+                  <li><Link to="/cooperation">商务合作</Link></li>
+                  <li><Link to="/consulting">技术咨询</Link></li>
+                  <li><Link to="/training">培训服务</Link></li>
+                </ul>
+              </div>
+              <div className="footer-nav-group-v2">
+                <h4 className="footer-nav-title-v2">关于我们</h4>
+                <ul className="footer-nav-list-v2">
+                  <li><Link to="/about">平台介绍</Link></li>
+                  <li><Link to="/news">新闻动态</Link></li>
+                  <li><Link to="/join">加入我们</Link></li>
+                  <li><Link to="/contact">联系我们</Link></li>
+                </ul>
+              </div>
+            </div>
+
+            {/* 右侧：二维码和社交 */}
+            <div className="footer-extra-v2">
+              <div className="footer-qr-v2">
+                <div className="qr-placeholder-v2">
+                  <QrcodeOutlined />
+                </div>
+                <span className="qr-label-v2">扫码关注公众号</span>
+              </div>
+              <div className="footer-social-v2">
+                <a href="#" className="social-link-v2" title="微信">
+                  <WechatOutlined />
+                </a>
+                <a href="#" className="social-link-v2" title="微博">
+                  <WeiboOutlined />
+                </a>
+                <a href="#" className="social-link-v2" title="抖音">
+                  <VideoCameraOutlined />
+                </a>
+              </div>
+            </div>
+          </div>
+
+          {/* 底部版权 */}
+          <div className="footer-bottom-v2">
+            <div className="footer-copyright-v2">
+              <span>© 2024 工业软件公共服务平台 版权所有</span>
+              <span className="footer-divider-v2">|</span>
+              <Link to="/privacy">隐私政策</Link>
+              <span className="footer-divider-v2">|</span>
+              <Link to="/terms">服务条款</Link>
+              <span className="footer-divider-v2">|</span>
+              <span>京ICP备XXXXXXXX号</span>
+            </div>
+          </div>
+        </div>
+      </footer>
     </div>
   )
 }

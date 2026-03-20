@@ -54,7 +54,6 @@ const { TextArea } = Input
 const { Option } = Select
 const { TabPane } = Tabs
 const { Title, Text, Paragraph } = Typography
-const { Step } = Steps
 
 // 模拟用户数据
 const mockUsers = [
@@ -295,7 +294,7 @@ export default function MessageSend() {
                         <Avatar size="small" icon={<UserOutlined />} style={{ background: '#1890ff' }} />
                         <span style={{ fontWeight: 500 }}>{user.title}</span>
                         <span style={{ color: '#8c8c8c' }}>- {user.description}</span>
-                        <Tag size="small" style={{ borderRadius: 4, fontSize: 11 }}>{user.type}</Tag>
+                        <Tag style={{ borderRadius: 4, fontSize: 11 }}>{user.type}</Tag>
                       </Space>
                     </Option>
                   ))}
@@ -455,7 +454,7 @@ export default function MessageSend() {
                         <span style={{ fontSize: 14, color: '#1890ff' }}>{template.icon}</span>
                       </div>
                       <span style={{ fontWeight: 500 }}>{template.name}</span>
-                      <Tag size="small" style={{ borderRadius: 4 }}>
+                      <Tag style={{ borderRadius: 4 }}>
                         {template.category === 'enterprise' && '企业'}
                         {template.category === 'software' && '软件'}
                         {template.category === 'subsidy' && '补贴'}
@@ -734,18 +733,6 @@ export default function MessageSend() {
             current={currentStep}
             items={steps}
             labelPlacement="vertical"
-            style={{ 
-              '.ant-steps-item-icon': {
-                width: 48,
-                height: 48,
-                lineHeight: '48px',
-                fontSize: 20,
-              },
-              '.ant-steps-item-title': {
-                fontSize: 15,
-                fontWeight: 500,
-              },
-            }}
           />
         </div>
 

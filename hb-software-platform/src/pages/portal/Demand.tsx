@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import {
   Row,
   Col,
@@ -36,6 +36,10 @@ import {
   FileOutlined,
   DeleteOutlined,
   EditOutlined,
+  PhoneOutlined,
+  MailOutlined,
+  QrcodeOutlined,
+  WechatOutlined,
 } from '@ant-design/icons'
 import { maskEnterpriseName } from '../../utils/mask'
 
@@ -1314,6 +1318,93 @@ const Demand = () => {
           </>
         )}
       </Modal>
+
+      {/* 底部导航 */}
+      <footer className="home-footer-v2" style={{ marginTop: '60px' }}>
+        <div className="container-v2">
+          <div className="footer-content-v2">
+            {/* 左侧：Logo和简介 */}
+            <div className="footer-brand-v2">
+              <div className="footer-logo-v2">
+                <span className="logo-icon-v2">◆</span>
+                <span className="logo-text-v2">工业软件公共服务平台</span>
+              </div>
+              <p className="footer-desc-v2">
+                专注于工业软件领域，为企业提供优质的软件产品和数字化解决方案，助力企业实现智能化转型。
+              </p>
+              <div className="footer-contact-v2">
+                <span className="contact-item-v2">
+                  <PhoneOutlined />
+                  400-888-8888
+                </span>
+                <span className="contact-item-v2">
+                  <MailOutlined />
+                  contact@example.com
+                </span>
+              </div>
+            </div>
+
+            {/* 中间：导航链接 */}
+            <div className="footer-nav-v2">
+              <div className="footer-nav-group-v2">
+                <h4 className="footer-nav-title-v2">产品服务</h4>
+                <ul className="footer-nav-list-v2">
+                  <li><Link to="/software">软件产品</Link></li>
+                  <li><Link to="/solutions">解决方案</Link></li>
+                  <li><Link to="/policy">政策资讯</Link></li>
+                  <li><Link to="/demand">需求大厅</Link></li>
+                </ul>
+              </div>
+              <div className="footer-nav-group-v2">
+                <h4 className="footer-nav-title-v2">企业服务</h4>
+                <ul className="footer-nav-list-v2">
+                  <li><Link to="/enterprise">企业入驻</Link></li>
+                  <li><Link to="/cooperation">商务合作</Link></li>
+                  <li><Link to="/consulting">技术咨询</Link></li>
+                  <li><Link to="/training">培训服务</Link></li>
+                </ul>
+              </div>
+              <div className="footer-nav-group-v2">
+                <h4 className="footer-nav-title-v2">关于我们</h4>
+                <ul className="footer-nav-list-v2">
+                  <li><Link to="/about">平台介绍</Link></li>
+                  <li><Link to="/news">新闻动态</Link></li>
+                  <li><Link to="/join">加入我们</Link></li>
+                  <li><Link to="/contact">联系我们</Link></li>
+                </ul>
+              </div>
+            </div>
+
+            {/* 右侧：二维码和社交 */}
+            <div className="footer-extra-v2">
+              <div className="footer-qr-v2">
+                <div className="qr-placeholder-v2">
+                  <QrcodeOutlined />
+                </div>
+                <span className="qr-label-v2">扫码关注公众号</span>
+              </div>
+              <div className="footer-social-v2">
+                <a href="#" className="social-link-v2" title="微信">
+                  <WechatOutlined />
+                </a>
+              </div>
+            </div>
+          </div>
+
+          {/* 底部版权 */}
+          <div className="footer-bottom-v2">
+            <div className="footer-copyright-v2">
+              <span>© 2024 工业软件公共服务平台 版权所有</span>
+              <span className="footer-divider-v2">|</span>
+              <Link to="/privacy">隐私政策</Link>
+              <span className="footer-divider-v2">|</span>
+              <Link to="/terms">服务条款</Link>
+              <span className="footer-divider-v2">|</span>
+              <span>京ICP备XXXXXXXX号</span>
+            </div>
+          </div>
+        </div>
+      </footer>
     </div>
   )
 }

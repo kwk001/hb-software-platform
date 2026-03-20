@@ -549,13 +549,7 @@ const DemandSummary = () => {
             showQuickJumper: true,
             showTotal: (total) => `共 ${total} 条`,
           }}
-          style={{
-            '.ant-table-thead > tr > th': {
-              background: '#fafbfc',
-              fontWeight: 600,
-              color: '#1f2937',
-            }
-          }}
+
         />
       </Card>
 

@@ -645,13 +645,7 @@ export default function PolicyManage() {
             showTotal: (total) => `共 ${total} 条`,
             style: { marginTop: 16 },
           }}
-          style={{
-            '.ant-table-thead > tr > th': {
-              background: '#f8fafc',
-              fontWeight: 600,
-              color: '#475569',
-            },
-          }}
+
         />
       </Card>
 

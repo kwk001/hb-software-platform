@@ -1257,13 +1257,7 @@ const MyDemands = () => {
             showQuickJumper: true,
             showTotal: (total) => `共 ${total} 条`,
           }}
-          style={{
-            '.ant-table-thead > tr > th': {
-              background: 'var(--bg-tertiary)',
-              fontWeight: 600,
-              color: 'var(--text-primary)',
-            },
-          }}
+
         />
       </Card>
 

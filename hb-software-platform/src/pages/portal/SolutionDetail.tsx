@@ -235,7 +235,7 @@ function SolutionDetail() {
       <section className="solution-cases-section">
         <div className="container-v2">
           <div className="section-header-v2">
-            <div className="section-tag">CASES</div>
+            <div className="section-tag">成功案例</div>
             <h2 className="section-title-v2">
               <TeamOutlined />
               成功案例
