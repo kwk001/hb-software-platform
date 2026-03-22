@@ -49,6 +49,14 @@ import {
   BarChartOutlined,
   RiseOutlined,
   FallOutlined,
+  LayoutOutlined,
+  ToolOutlined,
+  ExperimentOutlined,
+  SettingOutlined,
+  DatabaseOutlined,
+  SyncOutlined,
+  NodeIndexOutlined,
+  CloudOutlined,
 } from '@ant-design/icons'
 import type { UploadProps } from 'antd'
 
@@ -65,6 +73,82 @@ const DEMAND_STATUS = {
   PROCESSED: 2,
   CLOSED: 3,
 }
+
+// 软件类型配置 - 带图标和颜色
+const softwareCategories = [
+  {
+    value: 'cad',
+    label: 'CAD设计软件',
+    color: '#6366f1',
+    bg: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
+    lightBg: '#eef2ff',
+    icon: <LayoutOutlined />,
+    description: '二维/三维设计、参数化建模',
+  },
+  {
+    value: 'cam',
+    label: 'CAM制造软件',
+    color: '#06b6d4',
+    bg: 'linear-gradient(135deg, #06b6d4 0%, #22d3ee 100%)',
+    lightBg: '#ecfeff',
+    icon: <ToolOutlined />,
+    description: '数控编程、加工仿真',
+  },
+  {
+    value: 'cae',
+    label: 'CAE仿真软件',
+    color: '#8b5cf6',
+    bg: 'linear-gradient(135deg, #8b5cf6 0%, #a78bfa 100%)',
+    lightBg: '#f5f3ff',
+    icon: <ExperimentOutlined />,
+    description: '有限元分析、流体仿真',
+  },
+  {
+    value: 'mes',
+    label: 'MES生产执行',
+    color: '#10b981',
+    bg: 'linear-gradient(135deg, #10b981 0%, #34d399 100%)',
+    lightBg: '#ecfdf5',
+    icon: <SettingOutlined />,
+    description: '生产调度、质量管理',
+  },
+  {
+    value: 'erp',
+    label: 'ERP管理系统',
+    color: '#f59e0b',
+    bg: 'linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%)',
+    lightBg: '#fffbeb',
+    icon: <DatabaseOutlined />,
+    description: '财务、采购、库存管理',
+  },
+  {
+    value: 'plm',
+    label: 'PLM生命周期',
+    color: '#ec4899',
+    bg: 'linear-gradient(135deg, #ec4899 0%, #f472b6 100%)',
+    lightBg: '#fdf2f8',
+    icon: <SyncOutlined />,
+    description: '产品数据、变更管理',
+  },
+  {
+    value: 'scm',
+    label: 'SCM供应链',
+    color: '#14b8a6',
+    bg: 'linear-gradient(135deg, #14b8a6 0%, #2dd4bf 100%)',
+    lightBg: '#f0fdfa',
+    icon: <NodeIndexOutlined />,
+    description: '供应商、物流管理',
+  },
+  {
+    value: 'iot',
+    label: '工业物联网',
+    color: '#3b82f6',
+    bg: 'linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%)',
+    lightBg: '#eff6ff',
+    icon: <CloudOutlined />,
+    description: '设备联网、数据采集',
+  },
+]
 
 // 软件产品列表（模拟数据）
 const softwareProducts = [
@@ -228,6 +312,7 @@ const MyDemands = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [currentStep, setCurrentStep] = useState(0)
   const [selectedSoftware, setSelectedSoftware] = useState<any>(null)
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
   const [form] = Form.useForm()
   const [searchText, setSearchText] = useState('')
   const [selectedType, setSelectedType] = useState('all')
@@ -452,14 +537,14 @@ const MyDemands = () => {
   ]
 
   const steps = [
-    { title: '选择软件', description: '选择意向软件产品' },
+    { title: '选择类型', description: '选择软件类型' },
     { title: '填写需求', description: '填写详细需求信息' },
     { title: '提交审核', description: '确认并提交需求' },
   ]
 
   const handleNext = () => {
-    if (currentStep === 0 && !selectedSoftware) {
-      message.error('请先选择一个软件产品')
+    if (currentStep === 0 && !selectedCategory) {
+      message.error('请先选择一个软件类型')
       return
     }
     if (currentStep === 1) {
@@ -482,6 +567,7 @@ const MyDemands = () => {
     setIsModalOpen(false)
     setCurrentStep(0)
     setSelectedSoftware(null)
+    setSelectedCategory(null)
     form.resetFields()
   }
 
@@ -489,108 +575,130 @@ const MyDemands = () => {
     setIsModalOpen(false)
     setCurrentStep(0)
     setSelectedSoftware(null)
+    setSelectedCategory(null)
     form.resetFields()
   }
 
-  // 步骤1：选择软件产品
+  // 步骤1：选择软件类型
   const renderStep1 = () => (
     <div>
-      <div style={{ marginBottom: '24px' }}>
-        <Search
-          placeholder="搜索软件产品"
-          allowClear
-          style={{ width: 320 }}
-          prefix={<SearchOutlined style={{ color: 'var(--text-tertiary)' }} />}
-        />
+      <div style={{ marginBottom: '24px', textAlign: 'center' }}>
+        <Text type="secondary" style={{ fontSize: 14 }}>
+          请选择您需要的工业软件类型，我们将为您匹配合适的供应商
+        </Text>
       </div>
-      <List
-        grid={{ gutter: 16, xs: 1, sm: 2, md: 2, lg: 3 }}
-        dataSource={softwareProducts}
-        renderItem={(item) => (
-          <List.Item>
+      <Row gutter={[16, 16]}>
+        {softwareCategories.map((cat) => (
+          <Col xs={24} sm={12} lg={8} key={cat.value}>
             <Card
               hoverable
-              onClick={() => setSelectedSoftware(item)}
+              onClick={() => setSelectedCategory(cat.value)}
               style={{
                 borderRadius: 16,
-                border: selectedSoftware?.id === item.id ? '2px solid #1890ff' : '1px solid var(--border-light)',
-                background: selectedSoftware?.id === item.id ? '#e6f7ff' : 'var(--bg-card)',
+                border: selectedCategory === cat.value
+                  ? `2px solid ${cat.color}`
+                  : '1px solid var(--border-light)',
+                background: selectedCategory === cat.value ? cat.lightBg : 'var(--bg-card)',
                 cursor: 'pointer',
-                transition: 'all 0.3s ease',
-                boxShadow: selectedSoftware?.id === item.id ? '0 4px 12px rgba(24, 144, 255, 0.15)' : 'var(--shadow-sm)',
+                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                boxShadow: selectedCategory === cat.value
+                  ? `0 8px 24px ${cat.color}30`
+                  : 'var(--shadow-sm)',
+                height: '100%',
               }}
               bodyStyle={{ padding: '20px' }}
+              onMouseEnter={(e) => {
+                if (selectedCategory !== cat.value) {
+                  e.currentTarget.style.transform = 'translateY(-4px)'
+                  e.currentTarget.style.boxShadow = '0 12px 28px rgba(0,0,0,0.1)'
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (selectedCategory !== cat.value) {
+                  e.currentTarget.style.transform = 'translateY(0)'
+                  e.currentTarget.style.boxShadow = 'var(--shadow-sm)'
+                }
+              }}
             >
-              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '16px' }}>
-                <Avatar
-                  size={56}
+              <div style={{ textAlign: 'center' }}>
+                <div
                   style={{
-                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                    fontSize: '28px',
-                    boxShadow: '0 4px 12px rgba(102, 126, 234, 0.3)',
+                    width: 56,
+                    height: 56,
+                    borderRadius: 14,
+                    background: cat.bg,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    margin: '0 auto 12px',
+                    fontSize: 24,
+                    color: '#fff',
+                    boxShadow: `0 6px 16px ${cat.color}40`,
                   }}
                 >
-                  {item.logo}
-                </Avatar>
-                <div style={{ flex: 1 }}>
-                  <div style={{ fontWeight: 600, fontSize: '16px', marginBottom: '6px', color: 'var(--text-primary)' }}>
-                    {item.name}
-                  </div>
-                  <div style={{ fontSize: '13px', color: 'var(--text-secondary)', marginBottom: '8px' }}>
-                    {item.company}
-                  </div>
-                  <Tag
-                    style={{
-                      borderRadius: 6,
-                      background: '#e6f7ff',
-                      border: '1px solid #1890ff40',
-                      color: '#1890ff',
-                      fontWeight: 500,
-                    }}
-                  >
-                    {item.category}
-                  </Tag>
-                  <div style={{ fontSize: '14px', color: '#f5222d', marginTop: '10px', fontWeight: 600 }}>
-                    参考价格：{item.price}
-                  </div>
+                  {cat.icon}
                 </div>
+                <div style={{
+                  fontWeight: 600,
+                  fontSize: 15,
+                  marginBottom: 6,
+                  color: selectedCategory === cat.value ? cat.color : 'var(--text-primary)'
+                }}>
+                  {cat.label}
+                </div>
+                <div style={{
+                  fontSize: 12,
+                  color: 'var(--text-secondary)',
+                  lineHeight: 1.5
+                }}>
+                  {cat.description}
+                </div>
+                {selectedCategory === cat.value && (
+                  <div style={{ marginTop: 12 }}>
+                    <Tag
+                      style={{
+                        borderRadius: 12,
+                        background: cat.color,
+                        border: 'none',
+                        color: '#fff',
+                        padding: '2px 12px',
+                        fontSize: 12,
+                      }}
+                    >
+                      <CheckCircleOutlined style={{ marginRight: 4 }} />
+                      已选择
+                    </Tag>
+                  </div>
+                )}
               </div>
-              <Divider style={{ margin: '16px 0' }} />
-              <Text type="secondary" style={{ fontSize: '13px', lineHeight: 1.6 }}>
-                {item.description}
-              </Text>
-              {selectedSoftware?.id === item.id && (
-                <div style={{ marginTop: '16px', textAlign: 'center' }}>
-                  <Tag
-                    color="success"
-                    icon={<CheckCircleOutlined />}
-                    style={{ borderRadius: 6, padding: '4px 16px', fontSize: 14 }}
-                  >
-                    已选择
-                  </Tag>
-                </div>
-              )}
             </Card>
-          </List.Item>
-        )}
-      />
-      {selectedSoftware && (
-        <div
-          style={{
-            marginTop: '24px',
-            padding: '20px',
-            background: 'linear-gradient(135deg, #f6ffed 0%, #e6fffb 100%)',
-            borderRadius: 12,
-            border: '1px solid #52c41a40',
-          }}
-        >
-          <Space size="large">
-            <CheckCircleOutlined style={{ color: '#52c41a', fontSize: 24 }} />
-            <div>
-              <Text strong style={{ fontSize: 16, color: 'var(--text-primary)' }}>已选择：{selectedSoftware.name}</Text>
-              <Text style={{ color: 'var(--text-secondary)', marginLeft: 12 }}>({selectedSoftware.company})</Text>
-            </div>
-          </Space>
+          </Col>
+        ))}
+      </Row>
+      {selectedCategory && (
+        <div style={{
+          marginTop: 24,
+          padding: '16px 20px',
+          background: softwareCategories.find(c => c.value === selectedCategory)?.lightBg,
+          borderRadius: 12,
+          border: `1px solid ${softwareCategories.find(c => c.value === selectedCategory)?.color}30`,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between'
+        }}>
+          <div>
+            <Text type="secondary" style={{ fontSize: 13 }}>已选择软件类型：</Text>
+            <Text strong style={{
+              fontSize: 15,
+              color: softwareCategories.find(c => c.value === selectedCategory)?.color,
+              marginLeft: 8
+            }}>
+              {softwareCategories.find(c => c.value === selectedCategory)?.label}
+            </Text>
+          </div>
+          <Tag color="success" style={{ borderRadius: 12 }}>
+            <CheckCircleOutlined /> 准备就绪
+          </Tag>
         </div>
       )}
     </div>
@@ -798,9 +906,24 @@ const MyDemands = () => {
           bodyStyle={{ padding: '24px' }}
         >
           <div style={{ marginBottom: '20px' }}>
-            <Text style={{ color: 'var(--text-tertiary)', fontSize: 13 }}>意向软件</Text>
-            <div style={{ fontSize: '17px', fontWeight: 600, color: 'var(--text-primary)', marginTop: 6 }}>
-              {selectedSoftware?.name} ({selectedSoftware?.company})
+            <Text style={{ color: 'var(--text-tertiary)', fontSize: 13 }}>软件类型</Text>
+            <div style={{ fontSize: '17px', fontWeight: 600, marginTop: 6 }}>
+              <Tag
+                style={{
+                  borderRadius: 8,
+                  background: softwareCategories.find(c => c.value === selectedCategory)?.bg,
+                  border: 'none',
+                  color: '#fff',
+                  padding: '4px 16px',
+                  fontSize: 15,
+                  fontWeight: 600,
+                }}
+              >
+                {softwareCategories.find(c => c.value === selectedCategory)?.icon}
+                <span style={{ marginLeft: 6 }}>
+                  {softwareCategories.find(c => c.value === selectedCategory)?.label}
+                </span>
+              </Tag>
             </div>
           </div>
           <Divider style={{ margin: '16px 0', borderColor: 'var(--border-light)' }} />

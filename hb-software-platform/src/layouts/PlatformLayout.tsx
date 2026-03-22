@@ -19,6 +19,8 @@ import {
   SafetyOutlined,
   MailOutlined,
   DatabaseOutlined,
+  EnvironmentOutlined,
+  CalendarOutlined,
 } from '@ant-design/icons'
 import { useState } from 'react'
 import type { MenuProps } from 'antd'
@@ -62,12 +64,27 @@ const menuItems: MenuItem[] = [
   {
     key: 'statistics',
     icon: <BarChartOutlined />,
-    label: <Link to="/platform/statistics">报表中心</Link>,
+    label: '报表中心',
+    children: [
+      {
+        key: '/platform/statistics',
+        label: <Link to="/platform/statistics">综合报表</Link>,
+      },
+      {
+        key: '/platform/map-report',
+        label: <Link to="/platform/map-report">产业地图</Link>,
+      },
+    ],
   },
   {
     key: 'policy',
     icon: <FileTextOutlined />,
     label: <Link to="/platform/policy">政策管理</Link>,
+  },
+  {
+    key: 'activity',
+    icon: <CalendarOutlined />,
+    label: <Link to="/platform/activity">活动管理</Link>,
   },
   {
     key: '/platform/messages',

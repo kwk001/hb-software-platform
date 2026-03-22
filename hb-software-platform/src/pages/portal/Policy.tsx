@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import {
   Row,
@@ -32,7 +32,11 @@ import {
   WechatOutlined,
 } from '@ant-design/icons'
 import { policyList, getTypeColor, getCategoryColor } from '../../data/policies.tsx'
-import { activityList, getActivityTypeColor, getActivityCategoryColor, getActivityStatusColor } from '../../data/activities.tsx'
+import { activityList as defaultActivityList, getActivityTypeColor, getActivityCategoryColor, getActivityStatusColor } from '../../data/activities.tsx'
+import type { Activity } from '../../data/activities.tsx'
+
+// 本地存储键
+const ACTIVITY_STORAGE_KEY = 'platform_activities'
 
 const { Option } = Select
 const { TabPane } = Tabs
@@ -48,6 +52,20 @@ const Policy = () => {
   const [activityStatus, setActivityStatus] = useState('all')
   const [activityPage, setActivityPage] = useState(1)
   const [activityPageSize, setActivityPageSize] = useState(8)
+  const [activityList, setActivityList] = useState<Activity[]>(defaultActivityList)
+
+  // 从localStorage加载活动数据
+  useEffect(() => {
+    const stored = localStorage.getItem(ACTIVITY_STORAGE_KEY)
+    if (stored) {
+      try {
+        const parsed = JSON.parse(stored)
+        setActivityList(parsed)
+      } catch {
+        setActivityList(defaultActivityList)
+      }
+    }
+  }, [])
 
   // 获取当前用户信息
   const getCurrentUser = () => {
@@ -1256,7 +1274,7 @@ const Policy = () => {
                   <li><Link to="/software">软件产品</Link></li>
                   <li><Link to="/solutions">解决方案</Link></li>
                   <li><Link to="/policy">政策资讯</Link></li>
-                  <li><Link to="/demand">需求大厅</Link></li>
+                  {/* <li><Link to="/demand">需求大厅</Link></li> */}
                 </ul>
               </div>
               <div className="footer-nav-group-v2">

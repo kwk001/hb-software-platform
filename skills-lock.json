@@ -26,6 +26,11 @@
       "sourceType": "github",
       "computedHash": "063a0e6448123cd359ad0044cc46b0e490cc7964d45ef4bb9fd842bd2ffbca67"
     },
+    "growth-experimenter": {
+      "source": "daffy0208/ai-dev-standards",
+      "sourceType": "github",
+      "computedHash": "b3ff15b5503334b0e53111e5b2f1f485fab350851d14e98da2a7b63e9ce74c03"
+    },
     "pdf": {
       "source": "anthropics/skills",
       "sourceType": "github",

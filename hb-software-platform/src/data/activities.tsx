@@ -5,7 +5,7 @@ export interface Activity {
   summary: string
   type: '线上' | '线下' | '混合'
   category: '培训' | '沙龙' | '展会' | '路演' | '对接会'
-  status: '报名中' | '进行中' | '已结束' | '即将开始'
+  status: '进行中' | '已结束' | '即将开始'
   startDate: string
   endDate: string
   location: string
@@ -24,7 +24,7 @@ export const activityList: Activity[] = [
     summary: '汇聚行业专家、企业代表，共同探讨工业软件发展趋势、技术创新路径和产业生态构建，推动湖北省工业软件产业高质量发展。',
     type: '线下',
     category: '展会',
-    status: '报名中',
+    status: '即将开始',
     startDate: '2025-04-15',
     endDate: '2025-04-17',
     location: '武汉光谷会展中心',
@@ -40,7 +40,7 @@ export const activityList: Activity[] = [
     summary: '针对工业软件企业的数字化转型需求，提供系统化的培训课程，涵盖数字化战略、技术应用、管理变革等多个维度。',
     type: '混合',
     category: '培训',
-    status: '报名中',
+    status: '即将开始',
     startDate: '2025-03-28',
     endDate: '2025-03-30',
     location: '线上+武汉软件新城',
@@ -72,7 +72,7 @@ export const activityList: Activity[] = [
     summary: '聚焦人工智能技术在设计领域的创新应用，分享最新技术成果和实践经验，促进技术交流与合作。',
     type: '线上',
     category: '沙龙',
-    status: '报名中',
+    status: '即将开始',
     startDate: '2025-03-25',
     endDate: '2025-03-25',
     location: '腾讯会议',
@@ -88,7 +88,7 @@ export const activityList: Activity[] = [
     summary: '搭建汽车软件产业链上下游企业对接平台，促进供需匹配，推动产业链协同发展。',
     type: '线下',
     category: '对接会',
-    status: '报名中',
+    status: '即将开始',
     startDate: '2025-04-20',
     endDate: '2025-04-20',
     location: '武汉经济技术开发区',
@@ -136,7 +136,7 @@ export const activityList: Activity[] = [
     summary: '提升企业知识产权保护意识，讲解专利布局、侵权防范等实务知识。',
     type: '线上',
     category: '培训',
-    status: '报名中',
+    status: '即将开始',
     startDate: '2025-04-05',
     endDate: '2025-04-05',
     location: 'Zoom会议',
@@ -173,7 +173,6 @@ export const getActivityCategoryColor = (category: string) => {
 // 获取活动状态颜色
 export const getActivityStatusColor = (status: string) => {
   const colors: Record<string, { bg: string; color: string }> = {
-    '报名中': { bg: 'rgba(16, 185, 129, 0.1)', color: '#10b981' },
     '进行中': { bg: 'rgba(59, 130, 246, 0.1)', color: '#3b82f6' },
     '已结束': { bg: 'rgba(100, 116, 139, 0.1)', color: '#64748b' },
     '即将开始': { bg: 'rgba(245, 158, 11, 0.1)', color: '#f59e0b' },

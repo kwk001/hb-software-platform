@@ -25,6 +25,7 @@ import SoftwarePublish from './pages/enterprise/SoftwarePublish'
 import SubsidyApply from './pages/enterprise/SubsidyApply'
 import MySoftware from './pages/enterprise/MySoftware'
 import MyDemands from './pages/enterprise/MyDemands'
+import DemandPublish from './pages/enterprise/DemandPublish'
 import MySubsidies from './pages/enterprise/MySubsidies'
 import MessageSubmit from './pages/enterprise/MessageSubmit'
 import MessageCenter from './pages/enterprise/MessageCenter'
@@ -36,6 +37,7 @@ import SoftwareAudit from './pages/platform/SoftwareAudit'
 import SubsidyAudit from './pages/platform/SubsidyAudit'
 import Statistics from './pages/platform/Statistics'
 import PolicyManage from './pages/platform/PolicyManage'
+import ActivityManage from './pages/platform/ActivityManage'
 import UserManage from './pages/platform/UserManage'
 import MessageManage from './pages/platform/MessageManage'
 import DemandSummary from './pages/platform/DemandSummary'
@@ -50,6 +52,7 @@ import MenuManage from './pages/platform/MenuManage'
 import DeptManage from './pages/platform/DeptManage'
 import PostManage from './pages/platform/PostManage'
 import DataMigration from './pages/platform/DataMigration'
+import HubeiMapReport from './pages/platform/HubeiMapReport'
 import NotificationSettings from './pages/enterprise/NotificationSettings'
 
 function App() {
@@ -81,6 +84,7 @@ function App() {
           <Route path="software/publish" element={<SoftwarePublish />} />
           <Route path="software/list" element={<MySoftware />} />
           <Route path="demands" element={<MyDemands />} />
+          <Route path="demand/publish" element={<DemandPublish />} />
           <Route path="subsidy/apply" element={<SubsidyApply />} />
           <Route path="subsidy/list" element={<MySubsidies />} />
           <Route path="messages" element={<MessageSubmit />} />
@@ -97,6 +101,7 @@ function App() {
           <Route path="demands" element={<DemandSummary />} />
           <Route path="statistics" element={<Statistics />} />
           <Route path="policy" element={<PolicyManage />} />
+          <Route path="activity" element={<ActivityManage />} />
           <Route path="users" element={<UserManage />} />
           <Route path="messages" element={<MessageManage />} />
           <Route path="dict" element={<DictManage />} />
@@ -110,6 +115,7 @@ function App() {
           <Route path="dept" element={<DeptManage />} />
           <Route path="post" element={<PostManage />} />
           <Route path="data-migration" element={<DataMigration />} />
+          <Route path="map-report" element={<HubeiMapReport />} />
         </Route>
       </Routes>
     </ThemeProvider>

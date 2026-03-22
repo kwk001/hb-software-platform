@@ -1,10 +1,42 @@
 import { useState, useEffect } from 'react'
-import { Card, Row, Col, Tag, Button, Input, Select, Space, Badge, Pagination, Empty, message, Tooltip } from 'antd'
-import { SearchOutlined, FilterOutlined, EyeOutlined, ArrowRightOutlined, PlusOutlined, PhoneOutlined, MailOutlined, QrcodeOutlined, WechatOutlined, FormOutlined } from '@ant-design/icons'
+import { Card, Row, Col, Tag, Button, Input, Select, Space, Badge, Pagination, Empty, message, Tooltip, Modal, Form, Steps, Divider, Radio, Upload, Typography } from 'antd'
+import { SearchOutlined, FilterOutlined, EyeOutlined, ArrowRightOutlined, PlusOutlined, PhoneOutlined, MailOutlined, QrcodeOutlined, WechatOutlined, FormOutlined, CheckCircleOutlined, ArrowLeftOutlined, ArrowRightOutlined as ArrowRightIcon, UploadOutlined, LayoutOutlined, ToolOutlined, ExperimentOutlined, SettingOutlined, DatabaseOutlined, SyncOutlined, NodeIndexOutlined, CloudOutlined } from '@ant-design/icons'
 import { Link, useNavigate } from 'react-router-dom'
 import { softwareList, industryCategories, getCategoryColor, getCategoryLabel, getIndustryLabel } from '../../data/software'
 
+const { TextArea } = Input
+const { Text, Title } = Typography
+
 const { Search } = Input
+
+// 软件类型配置
+const softwareCategories = [
+  { value: 'cad', label: 'CAD设计软件', color: '#6366f1', bg: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)', lightBg: '#eef2ff', icon: <LayoutOutlined />, description: '二维/三维设计、参数化建模' },
+  { value: 'cam', label: 'CAM制造软件', color: '#06b6d4', bg: 'linear-gradient(135deg, #06b6d4 0%, #22d3ee 100%)', lightBg: '#ecfeff', icon: <ToolOutlined />, description: '数控编程、加工仿真' },
+  { value: 'cae', label: 'CAE仿真软件', color: '#8b5cf6', bg: 'linear-gradient(135deg, #8b5cf6 0%, #a78bfa 100%)', lightBg: '#f5f3ff', icon: <ExperimentOutlined />, description: '有限元分析、流体仿真' },
+  { value: 'mes', label: 'MES生产执行', color: '#10b981', bg: 'linear-gradient(135deg, #10b981 0%, #34d399 100%)', lightBg: '#ecfdf5', icon: <SettingOutlined />, description: '生产调度、质量管理' },
+  { value: 'erp', label: 'ERP管理系统', color: '#f59e0b', bg: 'linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%)', lightBg: '#fffbeb', icon: <DatabaseOutlined />, description: '财务、采购、库存管理' },
+  { value: 'plm', label: 'PLM生命周期', color: '#ec4899', bg: 'linear-gradient(135deg, #ec4899 0%, #f472b6 100%)', lightBg: '#fdf2f8', icon: <SyncOutlined />, description: '产品数据、变更管理' },
+  { value: 'scm', label: 'SCM供应链', color: '#14b8a6', bg: 'linear-gradient(135deg, #14b8a6 0%, #2dd4bf 100%)', lightBg: '#f0fdfa', icon: <NodeIndexOutlined />, description: '供应商、物流管理' },
+  { value: 'iot', label: '工业物联网', color: '#3b82f6', bg: 'linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%)', lightBg: '#eff6ff', icon: <CloudOutlined />, description: '设备联网、数据采集' },
+]
+
+// 预算范围选项
+const budgetRanges = [
+  { value: '10w', label: '10万以下' },
+  { value: '10-50w', label: '10-50万' },
+  { value: '50-100w', label: '50-100万' },
+  { value: '100-500w', label: '100-500万' },
+  { value: '500w+', label: '500万以上' },
+]
+
+// 期望时间选项
+const expectedTimes = [
+  { value: '1m', label: '1个月内' },
+  { value: '3m', label: '3个月内' },
+  { value: '6m', label: '6个月内' },
+  { value: '1y', label: '1年内' },
+]
 
 export default function SoftwareList() {
   const navigate = useNavigate()
@@ -13,6 +45,12 @@ export default function SoftwareList() {
   const [filteredData, setFilteredData] = useState(softwareList)
   const [currentPage, setCurrentPage] = useState(1)
   const [pageSize, setPageSize] = useState(8)
+
+  // 发布需求弹窗状态
+  const [isDemandModalOpen, setIsDemandModalOpen] = useState(false)
+  const [currentStep, setCurrentStep] = useState(0)
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
+  const [form] = Form.useForm()
 
   // 获取当前用户信息
   const getCurrentUser = () => {
@@ -59,7 +97,49 @@ export default function SoftwareList() {
 
   // 处理发布需求按钮点击
   const handlePublishDemandClick = () => {
-    navigate('/enterprise/demands')
+    setIsDemandModalOpen(true)
+    setCurrentStep(0)
+    setSelectedCategory(null)
+    form.resetFields()
+  }
+
+  // 关闭弹窗
+  const handleModalCancel = () => {
+    setIsDemandModalOpen(false)
+    setCurrentStep(0)
+    setSelectedCategory(null)
+    form.resetFields()
+  }
+
+  // 下一步
+  const handleNext = () => {
+    if (currentStep === 0 && !selectedCategory) {
+      message.error('请先选择一个软件类型')
+      return
+    }
+    if (currentStep === 1) {
+      form.validateFields().then(() => {
+        setCurrentStep(currentStep + 1)
+      }).catch(() => {
+        message.error('请完善需求信息')
+      })
+      return
+    }
+    setCurrentStep(currentStep + 1)
+  }
+
+  // 上一步
+  const handlePrev = () => {
+    setCurrentStep(currentStep - 1)
+  }
+
+  // 提交需求
+  const handleSubmit = () => {
+    message.success('需求提交成功，平台将尽快为您匹配合适的供应商')
+    setIsDemandModalOpen(false)
+    setCurrentStep(0)
+    setSelectedCategory(null)
+    form.resetFields()
   }
 
   useEffect(() => {
@@ -446,6 +526,41 @@ export default function SoftwareList() {
                   </span>
                 ))}
               </div>
+
+              {/* 发布需求按钮 - 工业制造企业可见 */}
+              {canShowPublishDemandButton() && (
+                <div style={{ marginTop: '24px' }}>
+                  <Button
+                    type="primary"
+                    icon={<FormOutlined />}
+                    onClick={handlePublishDemandClick}
+                    style={{
+                      width: '100%',
+                      height: '44px',
+                      borderRadius: '8px',
+                      background: '#fff',
+                      border: 'none',
+                      fontSize: '15px',
+                      fontWeight: 600,
+                      color: '#4f46e5',
+                      boxShadow: '0 4px 14px rgba(0, 0, 0, 0.15)',
+                      transition: 'all 0.2s ease',
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.background = '#f5f3ff'
+                      e.currentTarget.style.transform = 'translateY(-1px)'
+                      e.currentTarget.style.boxShadow = '0 6px 20px rgba(0, 0, 0, 0.2)'
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = '#fff'
+                      e.currentTarget.style.transform = 'translateY(0)'
+                      e.currentTarget.style.boxShadow = '0 4px 14px rgba(0, 0, 0, 0.15)'
+                    }}
+                  >
+                    发布需求
+                  </Button>
+                </div>
+              )}
 
               {/* 发布产品按钮 - 已隐藏 */}
             </Col>
@@ -923,7 +1038,7 @@ export default function SoftwareList() {
                   <li><Link to="/software">软件产品</Link></li>
                   <li><Link to="/solutions">解决方案</Link></li>
                   <li><Link to="/policy">政策资讯</Link></li>
-                  <li><Link to="/demand">需求大厅</Link></li>
+                  {/* <li><Link to="/demand">需求大厅</Link></li> */}
                 </ul>
               </div>
               <div className="footer-nav-group-v2">
@@ -976,6 +1091,364 @@ export default function SoftwareList() {
           </div>
         </div>
       </footer>
+
+      {/* 发布需求弹窗 */}
+      <Modal
+        title={null}
+        open={isDemandModalOpen}
+        onCancel={handleModalCancel}
+        width={900}
+        footer={null}
+        destroyOnClose
+        style={{ borderRadius: 16 }}
+      >
+        <div style={{ padding: '24px 0' }}>
+          {/* 标题 */}
+          <div style={{ textAlign: 'center', marginBottom: 32 }}>
+            <Title level={4} style={{ margin: 0, color: '#1f2937' }}>
+              <FormOutlined style={{ marginRight: 8, color: '#6366f1' }} />
+              发布需求
+            </Title>
+            <Text type="secondary" style={{ fontSize: 14 }}>
+              填写您的工业软件需求，平台将为您匹配合适的供应商
+            </Text>
+          </div>
+
+          {/* 步骤条 */}
+          <Steps
+            current={currentStep}
+            style={{ marginBottom: 32 }}
+            items={[
+              { title: '选择类型', description: '选择软件类型' },
+              { title: '填写需求', description: '填写详细需求信息' },
+              { title: '提交审核', description: '确认并提交需求' },
+            ]}
+          />
+
+          {/* 步骤内容 */}
+          <div style={{ minHeight: 400, marginBottom: 24 }}>
+            {currentStep === 0 && (
+              <div>
+                <div style={{ marginBottom: 24, textAlign: 'center' }}>
+                  <Text type="secondary" style={{ fontSize: 14 }}>
+                    请选择您需要的工业软件类型，我们将为您匹配合适的供应商
+                  </Text>
+                </div>
+                <Row gutter={[16, 16]}>
+                  {softwareCategories.map((cat) => (
+                    <Col xs={24} sm={12} lg={8} key={cat.value}>
+                      <Card
+                        hoverable
+                        onClick={() => setSelectedCategory(cat.value)}
+                        style={{
+                          borderRadius: 16,
+                          border: selectedCategory === cat.value
+                            ? `2px solid ${cat.color}`
+                            : '1px solid #e5e7eb',
+                          background: selectedCategory === cat.value ? cat.lightBg : '#fff',
+                          cursor: 'pointer',
+                          transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                          boxShadow: selectedCategory === cat.value
+                            ? `0 8px 24px ${cat.color}30`
+                            : '0 2px 8px rgba(0,0,0,0.04)',
+                          height: '100%',
+                        }}
+                        bodyStyle={{ padding: '20px' }}
+                        onMouseEnter={(e) => {
+                          if (selectedCategory !== cat.value) {
+                            e.currentTarget.style.transform = 'translateY(-4px)'
+                            e.currentTarget.style.boxShadow = '0 12px 28px rgba(0,0,0,0.1)'
+                          }
+                        }}
+                        onMouseLeave={(e) => {
+                          if (selectedCategory !== cat.value) {
+                            e.currentTarget.style.transform = 'translateY(0)'
+                            e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.04)'
+                          }
+                        }}
+                      >
+                        <div style={{ textAlign: 'center' }}>
+                          <div
+                            style={{
+                              width: 56,
+                              height: 56,
+                              borderRadius: 14,
+                              background: cat.bg,
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              margin: '0 auto 12px',
+                              fontSize: 24,
+                              color: '#fff',
+                              boxShadow: `0 6px 16px ${cat.color}40`,
+                            }}
+                          >
+                            {cat.icon}
+                          </div>
+                          <div style={{
+                            fontWeight: 600,
+                            fontSize: 15,
+                            marginBottom: 6,
+                            color: selectedCategory === cat.value ? cat.color : '#1f2937'
+                          }}>
+                            {cat.label}
+                          </div>
+                          <div style={{
+                            fontSize: 12,
+                            color: '#6b7280',
+                            lineHeight: 1.5
+                          }}>
+                            {cat.description}
+                          </div>
+                          {selectedCategory === cat.value && (
+                            <div style={{ marginTop: 12 }}>
+                              <Tag
+                                style={{
+                                  borderRadius: 12,
+                                  background: cat.color,
+                                  border: 'none',
+                                  color: '#fff',
+                                  padding: '2px 12px',
+                                  fontSize: 12,
+                                }}
+                              >
+                                <CheckCircleOutlined style={{ marginRight: 4 }} />
+                                已选择
+                              </Tag>
+                            </div>
+                          )}
+                        </div>
+                      </Card>
+                    </Col>
+                  ))}
+                </Row>
+                {selectedCategory && (
+                  <div style={{
+                    marginTop: 24,
+                    padding: '16px 20px',
+                    background: softwareCategories.find(c => c.value === selectedCategory)?.lightBg,
+                    borderRadius: 12,
+                    border: `1px solid ${softwareCategories.find(c => c.value === selectedCategory)?.color}30`,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between'
+                  }}>
+                    <div>
+                      <Text type="secondary" style={{ fontSize: 13 }}>已选择软件类型：</Text>
+                      <Text strong style={{
+                        fontSize: 15,
+                        color: softwareCategories.find(c => c.value === selectedCategory)?.color,
+                        marginLeft: 8
+                      }}>
+                        {softwareCategories.find(c => c.value === selectedCategory)?.label}
+                      </Text>
+                    </div>
+                    <Tag color="success" style={{ borderRadius: 12 }}>
+                      <CheckCircleOutlined /> 准备就绪
+                    </Tag>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {currentStep === 1 && (
+              <Form form={form} layout="vertical" style={{ maxWidth: 600, margin: '0 auto' }}>
+                <Form.Item
+                  name="title"
+                  label="需求标题"
+                  rules={[{ required: true, message: '请输入需求标题' }]}
+                >
+                  <Input placeholder="请简要描述您的需求，如：寻找MES系统供应商" style={{ height: 44, borderRadius: 10 }} />
+                </Form.Item>
+
+                <Row gutter={16}>
+                  <Col span={12}>
+                    <Form.Item
+                      name="budget"
+                      label="预算范围"
+                      rules={[{ required: true, message: '请选择预算范围' }]}
+                    >
+                      <Select placeholder="请选择" style={{ height: 44 }}>
+                        {budgetRanges.map(r => (
+                          <Select.Option key={r.value} value={r.value}>{r.label}</Select.Option>
+                        ))}
+                      </Select>
+                    </Form.Item>
+                  </Col>
+                  <Col span={12}>
+                    <Form.Item
+                      name="expectedTime"
+                      label="期望上线时间"
+                      rules={[{ required: true, message: '请选择期望时间' }]}
+                    >
+                      <Select placeholder="请选择" style={{ height: 44 }}>
+                        {expectedTimes.map(t => (
+                          <Select.Option key={t.value} value={t.value}>{t.label}</Select.Option>
+                        ))}
+                      </Select>
+                    </Form.Item>
+                  </Col>
+                </Row>
+
+                <Form.Item
+                  name="urgency"
+                  label="紧急程度"
+                  rules={[{ required: true, message: '请选择紧急程度' }]}
+                >
+                  <Radio.Group>
+                    <Radio.Button value="low">低</Radio.Button>
+                    <Radio.Button value="medium">中</Radio.Button>
+                    <Radio.Button value="high">高</Radio.Button>
+                    <Radio.Button value="urgent">紧急</Radio.Button>
+                  </Radio.Group>
+                </Form.Item>
+
+                <Form.Item
+                  name="description"
+                  label="需求描述"
+                  rules={[{ required: true, message: '请详细描述您的需求' }]}
+                >
+                  <TextArea
+                    rows={5}
+                    placeholder="请详细描述您的需求，包括：&#10;1. 企业现状和痛点&#10;2. 期望的功能和性能要求&#10;3. 集成需求&#10;4. 其他特殊要求"
+                    style={{ borderRadius: 10, resize: 'none' }}
+                  />
+                </Form.Item>
+
+                <Form.Item name="attachment" label="附件上传（可选）">
+                  <Upload.Dragger
+                    name="file"
+                    multiple
+                    style={{ borderRadius: 12, background: '#f9fafb' }}
+                  >
+                    <div style={{ padding: '20px 0' }}>
+                      <UploadOutlined style={{ fontSize: 32, color: '#6366f1' }} />
+                      <div style={{ marginTop: 12, color: '#374151' }}>
+                        点击或拖拽文件到此处上传
+                      </div>
+                      <div style={{ marginTop: 4, color: '#9ca3af', fontSize: 12 }}>
+                        支持 PDF、Word、Excel、图片等格式，单个文件不超过 20MB
+                      </div>
+                    </div>
+                  </Upload.Dragger>
+                </Form.Item>
+              </Form>
+            )}
+
+            {currentStep === 2 && (
+              <div>
+                <div style={{ textAlign: 'center', marginBottom: 32 }}>
+                  <div
+                    style={{
+                      width: 80,
+                      height: 80,
+                      borderRadius: '50%',
+                      background: 'linear-gradient(135deg, #52c41a 0%, #389e0d 100%)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      margin: '0 auto 16px',
+                      boxShadow: '0 8px 24px rgba(82, 196, 26, 0.3)',
+                    }}
+                  >
+                    <CheckCircleOutlined style={{ fontSize: 40, color: '#fff' }} />
+                  </div>
+                  <Title level={4} style={{ marginTop: 16 }}>请确认需求信息</Title>
+                  <Text type="secondary">确认无误后提交，平台将尽快为您匹配合适的供应商</Text>
+                </div>
+
+                <Card
+                  style={{
+                    borderRadius: 16,
+                    background: '#f9fafb',
+                    border: '1px solid #e5e7eb',
+                  }}
+                  bodyStyle={{ padding: '24px' }}
+                >
+                  <div style={{ marginBottom: 20 }}>
+                    <Text style={{ color: '#6b7280', fontSize: 13 }}>软件类型</Text>
+                    <div style={{ fontSize: 17, fontWeight: 600, marginTop: 6 }}>
+                      <Tag
+                        style={{
+                          borderRadius: 8,
+                          background: softwareCategories.find(c => c.value === selectedCategory)?.bg,
+                          border: 'none',
+                          color: '#fff',
+                          padding: '4px 16px',
+                          fontSize: 15,
+                          fontWeight: 600,
+                        }}
+                      >
+                        {softwareCategories.find(c => c.value === selectedCategory)?.icon}
+                        <span style={{ marginLeft: 6 }}>
+                          {softwareCategories.find(c => c.value === selectedCategory)?.label}
+                        </span>
+                      </Tag>
+                    </div>
+                  </div>
+                  <Divider style={{ margin: '16px 0' }} />
+                  {/* 其他确认信息 */}
+                  <div style={{ textAlign: 'center', padding: '20px 0' }}>
+                    <Text type="secondary">需求信息已填写完成</Text>
+                  </div>
+                </Card>
+              </div>
+            )}
+          </div>
+
+          {/* 底部按钮 */}
+          <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid #e5e7eb', paddingTop: 20 }}>
+            <Button
+              onClick={handleModalCancel}
+              style={{ height: 44, padding: '0 24px', borderRadius: 10 }}
+            >
+              取消
+            </Button>
+            <Space>
+              {currentStep > 0 && (
+                <Button
+                  onClick={handlePrev}
+                  style={{ height: 44, padding: '0 24px', borderRadius: 10 }}
+                  icon={<ArrowLeftOutlined />}
+                >
+                  上一步
+                </Button>
+              )}
+              {currentStep < 2 ? (
+                <Button
+                  type="primary"
+                  onClick={handleNext}
+                  style={{
+                    height: 44,
+                    padding: '0 32px',
+                    borderRadius: 10,
+                    background: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)',
+                    border: 'none',
+                  }}
+                  icon={<ArrowRightIcon />}
+                >
+                  下一步
+                </Button>
+              ) : (
+                <Button
+                  type="primary"
+                  onClick={handleSubmit}
+                  style={{
+                    height: 44,
+                    padding: '0 32px',
+                    borderRadius: 10,
+                    background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+                    border: 'none',
+                  }}
+                  icon={<CheckCircleOutlined />}
+                >
+                  提交需求
+                </Button>
+              )}
+            </Space>
+          </div>
+        </div>
+      </Modal>
     </div>
   )
 }

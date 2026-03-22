@@ -354,7 +354,7 @@ const menuItems: MenuProps['items'] = [
   { key: '/', label: <Link to="/">首页</Link> },
   { key: '/software', label: <Link to="/software">软件中心</Link> },
   { key: '/policy', label: <Link to="/policy">政策活动中心</Link> },
-  { key: '/demand', label: <Link to="/demand">需求广场</Link> },
+  // { key: '/demand', label: <Link to="/demand">需求广场</Link> },
 ]
 
 const userMenuItems = (onLogout: () => void): MenuProps['items'] => [

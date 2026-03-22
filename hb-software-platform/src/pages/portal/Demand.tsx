@@ -1352,7 +1352,7 @@ const Demand = () => {
                   <li><Link to="/software">软件产品</Link></li>
                   <li><Link to="/solutions">解决方案</Link></li>
                   <li><Link to="/policy">政策资讯</Link></li>
-                  <li><Link to="/demand">需求大厅</Link></li>
+                  {/* <li><Link to="/demand">需求大厅</Link></li> */}
                 </ul>
               </div>
               <div className="footer-nav-group-v2">

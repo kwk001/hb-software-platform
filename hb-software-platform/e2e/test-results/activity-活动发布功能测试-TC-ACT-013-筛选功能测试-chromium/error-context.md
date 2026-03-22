@@ -1,0 +1,313 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e3]:
+  - complementary [ref=e4]:
+    - generic [ref=e5]:
+      - link "setting 平台管理 Admin Portal" [ref=e7] [cursor=pointer]:
+        - /url: /platform
+        - img "setting" [ref=e9]:
+          - img [ref=e10]
+        - generic [ref=e12]:
+          - strong [ref=e14]: 平台管理
+          - text: Admin Portal
+      - menu [ref=e15]:
+        - menuitem "home 工作台" [ref=e16] [cursor=pointer]:
+          - img "home" [ref=e17]:
+            - img [ref=e18]
+          - link "工作台" [ref=e21]:
+            - /url: /platform
+        - menuitem "safety-certificate 审核管理" [expanded] [ref=e22] [cursor=pointer]:
+          - img "safety-certificate" [ref=e23]:
+            - img [ref=e24]
+          - generic [ref=e26]: 审核管理
+        - menu [ref=e27]:
+          - menuitem "企业审核" [ref=e28] [cursor=pointer]:
+            - link "企业审核" [ref=e30]:
+              - /url: /platform/audit/enterprise
+          - menuitem "软件审核" [ref=e31] [cursor=pointer]:
+            - link "软件审核" [ref=e33]:
+              - /url: /platform/audit/software
+          - menuitem "补贴券审核" [ref=e34] [cursor=pointer]:
+            - link "补贴券审核" [ref=e36]:
+              - /url: /platform/audit/subsidy
+        - menuitem "safety 需求汇总" [ref=e37] [cursor=pointer]:
+          - img "safety" [ref=e38]:
+            - img [ref=e39]
+          - link "需求汇总" [ref=e43]:
+            - /url: /platform/demands
+        - menuitem "bar-chart 报表中心" [ref=e44] [cursor=pointer]:
+          - img "bar-chart" [ref=e45]:
+            - img [ref=e46]
+          - generic [ref=e48]: 报表中心
+        - menuitem "file-text 政策管理" [ref=e49] [cursor=pointer]:
+          - img "file-text" [ref=e50]:
+            - img [ref=e51]
+          - link "政策管理" [ref=e54]:
+            - /url: /platform/policy
+        - menuitem "calendar 活动管理" [ref=e55] [cursor=pointer]:
+          - img "calendar" [ref=e56]:
+            - img [ref=e57]
+          - link "活动管理" [ref=e60]:
+            - /url: /platform/activity
+        - menuitem "message 留言管理" [ref=e61] [cursor=pointer]:
+          - img "message" [ref=e62]:
+            - img [ref=e63]
+          - link "留言管理" [ref=e66]:
+            - /url: /platform/messages
+        - menuitem "mail 消息管理" [ref=e67] [cursor=pointer]:
+          - img "mail" [ref=e68]:
+            - img [ref=e69]
+          - generic [ref=e71]: 消息管理
+        - menuitem "setting 系统管理" [expanded] [ref=e72] [cursor=pointer]:
+          - img "setting" [ref=e73]:
+            - img [ref=e74]
+          - generic [ref=e76]: 系统管理
+        - menu [ref=e77]:
+          - menuitem "用户管理" [ref=e78] [cursor=pointer]:
+            - link "用户管理" [ref=e80]:
+              - /url: /platform/users
+          - menuitem "数据字典" [ref=e81] [cursor=pointer]:
+            - link "数据字典" [ref=e83]:
+              - /url: /platform/dict
+          - menuitem "角色管理" [ref=e84] [cursor=pointer]:
+            - link "角色管理" [ref=e86]:
+              - /url: /platform/role
+          - menuitem "操作日志" [ref=e87] [cursor=pointer]:
+            - link "操作日志" [ref=e89]:
+              - /url: /platform/logs/operation
+          - menuitem "登录日志" [ref=e90] [cursor=pointer]:
+            - link "登录日志" [ref=e92]:
+              - /url: /platform/logs/login
+  - generic [ref=e93]:
+    - banner [ref=e94]:
+      - button "menu-fold" [ref=e95] [cursor=pointer]:
+        - img "menu-fold" [ref=e97]:
+          - img [ref=e98]
+      - generic [ref=e100]:
+        - button "sun" [ref=e102] [cursor=pointer]:
+          - img "sun" [ref=e104]:
+            - img [ref=e105]
+        - generic "返回门户首页" [ref=e108] [cursor=pointer]:
+          - img "home" [ref=e109]:
+            - img [ref=e110]
+        - generic [ref=e113]:
+          - img "bell" [ref=e115] [cursor=pointer]:
+            - img [ref=e116]
+          - superscript [ref=e118]:
+            - generic [ref=e119]:
+              - generic [ref=e120]: "1"
+              - generic [ref=e121]: "2"
+        - generic [ref=e123] [cursor=pointer]:
+          - img "user" [ref=e126]:
+            - img [ref=e127]
+          - generic [ref=e130]:
+            - generic [ref=e131]: 平台管理员
+            - generic [ref=e132]: 超级管理员
+          - img [ref=e134]
+    - main [ref=e136]:
+      - generic [ref=e137]:
+        - generic [ref=e138]:
+          - heading "calendar 活动管理" [level=4] [ref=e139]:
+            - img "calendar" [ref=e140]:
+              - img [ref=e141]
+            - text: 活动管理
+          - text: 管理平台发布的各类活动，包括培训、沙龙、展会、路演等
+        - generic [ref=e143]:
+          - generic [ref=e147]:
+            - generic [ref=e149]: 活动总数
+            - generic [ref=e150]:
+              - img "calendar" [ref=e152]:
+                - img [ref=e153]
+              - generic [ref=e155]: "2"
+          - generic [ref=e159]:
+            - generic [ref=e161]: 即将开始
+            - generic [ref=e162]:
+              - img "check-circle" [ref=e164]:
+                - img [ref=e165]
+              - generic [ref=e168]: "2"
+          - generic [ref=e172]:
+            - generic [ref=e174]: 已结束
+            - generic [ref=e175]:
+              - img "close-circle" [ref=e177]:
+                - img [ref=e178]
+              - generic [ref=e180]: "0"
+          - generic [ref=e184]:
+            - generic [ref=e186]: 累计参与人数
+            - generic [ref=e187]:
+              - img "team" [ref=e189]:
+                - img [ref=e190]
+              - generic [ref=e192]: "245"
+        - generic [ref=e195]:
+          - generic [ref=e197]:
+            - generic [ref=e199]:
+              - img "search" [ref=e201]:
+                - img [ref=e202]
+              - textbox "搜索活动标题、主办方、标签..." [ref=e204]
+            - generic [ref=e207] [cursor=pointer]:
+              - generic "全部类型" [ref=e208]:
+                - text: 全部类型
+                - combobox [ref=e209]
+              - img "down" [ref=e211]:
+                - img [ref=e212]
+              - img "close-circle" [ref=e215]:
+                - img [ref=e216]
+            - generic [ref=e219] [cursor=pointer]:
+              - generic "全部分类" [ref=e220]:
+                - text: 全部分类
+                - combobox [ref=e221]
+              - img "down" [ref=e223]:
+                - img [ref=e224]
+              - img "close-circle" [ref=e227]:
+                - img [ref=e228]
+            - generic [ref=e231] [cursor=pointer]:
+              - generic "全部状态" [ref=e232]:
+                - text: 全部状态
+                - combobox [ref=e233]
+              - img "down" [ref=e235]:
+                - img [ref=e236]
+              - img "close-circle" [ref=e239]:
+                - img [ref=e240]
+          - button "plus 新增活动" [ref=e243] [cursor=pointer]:
+            - img "plus" [ref=e245]:
+              - img [ref=e246]
+            - generic [ref=e249]: 新增活动
+        - generic [ref=e254]:
+          - table [ref=e258]:
+            - rowgroup [ref=e270]:
+              - row "活动标题 类型 分类 状态 时间 地点 主办方 参与情况 标签 操作" [ref=e271]:
+                - columnheader "活动标题" [ref=e272]
+                - columnheader "类型" [ref=e273]
+                - columnheader "分类" [ref=e274]
+                - columnheader "状态" [ref=e275]
+                - columnheader "时间" [ref=e276]
+                - columnheader "地点" [ref=e277]
+                - columnheader "主办方" [ref=e278]
+                - columnheader "参与情况" [ref=e279]
+                - columnheader "标签" [ref=e280]
+                - columnheader "操作" [ref=e281]
+            - rowgroup [ref=e282]:
+              - row "2025湖北省工业软件创新发展论坛 汇聚行业专家、企业代表，共同探讨工业软件发展趋势、技术创新路径和产业生态构建，推动湖北省工业软件产业高质量发展。 线下 展会 即将开始 calendar 2025-04-15 calendar 2025-04-17 environment 武汉光谷会展中心 湖北省工信厅 team 156 / 300 eye 3256 浏览 工业软件 创新发展 产业对接 edit 编辑 delete 删除" [ref=e283]:
+                - cell "2025湖北省工业软件创新发展论坛 汇聚行业专家、企业代表，共同探讨工业软件发展趋势、技术创新路径和产业生态构建，推动湖北省工业软件产业高质量发展。" [ref=e284]:
+                  - generic [ref=e285]:
+                    - generic [ref=e286]: 2025湖北省工业软件创新发展论坛
+                    - generic [ref=e287]: 汇聚行业专家、企业代表，共同探讨工业软件发展趋势、技术创新路径和产业生态构建，推动湖北省工业软件产业高质量发展。
+                - cell "线下" [ref=e288]:
+                  - generic [ref=e289]: 线下
+                - cell "展会" [ref=e290]:
+                  - generic [ref=e291]: 展会
+                - cell "即将开始" [ref=e292]:
+                  - generic [ref=e293]: 即将开始
+                - cell "calendar 2025-04-15 calendar 2025-04-17" [ref=e295]:
+                  - generic [ref=e296]:
+                    - generic [ref=e297]:
+                      - img "calendar" [ref=e298]:
+                        - img [ref=e299]
+                      - text: 2025-04-15
+                    - generic [ref=e301]:
+                      - img "calendar" [ref=e302]:
+                        - img [ref=e303]
+                      - text: 2025-04-17
+                - cell "environment 武汉光谷会展中心" [ref=e305]:
+                  - generic [ref=e306]:
+                    - img "environment" [ref=e307]:
+                      - img [ref=e308]
+                    - text: 武汉光谷会展中心
+                - cell "湖北省工信厅" [ref=e310]
+                - cell "team 156 / 300 eye 3256 浏览" [ref=e311]:
+                  - generic [ref=e312]:
+                    - generic [ref=e313]:
+                      - img "team" [ref=e314]:
+                        - img [ref=e315]
+                      - text: 156 / 300
+                    - generic [ref=e317]:
+                      - img "eye" [ref=e318]:
+                        - img [ref=e319]
+                      - text: 3256 浏览
+                - cell "工业软件 创新发展 产业对接" [ref=e321]:
+                  - generic [ref=e322]:
+                    - generic [ref=e324]: 工业软件
+                    - generic [ref=e326]: 创新发展
+                    - generic [ref=e328]: 产业对接
+                - cell "edit 编辑 delete 删除" [ref=e329]:
+                  - generic [ref=e330]:
+                    - button "edit 编辑" [ref=e332] [cursor=pointer]:
+                      - img "edit" [ref=e334]:
+                        - img [ref=e335]
+                      - generic [ref=e337]: 编辑
+                    - button "delete 删除" [ref=e339] [cursor=pointer]:
+                      - img "delete" [ref=e341]:
+                        - img [ref=e342]
+                      - generic [ref=e344]: 删除
+              - row "工业软件企业数字化转型培训会 针对工业软件企业的数字化转型需求，提供系统化的培训课程，涵盖数字化战略、技术应用、管理变革等多个维度。 混合 培训 即将开始 calendar 2025-03-28 calendar 2025-03-30 environment 线上+武汉软件新城 湖北省软件行业协会 team 89 / 200 eye 2156 浏览 数字化转型 企业培训 管理升级 edit 编辑 delete 删除" [ref=e345]:
+                - cell "工业软件企业数字化转型培训会 针对工业软件企业的数字化转型需求，提供系统化的培训课程，涵盖数字化战略、技术应用、管理变革等多个维度。" [ref=e346]:
+                  - generic [ref=e347]:
+                    - generic [ref=e348]: 工业软件企业数字化转型培训会
+                    - generic [ref=e349]: 针对工业软件企业的数字化转型需求，提供系统化的培训课程，涵盖数字化战略、技术应用、管理变革等多个维度。
+                - cell "混合" [ref=e350]:
+                  - generic [ref=e351]: 混合
+                - cell "培训" [ref=e352]:
+                  - generic [ref=e353]: 培训
+                - cell "即将开始" [ref=e354]:
+                  - generic [ref=e355]: 即将开始
+                - cell "calendar 2025-03-28 calendar 2025-03-30" [ref=e357]:
+                  - generic [ref=e358]:
+                    - generic [ref=e359]:
+                      - img "calendar" [ref=e360]:
+                        - img [ref=e361]
+                      - text: 2025-03-28
+                    - generic [ref=e363]:
+                      - img "calendar" [ref=e364]:
+                        - img [ref=e365]
+                      - text: 2025-03-30
+                - cell "environment 线上+武汉软件新城" [ref=e367]:
+                  - generic [ref=e368]:
+                    - img "environment" [ref=e369]:
+                      - img [ref=e370]
+                    - text: 线上+武汉软件新城
+                - cell "湖北省软件行业协会" [ref=e372]
+                - cell "team 89 / 200 eye 2156 浏览" [ref=e373]:
+                  - generic [ref=e374]:
+                    - generic [ref=e375]:
+                      - img "team" [ref=e376]:
+                        - img [ref=e377]
+                      - text: 89 / 200
+                    - generic [ref=e379]:
+                      - img "eye" [ref=e380]:
+                        - img [ref=e381]
+                      - text: 2156 浏览
+                - cell "数字化转型 企业培训 管理升级" [ref=e383]:
+                  - generic [ref=e384]:
+                    - generic [ref=e386]: 数字化转型
+                    - generic [ref=e388]: 企业培训
+                    - generic [ref=e390]: 管理升级
+                - cell "edit 编辑 delete 删除" [ref=e391]:
+                  - generic [ref=e392]:
+                    - button "edit 编辑" [ref=e394] [cursor=pointer]:
+                      - img "edit" [ref=e396]:
+                        - img [ref=e397]
+                      - generic [ref=e399]: 编辑
+                    - button "delete 删除" [ref=e401] [cursor=pointer]:
+                      - img "delete" [ref=e403]:
+                        - img [ref=e404]
+                      - generic [ref=e406]: 删除
+          - list [ref=e407]:
+            - listitem [ref=e408]: 共 2 条
+            - listitem "Previous Page" [ref=e409]:
+              - button "left" [disabled] [ref=e410]:
+                - img "left" [ref=e411]:
+                  - img [ref=e412]
+            - listitem "1" [ref=e414] [cursor=pointer]:
+              - generic [ref=e415]: "1"
+            - listitem "Next Page" [ref=e416]:
+              - button "right" [disabled] [ref=e417]:
+                - img "right" [ref=e418]:
+                  - img [ref=e419]
+            - listitem [ref=e421]:
+              - generic [ref=e422]:
+                - generic "10 / page" [ref=e423]:
+                  - text: 10 / page
+                  - combobox "Page Size" [ref=e424]
+                - img "down" [ref=e426]:
+                  - img [ref=e427]
+```

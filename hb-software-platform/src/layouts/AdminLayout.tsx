@@ -13,7 +13,6 @@ import {
   MenuUnfoldOutlined,
   SettingOutlined,
   MessageOutlined,
-  DesktopOutlined,
 } from '@ant-design/icons'
 import { useState, useEffect } from 'react'
 import type { MenuProps } from 'antd'
@@ -327,31 +326,6 @@ export default function AdminLayout() {
               }}
             >
               <HomeOutlined style={{ fontSize: 18, color: 'var(--text-tertiary)' }} />
-            </div>
-            <div
-              style={{
-                width: 40,
-                height: 40,
-                borderRadius: 10,
-                background: 'transparent',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                cursor: 'pointer',
-                transition: 'all 0.3s ease',
-              }}
-              title="前往管理后台"
-              onClick={() => navigate('/platform')}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.background = 'var(--bg-tertiary)'
-                e.currentTarget.style.transform = 'scale(1.05)'
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = 'transparent'
-                e.currentTarget.style.transform = 'scale(1)'
-              }}
-            >
-              <DesktopOutlined style={{ fontSize: 18, color: 'var(--text-tertiary)' }} />
             </div>
             <Badge count={5} size="small" offset={[-2, 2]} color="#ef4444">
               <div
